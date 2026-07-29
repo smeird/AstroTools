@@ -7,6 +7,12 @@ describe("home page", () => {
   it("introduces the first calculator with semantic navigation", () => {
     render(<HomePage />);
 
+    expect(screen.getByRole("banner")).toBeInTheDocument();
+    expect(screen.getByRole("main")).toHaveAttribute("id", "main-content");
+    expect(screen.getByRole("contentinfo")).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /skip to main content/i }),
+    ).toHaveAttribute("href", "#main-content");
     expect(
       screen.getByRole("heading", {
         level: 1,

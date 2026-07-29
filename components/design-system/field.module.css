@@ -1,0 +1,304 @@
+.field {
+  display: grid;
+  min-width: 0;
+  gap: var(--space-2);
+}
+
+.labelRow {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.label,
+.legend {
+  color: var(--color-text);
+  font-size: var(--font-size-control);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.legend {
+  padding: 0;
+}
+
+.unit,
+.output {
+  color: var(--color-signal);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-meta);
+  letter-spacing: 0.06em;
+}
+
+.description,
+.error,
+.empty {
+  margin: 0;
+  font-size: var(--font-size-small);
+  line-height: 1.45;
+}
+
+.description,
+.empty {
+  color: var(--color-text-muted);
+}
+
+.error {
+  color: var(--color-error-text);
+  font-weight: 700;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.input,
+.comboboxInput {
+  width: 100%;
+  min-height: var(--control-min-size);
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--color-border-control);
+  border-radius: var(--radius-control);
+  background: var(--color-surface-input);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.input:hover,
+.comboboxInput:hover {
+  border-color: var(--color-border-control-hover);
+}
+
+.input[aria-invalid="true"],
+.comboboxInput[aria-invalid="true"] {
+  border-width: 2px;
+  border-color: var(--color-error-border);
+}
+
+.numberControl {
+  position: relative;
+}
+
+.numberControlWithUnit .input {
+  padding-right: 4.5rem;
+}
+
+.numberUnit {
+  position: absolute;
+  top: 50%;
+  right: 0.8rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-meta);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.range {
+  width: 100%;
+  min-height: var(--control-min-size);
+  margin: 0;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+.range::-webkit-slider-runnable-track {
+  height: 0.25rem;
+  border-radius: 999px;
+  background: var(--color-border-control);
+}
+
+.range::-webkit-slider-thumb {
+  width: 1.4rem;
+  height: 1.4rem;
+  margin-top: -0.575rem;
+  border: 2px solid var(--color-surface);
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 1px var(--color-accent);
+  -webkit-appearance: none;
+}
+
+.range::-moz-range-track {
+  height: 0.25rem;
+  border-radius: 999px;
+  background: var(--color-border-control);
+}
+
+.range::-moz-range-thumb {
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 2px solid var(--color-surface);
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 1px var(--color-accent);
+}
+
+.fieldset {
+  display: grid;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  gap: var(--space-2);
+  border: 0;
+}
+
+.segments {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(3.25rem, 1fr));
+  gap: 0.25rem;
+}
+
+.segment {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: var(--control-min-size);
+  place-items: center;
+  cursor: pointer;
+}
+
+.segment input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.segmentContent {
+  display: flex;
+  width: 100%;
+  min-height: var(--control-min-size);
+  padding: 0.55rem;
+  gap: 0.35rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border-control);
+  border-radius: var(--radius-control);
+  background: var(--color-surface-input);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-meta);
+  font-weight: 700;
+}
+
+.selectedMark {
+  display: inline-block;
+  width: 1em;
+  font-weight: 900;
+  text-align: center;
+}
+
+.segment input:checked + .segmentContent {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.segment input:focus-visible + .segmentContent {
+  outline: var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.segment input:disabled + .segmentContent {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.combobox {
+  position: relative;
+}
+
+.comboboxInput {
+  padding-right: 2.75rem;
+}
+
+.comboboxChevron {
+  position: absolute;
+  top: calc(var(--control-min-size) / 2);
+  right: 0.85rem;
+  color: var(--color-signal);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.listbox {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  left: 0;
+  max-height: 15rem;
+  margin: 0;
+  padding: 0.3rem;
+  overflow-y: auto;
+  border: 1px solid var(--color-border-control-hover);
+  border-radius: var(--radius-control);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-overlay);
+  list-style: none;
+}
+
+.option {
+  display: flex;
+  min-height: var(--control-min-size);
+  padding: 0.65rem 0.7rem;
+  align-items: center;
+  border-radius: calc(var(--radius-control) - 2px);
+  color: var(--color-text);
+  cursor: pointer;
+  line-height: 1.35;
+}
+
+.optionActive,
+.option:hover {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.optionDisabled {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.optionMarker {
+  width: 0.75rem;
+  flex: 0 0 0.75rem;
+  color: currentColor;
+  font-size: 1.1em;
+  font-weight: 900;
+}
+
+.optionSelected {
+  margin-left: auto;
+  font-weight: 900;
+}
+
+.empty {
+  padding: 0.8rem;
+}
+
+@media (forced-colors: active) {
+  .input,
+  .comboboxInput,
+  .segmentContent,
+  .listbox {
+    border-color: ButtonText;
+  }
+
+  .segment input:checked + span,
+  .optionActive {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}

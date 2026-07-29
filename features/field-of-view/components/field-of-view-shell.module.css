@@ -1,0 +1,110 @@
+.page {
+  width: min(100%, calc(var(--max-width) + 3rem));
+  min-height: calc(100vh - var(--site-header-height));
+  margin: 0 auto;
+  padding: clamp(2rem, 5vw, 4.5rem) 1.5rem 5rem;
+}
+
+.intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(16rem, 0.65fr);
+  gap: var(--space-6);
+  align-items: end;
+  padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+.breadcrumb {
+  display: inline-flex;
+  width: fit-content;
+  min-height: var(--control-min-size);
+  align-items: center;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-meta);
+  letter-spacing: 0.08em;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3rem;
+  text-transform: uppercase;
+}
+
+.title {
+  max-width: 13ch;
+  margin: var(--space-3) 0 var(--space-4);
+  font-family: var(--font-heading);
+  font-size: clamp(2.8rem, 6vw, 5.5rem);
+  font-weight: 400;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+}
+
+.lede,
+.introNote {
+  margin: 0;
+  color: var(--color-text-soft);
+  line-height: 1.6;
+}
+
+.lede {
+  max-width: 46rem;
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+}
+
+.introNote {
+  padding: var(--space-4);
+  border-left: 2px solid var(--color-signal);
+  background: linear-gradient(90deg, rgba(114, 229, 210, 0.08), transparent);
+  font-size: var(--font-size-small);
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(18rem, 21rem) minmax(0, 1fr);
+  grid-template-areas:
+    "controls summary"
+    "controls visualisation"
+    "controls results";
+  gap: var(--space-5) clamp(1.5rem, 4vw, 4rem);
+  align-items: start;
+}
+
+.controls {
+  grid-area: controls;
+}
+
+.summary {
+  grid-area: summary;
+}
+
+.visualisation {
+  grid-area: visualisation;
+}
+
+.results {
+  grid-area: results;
+}
+
+@media (max-width: 900px) {
+  .intro {
+    grid-template-columns: 1fr;
+  }
+
+  .workspace {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "controls"
+      "summary"
+      "visualisation"
+      "results";
+  }
+}
+
+@media (max-width: 450px) {
+  .page {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+
+  .title {
+    font-size: clamp(2.65rem, 14vw, 4rem);
+  }
+}
