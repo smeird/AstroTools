@@ -5,9 +5,11 @@ answer how much sky a telescope and camera capture, whether a target fits, what
 image scale the setup produces, and how that sampling compares with stated
 seeing.
 
-Work Package 0 establishes the reviewed application foundation. Work Package 1
-adds the framework-free field-of-view and image-sampling engine. The interactive
-calculator and catalogue arrive in later, separately reviewed packages.
+Work Package 0 establishes the reviewed application foundation, Work Package 1
+adds the framework-free field-of-view and image-sampling engine, and Work
+Package 2 adds the responsive, accessible calculator shell and production
+control primitives. The equipment catalogue arrives in a later, separately
+reviewed package.
 
 ## Requirements
 
@@ -95,7 +97,9 @@ API handlers, and Prisma access cannot own calculation rules.
 
 The engine uses canonical millimetres, micrometres, arcseconds, and degrees. Its
 public contracts, equations, golden reference case, input policy, and numerical
-guarantees are documented in [docs/calculations.md](docs/calculations.md).
+guarantees are documented in [docs/calculations.md](docs/calculations.md). The
+visual tokens, control contracts, responsive reading order, and current scope
+boundary are documented in [docs/design-system.md](docs/design-system.md).
 
 Read the
 [verbatim implementation baseline](Astrotools_Production_Implementation_Plan.md),

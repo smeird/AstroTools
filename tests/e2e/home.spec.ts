@@ -16,12 +16,12 @@ test("a visitor can reach the Field of View Lab from the homepage", async ({
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "Field of View & Image Sampling",
+      name: "Frame the sky with confidence.",
     }),
   ).toBeVisible();
 
   const returnHomeBox = await page
-    .getByRole("link", { name: "Return home" })
+    .getByRole("link", { name: "All calculators" })
     .boundingBox();
   expect(returnHomeBox?.height).toBeGreaterThanOrEqual(44);
 });
@@ -35,8 +35,11 @@ test("the primary journey is keyboard operable", async ({
 
   await page.keyboard.press(focusNext);
   await expect(
-    page.getByRole("link", { name: "Astrotools home" }),
+    page.getByRole("link", { name: "Skip to main content" }),
   ).toBeFocused();
+
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("main")).toBeFocused();
 
   await page.keyboard.press(focusNext);
   await expect(
@@ -52,7 +55,11 @@ test("primary links meet the minimum pointer target height", async ({
 }) => {
   await page.goto("/");
 
-  for (const name of ["Astrotools home", "Open the field lab"]) {
+  for (const name of [
+    "Skip to main content",
+    "Astrotools home",
+    "Open the field lab",
+  ]) {
     const box = await page.getByRole("link", { name }).boundingBox();
     expect(box?.height).toBeGreaterThanOrEqual(44);
   }
