@@ -48,6 +48,10 @@ npm run test:e2e
 npm run build
 ```
 
+Development and standalone production previews bind to `127.0.0.1:3100` by
+default. Keep Playwright and the future Apache proxy target aligned with this
+port.
+
 Database commands are configured now but catalogue models arrive in Work Package
 3:
 

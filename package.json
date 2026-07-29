@@ -10,9 +10,9 @@
     "npm": ">=11.16.0 <12"
   },
   "scripts": {
-    "dev": "NEXT_TELEMETRY_DISABLED=1 next dev --hostname 127.0.0.1",
+    "dev": "NEXT_TELEMETRY_DISABLED=1 next dev --hostname 127.0.0.1 --port 3100",
     "build": "NEXT_TELEMETRY_DISABLED=1 next build && node scripts/copy-standalone-assets.mjs",
-    "start": "HOSTNAME=127.0.0.1 node .next/standalone/server.js",
+    "start": "HOSTNAME=127.0.0.1 PORT=3100 node .next/standalone/server.js",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --max-warnings=0",
     "format": "prettier --write .",
