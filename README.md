@@ -5,8 +5,9 @@ answer how much sky a telescope and camera capture, whether a target fits, what
 image scale the setup produces, and how that sampling compares with stated
 seeing.
 
-Work Package 0 establishes the reviewed application foundation. The calculator
-engine and catalogue are deliberately not implemented yet.
+Work Package 0 establishes the reviewed application foundation. Work Package 1
+adds the framework-free field-of-view and image-sampling engine. The interactive
+calculator and catalogue arrive in later, separately reviewed packages.
 
 ## Requirements
 
@@ -28,7 +29,7 @@ Start the App Router development server:
 npm run dev
 ```
 
-Open <http://localhost:3000>. The production Node service will bind to loopback
+Open <http://127.0.0.1:3100>. The production Node service will bind to loopback
 behind Apache2; it is not intended to be internet-facing directly.
 
 ## Quality commands
@@ -91,6 +92,10 @@ flowchart LR
 The application uses strict TypeScript and the Next.js App Router. Domain
 calculations live in pure functions under `lib/calculations`; React components,
 API handlers, and Prisma access cannot own calculation rules.
+
+The engine uses canonical millimetres, micrometres, arcseconds, and degrees. Its
+public contracts, equations, golden reference case, input policy, and numerical
+guarantees are documented in [docs/calculations.md](docs/calculations.md).
 
 Read the
 [verbatim implementation baseline](Astrotools_Production_Implementation_Plan.md),
