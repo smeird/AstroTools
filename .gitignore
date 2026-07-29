@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Tests and coverage
+coverage/
+playwright-report/
+test-results/
+
+# Prisma generated client
+lib/db/generated/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Editors and operating systems
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Logs
+*.log
+*.tsbuildinfo
+npm-debug.log*

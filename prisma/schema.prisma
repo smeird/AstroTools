@@ -1,0 +1,10 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/db/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+// Catalogue models are intentionally deferred to Work Package 3.
