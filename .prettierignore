@@ -1,0 +1,8 @@
+.next
+Astrotools_Production_Implementation_Plan.md
+coverage
+lib/db/generated
+node_modules
+package-lock.json
+playwright-report
+test-results
