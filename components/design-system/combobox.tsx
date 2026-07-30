@@ -217,9 +217,6 @@ export function Combobox({
                 setOpen(false);
                 break;
               }
-              case "Tab":
-                setOpen(false);
-                break;
             }
           }}
           role="combobox"
@@ -230,7 +227,12 @@ export function Combobox({
           {open ? "↑" : "↓"}
         </span>
         {open ? (
-          <ul className={styles.listbox} id={listboxId} role="listbox">
+          <ul
+            className={styles.listbox}
+            id={listboxId}
+            role="listbox"
+            tabIndex={-1}
+          >
             {filteredOptions.length > 0 ? (
               filteredOptions.map((option) => {
                 const active = option.value === activeOption?.value;

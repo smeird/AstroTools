@@ -1,0 +1,271 @@
+.panel {
+  display: grid;
+  min-width: 0;
+  padding: var(--space-5);
+  gap: var(--space-5);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-panel);
+  background: rgba(8, 16, 25, 0.66);
+}
+
+.sectionHeader {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.sectionHeader h2 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.55rem, 3vw, 2rem);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+}
+
+.sectionHeader p,
+.caption,
+.unavailable {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-control);
+  background: rgba(5, 11, 18, 0.68);
+}
+
+.controls fieldset {
+  grid-column: 1 / -1;
+}
+
+.fitStatus {
+  display: flex;
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  gap: var(--space-3);
+  align-items: baseline;
+  border-left: 3px solid var(--color-signal);
+  background: rgba(114, 229, 210, 0.08);
+  color: var(--color-text-soft);
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+}
+
+.fitStatus[data-fit="fits"] strong {
+  color: var(--color-accent);
+}
+
+.fitStatus[data-fit="extends"] {
+  border-left-color: var(--color-error-border);
+}
+
+.fitStatus[data-fit="extends"] strong {
+  color: var(--color-error-text);
+}
+
+.fitStatus strong {
+  flex: 0 0 auto;
+}
+
+.figure {
+  display: grid;
+  min-width: 0;
+  margin: 0;
+  gap: var(--space-3);
+}
+
+.stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid var(--color-border-control);
+  border-radius: calc(var(--radius-panel) - 2px);
+  background:
+    radial-gradient(circle at 19% 22%, #fff 0 1px, transparent 1.6px),
+    radial-gradient(circle at 76% 17%, #72e5d2 0 1px, transparent 1.7px),
+    radial-gradient(circle at 61% 69%, #fff 0 1px, transparent 1.7px),
+    radial-gradient(circle at 25% 76%, #d9ff70 0 1px, transparent 1.8px),
+    #050b12;
+}
+
+.diagram {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.sky {
+  fill: rgba(5, 11, 18, 0.72);
+}
+
+.grid line {
+  stroke: rgba(114, 229, 210, 0.17);
+  stroke-width: 1;
+}
+
+.grid .axis {
+  stroke: rgba(114, 229, 210, 0.42);
+}
+
+.targetFootprint {
+  fill: rgba(114, 229, 210, 0.04);
+  stroke: rgba(114, 229, 210, 0.72);
+  stroke-dasharray: 5 4;
+  stroke-width: 1.5;
+}
+
+.targetImage {
+  opacity: 0.9;
+}
+
+.targetFallback {
+  fill: rgba(114, 229, 210, 0.25);
+  stroke: var(--color-signal);
+  stroke-width: 1;
+}
+
+.sensorFrame polygon {
+  fill: rgba(217, 255, 112, 0.035);
+  stroke: var(--color-accent);
+  stroke-width: 2;
+}
+
+.sensorFrame line {
+  stroke: rgba(217, 255, 112, 0.44);
+  stroke-width: 1;
+}
+
+.scaleBar line {
+  stroke: var(--color-text);
+  stroke-linecap: square;
+  stroke-width: 4;
+}
+
+.scaleBar text {
+  fill: var(--color-accent);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  paint-order: stroke;
+  stroke: rgba(8, 16, 25, 0.94);
+  stroke-linejoin: round;
+  stroke-width: 0.12em;
+}
+
+.orientationMark,
+.gridLabel {
+  position: absolute;
+  z-index: 2;
+  padding: 0.35rem 0.45rem;
+  background: rgba(8, 16, 25, 0.88);
+  color: var(--color-text-soft);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-meta);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.orientationMark {
+  top: var(--space-3);
+  left: var(--space-3);
+}
+
+.gridLabel {
+  top: var(--space-3);
+  right: var(--space-3);
+}
+
+.caption strong {
+  color: var(--color-text-soft);
+}
+
+.footprintNote {
+  display: block;
+  margin-top: var(--space-2);
+  color: var(--color-text-soft);
+}
+
+.textEquivalent {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  gap: var(--space-3);
+}
+
+.textEquivalent > div {
+  min-width: 0;
+  padding: var(--space-3);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.textEquivalent dt {
+  margin-bottom: var(--space-1);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-meta);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.textEquivalent dd {
+  margin: 0;
+  color: var(--color-text-soft);
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+}
+
+.textEquivalent a {
+  color: var(--color-accent);
+  text-underline-offset: 0.18em;
+}
+
+.unavailable {
+  padding: var(--space-4);
+  border: 1px solid var(--color-error-border);
+  border-radius: var(--radius-control);
+  color: var(--color-error-text);
+}
+
+@media (max-width: 600px) {
+  .panel {
+    padding: var(--space-4);
+  }
+
+  .controls,
+  .textEquivalent {
+    grid-template-columns: 1fr;
+  }
+
+  .fitStatus {
+    display: grid;
+  }
+
+  .gridLabel {
+    display: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .panel,
+  .controls,
+  .stage {
+    border-color: CanvasText;
+  }
+
+  .targetFootprint,
+  .sensorFrame polygon {
+    stroke: CanvasText;
+  }
+
+  .targetImage {
+    opacity: 0.45;
+  }
+}

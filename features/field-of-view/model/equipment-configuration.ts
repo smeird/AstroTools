@@ -5,6 +5,9 @@ import type {
   TelescopeDto,
 } from "../services/catalogue-types";
 import type { FieldOfViewCatalogue } from "../services/calculator-catalogue";
+import type { SensorOrientation } from "./target-framing";
+
+export type { SensorOrientation } from "./target-framing";
 
 export const MAX_OPTICAL_MODIFIERS = 8;
 export const MIN_FOCAL_RATIO = 0.005;
@@ -76,6 +79,11 @@ export interface EquipmentConfigurationState {
   readonly binning: BinningValue;
   readonly seeingFwhmArcsec: number;
   readonly targetSlug: string | null;
+  readonly framing: {
+    readonly displayZoom: number;
+    readonly frameRotationDeg: number;
+    readonly sensorOrientation: SensorOrientation;
+  };
 }
 
 export type TelescopeField =
@@ -110,7 +118,10 @@ export type EquipmentConfigurationAction =
   | { type: "modifiers-clear" }
   | { type: "binning"; value: BinningValue }
   | { type: "seeing"; value: number }
-  | { type: "target"; slug: string | null };
+  | { type: "target"; slug: string | null }
+  | { type: "framing-display-zoom"; value: number }
+  | { type: "framing-rotation"; value: number }
+  | { type: "framing-orientation"; value: SensorOrientation };
 
 function editableNumber(value: string | number): string {
   const numericValue = Number(value);
@@ -250,6 +261,11 @@ export function createEquipmentConfiguration(
         ?.slug ??
       catalogue.targets[0]?.slug ??
       null,
+    framing: {
+      displayZoom: 1,
+      frameRotationDeg: 0,
+      sensorOrientation: "landscape",
+    },
   };
 }
 
@@ -408,6 +424,27 @@ export function equipmentConfigurationReducer(
       return { ...state, seeingFwhmArcsec: action.value };
     case "target":
       return { ...state, targetSlug: action.slug };
+    case "framing-display-zoom":
+      return {
+        ...state,
+        framing: {
+          ...state.framing,
+          displayZoom: Math.min(4, Math.max(0.5, action.value)),
+        },
+      };
+    case "framing-rotation":
+      return {
+        ...state,
+        framing: {
+          ...state.framing,
+          frameRotationDeg: Math.min(180, Math.max(-180, action.value)),
+        },
+      };
+    case "framing-orientation":
+      return {
+        ...state,
+        framing: { ...state.framing, sensorOrientation: action.value },
+      };
   }
 }
 

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">
+  <defs>
+    <radialGradient id="andromeda-core" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#fffbd0"/>
+      <stop offset="0.18" stop-color="#e9edc7"/>
+      <stop offset="0.48" stop-color="#8fc7bd" stop-opacity="0.82"/>
+      <stop offset="1" stop-color="#31556b" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="500" cy="500" rx="475" ry="214" fill="#447087" opacity="0.12"/>
+  <ellipse cx="500" cy="500" rx="450" ry="184" fill="none" stroke="#72e5d2" stroke-width="34" opacity="0.18"/>
+  <ellipse cx="500" cy="500" rx="390" ry="142" fill="none" stroke="#d9ff70" stroke-width="22" opacity="0.24"/>
+  <ellipse cx="500" cy="500" rx="320" ry="112" fill="none" stroke="#0a1823" stroke-width="26" opacity="0.68"/>
+  <ellipse cx="500" cy="500" rx="274" ry="96" fill="#8fc7bd" opacity="0.2"/>
+  <ellipse cx="500" cy="500" rx="215" ry="86" fill="url(#andromeda-core)"/>
+  <ellipse cx="500" cy="500" rx="68" ry="52" fill="#fffbd0" opacity="0.92"/>
+  <circle cx="189" cy="386" r="24" fill="#b7d9d4" opacity="0.7"/>
+  <circle cx="817" cy="621" r="17" fill="#b7d9d4" opacity="0.6"/>
+</svg>

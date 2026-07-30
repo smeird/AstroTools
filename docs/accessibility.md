@@ -59,6 +59,31 @@ Evidence recorded on 30 July 2026:
   typed manual Barlow at a 375 CSS-pixel mobile viewport. The mobile document
   reported no horizontal overflow.
 
+## Work Package 5 evidence
+
+Evidence recorded on 30 July 2026:
+
+- Unit and component tests cover the simulator's text equivalent, fit and
+  cropping language, display-only zoom, rotation, orientation, asset credits,
+  illustrative-image disclosure, and target-control reading order.
+- The seeded catalogue provides a recognisable local illustration, credit,
+  licence, source, and verification date for each of the six initial targets.
+  Repository tests reject unsafe paths, missing files, scripts, animation, and
+  external references in those assets.
+- Playwright checks the production build in Chromium, Firefox, WebKit, Pixel 7,
+  and iPhone 15 profiles. It exercises the six target illustrations, exact zoom
+  invariance, independent rotation and orientation, minimum pointer targets,
+  reduced motion, and the full keyboard order into the simulator.
+- Axe scans include the transformed simulator state with display zoom, frame
+  rotation, and portrait orientation. Serious and critical findings remain
+  release-blocking.
+- Firefox's scrollable-element keyboard behaviour is covered explicitly: the
+  combobox popup is excluded from sequential Tab navigation while remaining
+  exposed as the controlled ARIA listbox.
+- Desktop and 375 CSS-pixel mobile compositions were inspected in the in-app
+  browser. The proportional target and sensor outlines, grid, scale bar, text
+  equivalent, attribution, and no-overflow mobile layout were reviewed.
+
 ## Manual release checks still required
 
 Automated evidence is not a screen-reader conformance claim. Before the Release

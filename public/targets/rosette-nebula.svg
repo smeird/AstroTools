@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">
+  <defs>
+    <radialGradient id="rosette-core">
+      <stop offset="0" stop-color="#081019" stop-opacity="0.84"/>
+      <stop offset="0.36" stop-color="#27465b" stop-opacity="0.68"/>
+      <stop offset="0.7" stop-color="#b95878" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#b95878" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g fill="#c66584" opacity="0.24">
+    <ellipse cx="500" cy="220" rx="168" ry="270"/>
+    <ellipse cx="500" cy="780" rx="168" ry="270"/>
+    <ellipse cx="220" cy="500" rx="270" ry="168"/>
+    <ellipse cx="780" cy="500" rx="270" ry="168"/>
+    <ellipse cx="302" cy="302" rx="156" ry="254" transform="rotate(-45 302 302)"/>
+    <ellipse cx="698" cy="302" rx="156" ry="254" transform="rotate(45 698 302)"/>
+    <ellipse cx="302" cy="698" rx="156" ry="254" transform="rotate(45 302 698)"/>
+    <ellipse cx="698" cy="698" rx="156" ry="254" transform="rotate(-45 698 698)"/>
+  </g>
+  <circle cx="500" cy="500" r="365" fill="none" stroke="#72e5d2" stroke-width="28" opacity="0.14"/>
+  <circle cx="500" cy="500" r="292" fill="url(#rosette-core)"/>
+  <path d="M500 244c141 0 256 115 256 256S641 756 500 756 244 641 244 500 359 244 500 244Z" fill="none" stroke="#e3889f" stroke-dasharray="70 28" stroke-width="28" opacity="0.38"/>
+  <g fill="#effffb">
+    <circle cx="466" cy="466" r="10"/>
+    <circle cx="533" cy="486" r="8"/>
+    <circle cx="486" cy="538" r="7"/>
+    <circle cx="551" cy="546" r="5"/>
+  </g>
+</svg>

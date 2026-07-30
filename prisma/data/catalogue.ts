@@ -36,6 +36,14 @@ const verifiedDateSchema = z
     { message: "Verification date must be a real calendar date." },
   );
 const positiveMeasurementSchema = z.number().finite().positive();
+const targetAssetPathSchema = z
+  .string()
+  .trim()
+  .max(255)
+  .regex(
+    /^\/targets\/[a-z0-9]+(?:-[a-z0-9]+)*\.(?:avif|png|svg|webp)$/,
+    "Target assets must use a safe local path under /targets/.",
+  );
 
 const manufacturerSchema = z
   .object({
@@ -100,10 +108,14 @@ const targetSchema = z
     category: textSchema.max(100),
     angularWidthDeg: positiveMeasurementSchema.max(360),
     angularHeightDeg: positiveMeasurementSchema.max(180),
-    defaultRotationDeg: z.number().finite().min(-360).max(360),
-    assetPath: textSchema.max(2048).nullable().default(null),
+    // Astronomical position angle: degrees from celestial north through east.
+    // Rectangle axes repeat at 180°, so the canonical stored interval is
+    // inclusive of 0° and exclusive of 180°.
+    defaultRotationDeg: z.number().finite().min(0).lt(180),
+    assetPath: targetAssetPathSchema.nullable().default(null),
     assetCredit: textSchema.max(1024).nullable().default(null),
     assetLicenseUrl: sourceUrlSchema.nullable().default(null),
+    framingNote: textSchema.max(1024).nullable().default(null),
     sourceUrl: sourceUrlSchema,
     verifiedAt: verifiedDateSchema,
   })
@@ -443,6 +455,10 @@ export const catalogueSeed = validateCatalogueSeed({
       angularWidthDeg: 0.5,
       angularHeightDeg: 0.5,
       defaultRotationDeg: 0,
+      assetPath: "/targets/moon.svg",
+      assetCredit: "Astrotools target illustration, CC BY 4.0",
+      assetLicenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      framingNote: null,
       sourceUrl:
         "https://science.nasa.gov/mission/hubble/multimedia/hubble-glossary/",
       verifiedAt: CATALOGUE_VERIFICATION_DATE,
@@ -455,6 +471,10 @@ export const catalogueSeed = validateCatalogueSeed({
       angularWidthDeg: 0.5,
       angularHeightDeg: 0.5,
       defaultRotationDeg: 0,
+      assetPath: "/targets/sun.svg",
+      assetCredit: "Astrotools target illustration, CC BY 4.0",
+      assetLicenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      framingNote: null,
       sourceUrl:
         "https://science.nasa.gov/mission/hubble/multimedia/hubble-glossary/",
       verifiedAt: CATALOGUE_VERIFICATION_DATE,
@@ -467,6 +487,10 @@ export const catalogueSeed = validateCatalogueSeed({
       angularWidthDeg: 3.3255,
       angularHeightDeg: 1.179833,
       defaultRotationDeg: 35,
+      assetPath: "/targets/andromeda-galaxy.svg",
+      assetCredit: "Astrotools target illustration, CC BY 4.0",
+      assetLicenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      framingNote: null,
       sourceUrl:
         "https://simbad.cds.unistra.fr/simbad/sim-basic?Ident=Messier+31",
       verifiedAt: CATALOGUE_VERIFICATION_DATE,
@@ -479,6 +503,10 @@ export const catalogueSeed = validateCatalogueSeed({
       angularWidthDeg: 1.1,
       angularHeightDeg: 1.1,
       defaultRotationDeg: 90,
+      assetPath: "/targets/orion-nebula.svg",
+      assetCredit: "Astrotools target illustration, CC BY 4.0",
+      assetLicenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      framingNote: null,
       sourceUrl: "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=M42",
       verifiedAt: CATALOGUE_VERIFICATION_DATE,
     },
@@ -490,6 +518,10 @@ export const catalogueSeed = validateCatalogueSeed({
       angularWidthDeg: 1.281,
       angularHeightDeg: 1.281,
       defaultRotationDeg: 0,
+      assetPath: "/targets/pleiades.svg",
+      assetCredit: "Astrotools target illustration, CC BY 4.0",
+      assetLicenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      framingNote: null,
       sourceUrl:
         "https://simbad.cds.unistra.fr/simbad/sim-basic?Ident=Pleiades",
       verifiedAt: CATALOGUE_VERIFICATION_DATE,
@@ -501,7 +533,12 @@ export const catalogueSeed = validateCatalogueSeed({
       category: "emission-nebula",
       angularWidthDeg: 2.1,
       angularHeightDeg: 1.916667,
-      defaultRotationDeg: 0,
+      defaultRotationDeg: 90,
+      assetPath: "/targets/rosette-nebula.svg",
+      assetCredit: "Astrotools target illustration, CC BY 4.0",
+      assetLicenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      framingNote:
+        "Planning proxy based on the cited 126 × 115 arcminute north-up, east-left image frame; not a calibrated boundary of the nebula.",
       sourceUrl: "https://www.ing.iac.es/PR/press/rosette.html",
       verifiedAt: CATALOGUE_VERIFICATION_DATE,
     },

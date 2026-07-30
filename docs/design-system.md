@@ -55,9 +55,10 @@ single column in this reading order:
 3. visualisation and its text alternative;
 4. detailed results.
 
-The Work Package 2 visualisation is deterministic and explicitly illustrative.
-It does not claim calibrated target scale; target assets and proportional target
-framing remain Work Package 5.
+The visualisation remains deterministic and explicitly illustrative. Work
+Package 5 adds an angularly proportional target footprint and sensor frame,
+while its caption and text equivalent make clear that the artwork is not a
+calibrated sky survey.
 
 ## Equipment configuration
 
@@ -92,7 +93,12 @@ baseline. The chain is bounded at eight entries so malformed or accidental
 interaction cannot create unbounded work; removing or clearing entries returns
 keyboard focus to a stable modifier control.
 
-Target selection is intentionally present at the end of the hierarchy, but the
-current visualisation states that it does not yet draw the target at scale.
-Proportional rendering, rotation, orientation, and imagery remain Work Package 5
-rather than being implied by the illustrative frame.
+Target selection remains at the end of the equipment hierarchy. The framing
+panel that follows it provides display-only zoom, frame rotation, and
+landscape/portrait orientation before the graphic in DOM order. Those controls
+alter only the pure framing geometry and never the optical calculation; frame
+rotation and orientation can intentionally change the centred-fit assessment. A
+semantic description list exposes the same target extent, position angle, field,
+frame rotation, fit status, scale, source, and credit without requiring the
+graphic. A concise target-and-fit message shares the existing polite result
+status, while display-only zoom leaves that message unchanged.

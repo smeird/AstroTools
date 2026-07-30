@@ -12,7 +12,9 @@ control primitives. Work Package 3 adds the provenance-rich MySQL equipment and
 target catalogue plus its read-only application interfaces. Work Package 4
 connects that catalogue to searchable telescope, camera, modifier, and target
 presets while preserving complete manual configuration and browser-local
-calculation updates.
+calculation updates. Work Package 5 adds the proportional target-framing
+simulator, deterministic local target illustrations, display-only zoom, frame
+rotation, sensor orientation, angular guides, and a complete text equivalent.
 
 ## Requirements
 
@@ -154,7 +156,11 @@ successful results for one hour, and passes serialisable DTOs to the interactive
 client. A failed catalogue read is not cached and produces an explicit manual
 configuration state rather than hidden fallback presets. An unseeded required
 catalogue is handled the same way. Selecting equipment, editing values, changing
-binning, or changing seeing performs no browser API request.
+binning, changing seeing, or adjusting the framing view performs no browser API
+request. Display zoom cannot alter calculations or geometric fit. Frame rotation
+and sensor orientation leave the optical calculation unchanged while
+intentionally changing the centred framing assessment where geometry requires
+it.
 
 The accepted target environment is Ubuntu 24.04 LTS. Apache serves
 `https://astrotools.smeird.com`, Certbot manages its Let's Encrypt certificate,
@@ -165,8 +171,10 @@ Apache, systemd, backup, and monitoring artifacts remain Work Package 9.
 The engine uses canonical millimetres, micrometres, arcseconds, and degrees. Its
 public contracts, equations, golden reference case, input policy, and numerical
 guarantees are documented in [docs/calculations.md](docs/calculations.md). The
-visual tokens, control contracts, responsive reading order, and current scope
-boundary are documented in [docs/design-system.md](docs/design-system.md).
+framing model and its scientific limits are documented in
+[docs/target-framing.md](docs/target-framing.md). The visual tokens, control
+contracts, responsive reading order, and current scope boundary are documented
+in [docs/design-system.md](docs/design-system.md).
 
 Read the
 [verbatim implementation baseline](Astrotools_Production_Implementation_Plan.md),

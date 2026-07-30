@@ -15,11 +15,17 @@ import {
   resolveModifierMultipliers,
   resolveTelescopeInputs,
 } from "../model/equipment-configuration";
+import {
+  calculateTargetFramingGeometry,
+  positionAngleToDisplayRotationDegrees,
+  type TargetFramingGeometry,
+} from "../model/target-framing";
 import type { FieldOfViewCatalogue } from "../services/calculator-catalogue";
 
 import { EquipmentConfigurationPanel } from "./equipment-configuration-panel";
 import styles from "./field-of-view-lab.module.css";
 import { FieldOfViewShell } from "./field-of-view-shell";
+import { TargetFramingSimulator } from "./target-framing-simulator";
 
 const SAMPLING_COPY: Record<SamplingAssessment, string> = {
   "likely-undersampled": "Likely undersampled for the stated seeing",
@@ -77,6 +83,32 @@ export function FieldOfViewLab({
     telescopeInputs.apertureMm,
     telescopeInputs.nativeFocalLengthMm,
   ]);
+  const framingGeometry = useMemo<TargetFramingGeometry | null>(() => {
+    if (!result || !selectedTarget) {
+      return null;
+    }
+
+    try {
+      return calculateTargetFramingGeometry({
+        fieldOfViewDeg: result.fieldOfViewDeg,
+        targetAngularWidthDeg: Number(selectedTarget.angularWidthDeg),
+        targetAngularHeightDeg: Number(selectedTarget.angularHeightDeg),
+        targetRotationDeg: positionAngleToDisplayRotationDegrees(
+          Number(selectedTarget.defaultRotationDeg),
+        ),
+        frameRotationDeg: state.framing.frameRotationDeg,
+        sensorOrientation: state.framing.sensorOrientation,
+        displayZoom: state.framing.displayZoom,
+      });
+    } catch {
+      return null;
+    }
+  }, [result, selectedTarget, state.framing]);
+  const selectedTargetLabel = selectedTarget
+    ? selectedTarget.catalogueName === selectedTarget.commonName
+      ? selectedTarget.commonName
+      : selectedTarget.commonName + " (" + selectedTarget.catalogueName + ")"
+    : null;
 
   const controls = (
     <EquipmentConfigurationPanel
@@ -91,13 +123,12 @@ export function FieldOfViewLab({
       aria-atomic="true"
       aria-live="polite"
       className={styles.summary}
-      data-testid="primary-result"
       role="status"
     >
       <span aria-hidden="true" className={styles.summaryMark}>
         FOV
       </span>
-      <div>
+      <div data-testid="primary-result">
         <span className={styles.summaryLabel}>Current field</span>
         <p className={styles.summaryValue}>
           {result ? (
@@ -114,67 +145,28 @@ export function FieldOfViewLab({
           )}
         </p>
       </div>
+      {selectedTargetLabel && framingGeometry ? (
+        <span
+          className={styles.visuallyHidden}
+          data-testid="framing-live-status"
+        >
+          {selectedTargetLabel}:{" "}
+          {framingGeometry.centeredTargetFit.fits
+            ? "fits within the centred sensor frame"
+            : "extends beyond the centred sensor frame"}
+          .
+        </span>
+      ) : null}
     </section>
   );
 
   const visualisation = (
-    <section className={styles.stagePanel} aria-labelledby="framing-title">
-      <div className={styles.sectionHeader}>
-        <p className="eyebrow">Deterministic preview</p>
-        <h2 id="framing-title">Framing workspace</h2>
-        <p>
-          The sensor outline uses the current camera proportions. Target scale
-          and orientation arrive in the next work package.
-        </p>
-      </div>
-      <div
-        aria-describedby="framing-description"
-        aria-label={
-          result
-            ? "Illustrative sensor frame with a " +
-              formatDegrees(result.fieldOfViewDeg.horizontalDeg) +
-              " by " +
-              formatDegrees(result.fieldOfViewDeg.verticalDeg) +
-              " field. " +
-              (selectedTarget
-                ? selectedTarget.commonName +
-                  " is selected but is not yet drawn to scale."
-                : "No target is selected.")
-            : "Illustrative sensor frame; the field is unavailable until the configuration is valid."
-        }
-        className={styles.stage}
-        role="img"
-      >
-        <span aria-hidden="true" className={styles.stageLabel}>
-          illustrative field
-        </span>
-        <span
-          aria-hidden="true"
-          className={styles.frame}
-          style={{
-            aspectRatio: result
-              ? String(result.sensorDimensionsMm.widthMm) +
-                " / " +
-                String(result.sensorDimensionsMm.heightMm)
-              : "3 / 2",
-          }}
-        />
-        <span aria-hidden="true" className={styles.stageScale}>
-          {result
-            ? formatDegrees(result.fieldOfViewDeg.horizontalDeg) +
-              " field width"
-            : "field unavailable"}
-        </span>
-      </div>
-      <p className={styles.visualDescription} id="framing-description">
-        The grid and sensor outline are illustrative, not a calibrated sky
-        survey.{" "}
-        {selectedTarget
-          ? selectedTarget.commonName +
-            " is selected for the proportional target simulator, but no target scale is represented yet."
-          : "No astronomical target scale is represented in this preview."}
-      </p>
-    </section>
+    <TargetFramingSimulator
+      dispatch={dispatch}
+      framing={state.framing}
+      geometry={framingGeometry}
+      target={selectedTarget}
+    />
   );
 
   const results = (

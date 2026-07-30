@@ -60,6 +60,7 @@ export interface AstronomicalTargetRecord extends ProvenancedRecord {
   assetPath: string | null;
   assetCredit: string | null;
   assetLicenseUrl: string | null;
+  framingNote: string | null;
 }
 
 export interface RepositoryPage<T> {
@@ -155,6 +156,7 @@ export interface AstronomicalTargetDto {
   assetPath: string | null;
   assetCredit: string | null;
   assetLicenseUrl: string | null;
+  framingNote: string | null;
   sourceUrl: string;
   verifiedAt: string;
 }

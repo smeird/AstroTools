@@ -195,6 +195,25 @@ describe("Combobox", () => {
     expect(input).not.toHaveAttribute("aria-activedescendant");
   });
 
+  it("lets native Tab navigation leave an open final combobox", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <Harness onSelectionChange={vi.fn()} />
+        <button type="button">Next control</button>
+      </>,
+    );
+    const input = screen.getByRole("combobox", { name: "Equipment" });
+
+    await user.click(input);
+    expect(input).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("listbox")).toHaveAttribute("tabindex", "-1");
+    await user.tab();
+
+    expect(screen.getByRole("button", { name: "Next control" })).toHaveFocus();
+    expect(input).toHaveAttribute("aria-expanded", "false");
+  });
+
   it("keeps the active descendant visible while navigating a long list", async () => {
     const user = userEvent.setup();
     const scrollIntoView = vi.fn();
