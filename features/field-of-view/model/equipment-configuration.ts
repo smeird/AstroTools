@@ -131,6 +131,16 @@ function editableNumber(value: string | number): string {
   return Number.isFinite(numericValue) ? String(numericValue) : String(value);
 }
 
+function presetLabel(
+  manufacturer: string,
+  model: string,
+  active: boolean,
+): string {
+  return (
+    `${manufacturer} ${model}` + (active ? "" : " (inactive catalogue record)")
+  );
+}
+
 function parseBoundedPositive(
   value: string,
   minimum: number,
@@ -164,7 +174,7 @@ function nearlyEqual(left: number | null, right: number): boolean {
 function telescopeSnapshot(preset: TelescopeDto): TelescopePresetSnapshot {
   return {
     slug: preset.slug,
-    label: `${preset.manufacturer.name} ${preset.model}`,
+    label: presetLabel(preset.manufacturer.name, preset.model, preset.active),
     nativeFocalLengthMm: editableNumber(preset.nativeFocalLengthMm),
     apertureMm: editableNumber(preset.apertureMm),
   };
@@ -173,7 +183,7 @@ function telescopeSnapshot(preset: TelescopeDto): TelescopePresetSnapshot {
 function cameraSnapshot(preset: CameraDto): CameraPresetSnapshot {
   return {
     slug: preset.slug,
-    label: `${preset.manufacturer.name} ${preset.model}`,
+    label: presetLabel(preset.manufacturer.name, preset.model, preset.active),
     sensorName: preset.sensorName,
     sensorWidthMm: editableNumber(preset.sensorWidthMm),
     sensorHeightMm: editableNumber(preset.sensorHeightMm),
@@ -218,7 +228,9 @@ function initialTelescope(
   presets: readonly TelescopeDto[],
 ): TelescopeConfiguration {
   const preset =
-    presets.find(({ slug }) => slug === PREFERRED_TELESCOPE_SLUG) ?? presets[0];
+    presets.find(
+      ({ active, slug }) => active && slug === PREFERRED_TELESCOPE_SLUG,
+    ) ?? presets.find(({ active }) => active);
 
   return preset
     ? telescopeFromSnapshot(telescopeSnapshot(preset))
@@ -234,7 +246,9 @@ function initialTelescope(
 
 function initialCamera(presets: readonly CameraDto[]): CameraConfiguration {
   const preset =
-    presets.find(({ slug }) => slug === PREFERRED_CAMERA_SLUG) ?? presets[0];
+    presets.find(
+      ({ active, slug }) => active && slug === PREFERRED_CAMERA_SLUG,
+    ) ?? presets.find(({ active }) => active);
 
   return preset
     ? cameraFromSnapshot(cameraSnapshot(preset))
@@ -248,6 +262,16 @@ function initialCamera(presets: readonly CameraDto[]): CameraConfiguration {
         resolutionHeightPx: "",
         lastPreset: null,
       };
+}
+
+export function telescopeFromPreset(
+  preset: TelescopeDto,
+): TelescopeConfiguration {
+  return telescopeFromSnapshot(telescopeSnapshot(preset));
+}
+
+export function cameraFromPreset(preset: CameraDto): CameraConfiguration {
+  return cameraFromSnapshot(cameraSnapshot(preset));
 }
 
 export function createEquipmentConfiguration(
@@ -572,14 +596,6 @@ export function cameraIsCustomised(camera: CameraConfiguration): boolean {
     !nearlyEqual(
       parseBoundedPositive(camera.pixelSizeUm, 0.1, 100),
       Number(baseline.pixelSizeUm),
-    ) ||
-    !nearlyEqual(
-      parseBoundedInteger(camera.resolutionWidthPx, 1, 200_000),
-      Number(baseline.resolutionWidthPx),
-    ) ||
-    !nearlyEqual(
-      parseBoundedInteger(camera.resolutionHeightPx, 1, 200_000),
-      Number(baseline.resolutionHeightPx),
     )
   );
 }
@@ -624,7 +640,7 @@ export function modifierFromPreset(
     instanceId,
     source: "preset",
     presetSlug: preset.slug,
-    label: `${preset.manufacturer.name} ${preset.model}`,
+    label: presetLabel(preset.manufacturer.name, preset.model, preset.active),
     modifierType: preset.modifierType,
     multiplier,
     baselineMultiplier: multiplier,

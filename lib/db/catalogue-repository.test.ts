@@ -64,6 +64,24 @@ describe("Prisma catalogue repository", () => {
     );
   });
 
+  it("does not filter optical-modifier detail lookup by active status", async () => {
+    const findUnique = vi.fn().mockResolvedValue({
+      slug: "retired-reducer",
+      active: false,
+    });
+    const prisma = {
+      opticalModifier: { findMany: vi.fn(), count: vi.fn(), findUnique },
+    } as unknown as PrismaClient;
+    const repository = createPrismaCatalogueRepository(prisma);
+
+    await expect(
+      repository.findOpticalModifierBySlug("retired-reducer"),
+    ).resolves.toMatchObject({ active: false });
+    expect(findUnique).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { slug: "retired-reducer" } }),
+    );
+  });
+
   it("searches targets and applies stable ordering", async () => {
     const findMany = vi.fn().mockResolvedValue([]);
     const count = vi.fn().mockResolvedValue(0);

@@ -139,6 +139,10 @@ export function createCatalogueService(
         serializeOpticalModifier,
       );
     },
+    async getOpticalModifier(slug) {
+      const record = await repository.findOpticalModifierBySlug(slug);
+      return record ? serializeOpticalModifier(record) : null;
+    },
     async listTargets(query) {
       return serializePage(
         await repository.listTargets(query),

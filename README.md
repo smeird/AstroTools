@@ -18,7 +18,10 @@ rotation, sensor orientation, angular guides, and a complete text equivalent.
 Work Package 6 exposes the complete calculation chain as native semantic MathML,
 live substituted values, variable and unit definitions, rounded final results,
 and scientifically qualified interpretations. Its millimetre/inch switch is
-presentation-only and cannot alter canonical inputs or results.
+presentation-only and cannot alter canonical inputs or results. Work Package 7
+adds bounded, versioned share URLs that reproduce the complete configuration in
+a fresh browser context, plus an accessible Copy link action with no account or
+server-side write.
 
 ## Requirements
 
@@ -166,6 +169,14 @@ and sensor orientation leave the optical calculation unchanged while
 intentionally changing the centred framing assessment where geometry requires
 it.
 
+Share parameters are parsed on the server before the first client render.
+Recognised invalid values fall back predictably with a static explanation;
+unknown future parameters are ignored. Bounded detail reads preserve inactive
+equipment referenced by old links. Copying constructs a canonical v1 URL from a
+strict whitelist, so arbitrary query values, personal data, and secrets cannot
+be carried forward. The complete contract is documented in
+[docs/shareable-state.md](docs/shareable-state.md).
+
 The accepted target environment is Ubuntu 24.04 LTS. Apache serves
 `https://astrotools.smeird.com`, Certbot manages its Let's Encrypt certificate,
 the Node service runs on `127.0.0.1:3100`, and MySQL 8.4 LTS runs on the same
@@ -178,7 +189,9 @@ guarantees are documented in [docs/calculations.md](docs/calculations.md). The
 framing model and its scientific limits are documented in
 [docs/target-framing.md](docs/target-framing.md). The visual tokens, control
 contracts, responsive reading order, and current scope boundary are documented
-in [docs/design-system.md](docs/design-system.md).
+in [docs/design-system.md](docs/design-system.md). Versioned URL parameters,
+compatibility behaviour, privacy boundaries, and copy recovery are documented in
+[docs/shareable-state.md](docs/shareable-state.md).
 
 Read the
 [verbatim implementation baseline](Astrotools_Production_Implementation_Plan.md),

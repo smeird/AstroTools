@@ -78,6 +78,9 @@ export interface CatalogueRepository {
   listOpticalModifiers(
     query: EquipmentListQuery,
   ): Promise<RepositoryPage<OpticalModifierRecord>>;
+  findOpticalModifierBySlug(
+    slug: string,
+  ): Promise<OpticalModifierRecord | null>;
   listTargets(
     query: CatalogueListQuery,
   ): Promise<RepositoryPage<AstronomicalTargetRecord>>;
@@ -171,6 +174,7 @@ export interface CatalogueService {
   listOpticalModifiers(
     query: EquipmentListQuery,
   ): Promise<PaginatedResult<OpticalModifierDto>>;
+  getOpticalModifier(slug: string): Promise<OpticalModifierDto | null>;
   listTargets(
     query: CatalogueListQuery,
   ): Promise<PaginatedResult<AstronomicalTargetDto>>;

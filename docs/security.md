@@ -31,6 +31,15 @@ input is repository-reviewed, boundary-validated and queried through
 parameterised Prisma access. Runtime manufacturer or asset scraping is
 prohibited.
 
+Versioned calculator URLs contain only whitelisted calculator state. Parsing
+uses strict decimal grammar, per-field ranges, scalar-duplicate rejection,
+bounded modifier repetition, known-value length limits, and a total query-size
+limit. Unknown parameters are ignored and never copied into a canonical link;
+raw invalid values are neither rendered nor logged. Sharing performs no write to
+MySQL and introduces no user, short-link, analytics, or personal-data table. The
+runtime identity's existing SELECT-only grants cover the bounded detail reads
+used to preserve inactive equipment in old URLs.
+
 The runtime pool bounds connection acquisition, initial connection, and pool
 initialisation to two seconds. MySQL's session `max_execution_time` separately
 bounds read-only SELECT execution without treating healthy idle sockets as

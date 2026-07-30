@@ -29,6 +29,7 @@ function createService(
       items: [],
       pagination: { page: 1, pageSize: 20, total: 0, totalPages: 0 },
     }),
+    getOpticalModifier: vi.fn().mockResolvedValue(null),
     listTargets: vi.fn().mockResolvedValue({
       items: [],
       pagination: { page: 1, pageSize: 20, total: 0, totalPages: 0 },

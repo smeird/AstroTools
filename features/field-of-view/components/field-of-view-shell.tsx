@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import type { FieldOfViewShareNotice } from "../schemas/shareable-state";
 
 import styles from "./field-of-view-shell.module.css";
 
@@ -8,6 +9,7 @@ interface FieldOfViewShellProps {
   summary: ReactNode;
   visualisation: ReactNode;
   results: ReactNode;
+  notice?: FieldOfViewShareNotice | null | undefined;
 }
 
 export function FieldOfViewShell({
@@ -15,6 +17,7 @@ export function FieldOfViewShell({
   summary,
   visualisation,
   results,
+  notice,
 }: FieldOfViewShellProps) {
   return (
     <>
@@ -39,6 +42,21 @@ export function FieldOfViewShell({
           visual guides rather than calibrated sky-survey imagery.
         </p>
       </section>
+
+      {notice ? (
+        <aside
+          aria-labelledby="shared-link-notice-title"
+          className={styles.shareNotice}
+          role="note"
+        >
+          <h2 id="shared-link-notice-title">Shared-link adjustment</h2>
+          <p>
+            {notice.kind === "unsupported-version"
+              ? "This shared link uses a missing, invalid, or unsupported version. The default configuration was restored safely."
+              : `Some settings from this shared link could not be used. Safe defaults were restored for: ${notice.settings.join(", ")}. Other valid settings were applied.`}
+          </p>
+        </aside>
+      ) : null}
 
       <div className={styles.workspace}>
         <div className={styles.controls}>{controls}</div>

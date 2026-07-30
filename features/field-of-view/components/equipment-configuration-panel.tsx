@@ -72,17 +72,32 @@ interface EquipmentConfigurationPanelProps {
 function telescopeLabel(
   preset: FieldOfViewCatalogue["telescopes"][number],
 ): string {
-  return preset.manufacturer.name + " " + preset.model;
+  return (
+    preset.manufacturer.name +
+    " " +
+    preset.model +
+    (preset.active ? "" : " (inactive catalogue record)")
+  );
 }
 
 function cameraLabel(preset: FieldOfViewCatalogue["cameras"][number]): string {
-  return preset.manufacturer.name + " " + preset.model;
+  return (
+    preset.manufacturer.name +
+    " " +
+    preset.model +
+    (preset.active ? "" : " (inactive catalogue record)")
+  );
 }
 
 function modifierLabel(
   preset: FieldOfViewCatalogue["opticalModifiers"][number],
 ): string {
-  return preset.manufacturer.name + " " + preset.model;
+  return (
+    preset.manufacturer.name +
+    " " +
+    preset.model +
+    (preset.active ? "" : " (inactive catalogue record)")
+  );
 }
 
 function targetLabel(target: FieldOfViewCatalogue["targets"][number]): string {
@@ -263,8 +278,13 @@ export function EquipmentConfigurationPanel({
   }, [state.modifiers]);
 
   function createModifierId(): string {
-    const identifier = "modifier-" + nextModifierId.current;
-    nextModifierId.current += 1;
+    let identifier: string;
+    do {
+      identifier = "modifier-" + nextModifierId.current;
+      nextModifierId.current += 1;
+    } while (
+      state.modifiers.some(({ instanceId }) => instanceId === identifier)
+    );
     return identifier;
   }
 
