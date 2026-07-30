@@ -85,6 +85,10 @@ export function parseDatabaseConfiguration(
     connectTimeout: DATABASE_OPERATION_TIMEOUT_MS,
     idleTimeout: 60,
     initializationTimeout: DATABASE_OPERATION_TIMEOUT_MS,
+    // MySQL's default caching_sha2_password requires its RSA key for the first
+    // non-TLS authentication. Retrieval is acceptable only because URLs above
+    // are restricted to the same-host loopback interface.
+    allowPublicKeyRetrieval: true,
     // MySQL applies this millisecond limit to read-only SELECT statements. An
     // init command is used instead of mariadb's queryTimeout option, which is
     // unsupported by MySQL, and is reapplied after pooled connection resets.

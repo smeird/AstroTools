@@ -25,6 +25,7 @@ describe("parseDatabaseConfiguration", () => {
       connectTimeout: 2_000,
       idleTimeout: 60,
       initializationTimeout: 2_000,
+      allowPublicKeyRetrieval: true,
       initSql: "SET SESSION max_execution_time=2000",
     });
   });

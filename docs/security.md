@@ -40,6 +40,12 @@ are deliberately distinct controls; the MariaDB connector's `socketTimeout` and
 `queryTimeout` options are not used because the former expires idle pooled
 connections and the latter is not supported against MySQL.
 
+MySQL 8.4's default `caching_sha2_password` authentication may require a server
+RSA key on a connection's first full authentication. The runtime connector may
+retrieve that public key only because database URLs are rejected unless they use
+the same-host loopback interface. If the accepted topology ever moves MySQL to a
+private remote host, TLS and an explicitly trusted key replace this exception.
+
 Nightly backups are encrypted before or during transfer to an S3-compatible
 destination and retain 30 daily restore points. Provider selection, key
 rotation, restore testing, and deployment are Work Package 9 concerns. No
