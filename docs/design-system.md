@@ -58,3 +58,41 @@ single column in this reading order:
 The Work Package 2 visualisation is deterministic and explicitly illustrative.
 It does not claim calibrated target scale; target assets and proportional target
 framing remain Work Package 5.
+
+## Equipment configuration
+
+Work Package 4 applies the control primitives to the production input hierarchy:
+
+1. telescope source and searchable preset;
+2. direct native focal length, aperture, and related focal ratio;
+3. an ordered optical-modifier chain;
+4. camera source and searchable preset;
+5. physical sensor dimensions or pixel-resolution derivation;
+6. binning or effective pixel grouping;
+7. seeing; and
+8. astronomical target.
+
+Direct focal length is the default. The separate derived mode visibly makes
+aperture and focal ratio responsible for focal length; read-only calculated
+fields remain keyboard-focusable so their value and explanation are available to
+assistive technology.
+
+Telescope and camera state each retain an immutable snapshot of the most
+recently selected preset. Moving to manual mode preserves every current value,
+customised presets are marked in text, and Restore returns to that snapshot
+rather than an unrelated default rig. The same inputs remain usable when the
+server reports that MySQL is unavailable.
+
+Modifier presets may be added in optical-path order and visibly expose their
+multiplier and compatibility notes. Manual modifiers cover reducers, flatteners,
+Barlows, and custom factors not yet present in the curated catalogue. Every card
+states whether its current multiplier changes effective focal length and focal
+ratio. Customised catalogue multipliers can be restored to their own preset
+baseline. The chain is bounded at eight entries so malformed or accidental
+interaction cannot create unbounded work; removing or clearing entries returns
+keyboard focus to a stable modifier control.
+
+Target selection is intentionally present at the end of the hierarchy, but the
+current visualisation states that it does not yet draw the target at scale.
+Proportional rendering, rotation, orientation, and imagery remain Work Package 5
+rather than being implied by the illustrative frame.

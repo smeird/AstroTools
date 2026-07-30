@@ -4,6 +4,7 @@ import {
 } from "./constants";
 import type {
   CameraSensorInput,
+  DerivedFocalLengthInput,
   DerivedSensorDimensionsInput,
   EffectiveFocalLengthInput,
   EffectiveFocalRatioInput,
@@ -200,6 +201,20 @@ export function calculateEffectiveFocalRatio({
   return requirePositiveFiniteResult(
     effectiveFocalLengthMm / apertureMm,
     "effectiveFocalRatio",
+  );
+}
+
+export function deriveFocalLength({
+  apertureMm: apertureInput,
+  focalRatio: focalRatioInput,
+}: DerivedFocalLengthInput): number {
+  const apertureMm = requirePositiveFiniteNumber(apertureInput, "apertureMm");
+  const focalRatio = requirePositiveFiniteNumber(focalRatioInput, "focalRatio");
+
+  return calculatePositiveProductRatio(
+    [apertureMm, focalRatio],
+    [],
+    "nativeFocalLengthMm",
   );
 }
 

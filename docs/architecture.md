@@ -28,6 +28,15 @@ flowchart LR
 - `lib/db/` owns Prisma client creation and catalogue queries from Work
   Package 3.
 - Browser-side calculations update without API latency or database writes.
+- The Field of View Server Component reads all pages of each active catalogue,
+  with a 100-page hard limit and sequential follow-up reads, caches only
+  successful results for one hour, and passes plain DTOs across the
+  server/client boundary.
+- A failed catalogue read is not cached. The page renders an explicit
+  catalogue-unavailable state with blank, fully usable manual inputs; production
+  never substitutes fixture or seed data silently. Missing required telescope,
+  camera, or target seed data is treated as unavailable rather than caching an
+  apparently healthy empty catalogue.
 - Zod schemas validate URL, API, and environment input at their boundaries.
 - Apache owns public forwarding, request limits, static caching, and security
   headers. Only forwarding headers from the loopback proxy are trusted.

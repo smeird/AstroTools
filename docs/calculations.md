@@ -41,6 +41,17 @@ For aperture \(D\), the effective focal ratio is:
 Aperture is used for focal ratio only. Tests explicitly prove that changing
 aperture cannot alter effective focal length or field of view.
 
+Direct native focal length is the default application input. Work Package 4 also
+exposes a deliberate alternate mode that derives native focal length from
+aperture and a native focal ratio:
+
+\[ f_n = D N_n \]
+
+The derivation is a pure engine function and retains full precision. Switching
+to this mode makes the coupling explicit; in direct mode, editing aperture still
+cannot change the field of view. Switching back preserves the currently derived
+focal length as the new direct value.
+
 ## Sensor dimensions
 
 Known physical sensor dimensions pass through unchanged. When only resolution

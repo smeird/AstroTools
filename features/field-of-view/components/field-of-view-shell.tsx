@@ -33,9 +33,10 @@ export function FieldOfViewShell({
           </p>
         </div>
         <p className={styles.introNote}>
-          This interface preview uses a local reference sensor. Searchable
-          equipment catalogues and target framing will arrive as dedicated,
-          verified capabilities.
+          Catalogue presets are sourced from MySQL and copied into local
+          calculator state. Ordinary control changes never wait for the network;
+          target imagery remains illustrative until proportional framing is
+          implemented.
         </p>
       </section>
 

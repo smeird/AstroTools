@@ -1,0 +1,244 @@
+.panel {
+  display: grid;
+  padding: var(--space-5);
+  gap: var(--space-5);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-panel);
+  background: rgba(8, 16, 25, 0.66);
+}
+
+.panelHeader,
+.subsection,
+.subsectionHeader > div,
+.presetDetail {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.panelHeader h2,
+.subsectionHeader h3,
+.modifierHeader h4 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+}
+
+.panelHeader h2 {
+  font-size: clamp(1.55rem, 3vw, 2rem);
+}
+
+.panelHeader p,
+.subsectionHeader p,
+.provenance,
+.compatibility,
+.emptyState,
+.limitMessage,
+.presetDetail p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+}
+
+.notice {
+  margin: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--color-signal);
+  border-radius: var(--radius-control);
+  background: rgba(114, 229, 210, 0.08);
+  color: var(--color-text-soft);
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+}
+
+.controlGroup {
+  display: grid;
+  padding-top: var(--space-4);
+  gap: var(--space-6);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.subsection {
+  min-width: 0;
+  gap: var(--space-4);
+}
+
+.subsection + .subsection {
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.subsectionHeader {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: start;
+}
+
+.subsectionHeader h3 {
+  font-size: 1.35rem;
+}
+
+.step,
+.modifierOrder {
+  color: var(--color-signal);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-meta);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.step {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 1px solid var(--color-border-control);
+  border-radius: 50%;
+}
+
+.status {
+  width: fit-content;
+  margin: 0;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--color-border-control);
+  border-radius: 999px;
+  background: var(--color-surface-input);
+  color: var(--color-signal);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-meta);
+  line-height: 1.35;
+}
+
+.provenance a {
+  color: var(--color-text-soft);
+  text-underline-offset: 0.18em;
+}
+
+.buttonRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.secondaryButton,
+.removeButton,
+.textButton {
+  min-height: var(--control-min-size);
+  border-radius: var(--radius-control);
+  font: inherit;
+  font-size: var(--font-size-small);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.secondaryButton,
+.removeButton {
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--color-border-control);
+  background: var(--color-surface-input);
+  color: var(--color-text);
+}
+
+.secondaryButton:hover:not(:disabled),
+.removeButton:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.secondaryButton:disabled,
+.removeButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.textButton {
+  width: fit-content;
+  padding: 0.5rem 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
+}
+
+.modifierList {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  gap: var(--space-3);
+  list-style: none;
+}
+
+.modifier {
+  display: grid;
+  min-width: 0;
+  padding: var(--space-3);
+  gap: var(--space-3);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-control);
+  background: rgba(5, 11, 18, 0.7);
+}
+
+.modifier fieldset[id$="-type"] > div {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.modifierHeader {
+  display: flex;
+  gap: var(--space-3);
+  align-items: start;
+  justify-content: space-between;
+}
+
+.modifierHeader h4 {
+  margin-top: var(--space-1);
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.removeButton {
+  flex: 0 0 auto;
+}
+
+.compatibility {
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--color-signal);
+}
+
+.limitMessage {
+  color: var(--color-error-text);
+}
+
+.inputPair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+@media (max-width: 450px) {
+  .panel {
+    padding: var(--space-4);
+  }
+
+  .buttonRow,
+  .inputPair {
+    grid-template-columns: 1fr;
+  }
+
+  .modifierHeader {
+    display: grid;
+  }
+}
+
+@media (forced-colors: active) {
+  .panel,
+  .notice,
+  .status,
+  .secondaryButton,
+  .removeButton,
+  .modifier {
+    border-color: CanvasText;
+  }
+}

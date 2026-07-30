@@ -82,4 +82,26 @@ describe("NumericInput", () => {
     expect(input.value).toBe("3.76");
     expect(onValueChange).toHaveBeenLastCalledWith("3.76");
   });
+
+  it("exposes a derived value as read-only without removing it from focus order", () => {
+    render(
+      <NumericInput
+        description="Calculated from aperture and focal ratio."
+        label="Native focal length"
+        name="derived-focal-length"
+        onValueChange={vi.fn()}
+        readOnly
+        unit="mm"
+        value="600"
+      />,
+    );
+
+    const input = screen.getByRole("spinbutton", {
+      name: "Native focal length",
+    });
+
+    expect(input).toHaveAttribute("readonly");
+    expect(input).not.toBeDisabled();
+    expect(input).toHaveValue(600);
+  });
 });

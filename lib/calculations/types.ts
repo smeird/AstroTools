@@ -8,6 +8,11 @@ export interface EffectiveFocalRatioInput {
   readonly apertureMm: number;
 }
 
+export interface DerivedFocalLengthInput {
+  readonly apertureMm: number;
+  readonly focalRatio: number;
+}
+
 export interface DerivedSensorDimensionsInput {
   readonly resolutionWidthPx: number;
   readonly resolutionHeightPx: number;

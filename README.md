@@ -9,7 +9,10 @@ Work Package 0 establishes the reviewed application foundation, Work Package 1
 adds the framework-free field-of-view and image-sampling engine, and Work
 Package 2 adds the responsive, accessible calculator shell and production
 control primitives. Work Package 3 adds the provenance-rich MySQL equipment and
-target catalogue plus its read-only application interfaces.
+target catalogue plus its read-only application interfaces. Work Package 4
+connects that catalogue to searchable telescope, camera, modifier, and target
+presets while preserving complete manual configuration and browser-local
+calculation updates.
 
 ## Requirements
 
@@ -48,7 +51,9 @@ npm run audit:production
 ```
 
 `npm run test:integration` requires the isolated `astrotools_test` database
-described below. The other checks do not require a running database. `npm ci`
+described below. The calculator remains usable with manual inputs when MySQL is
+unavailable, but its preset-backed end-to-end journeys require the migrated and
+seeded catalogue. The other checks do not require a running database. `npm ci`
 generates the ignored Prisma client automatically; `npm run build` regenerates
 it as a clean-build safeguard.
 
@@ -143,6 +148,13 @@ flowchart LR
 The application uses strict TypeScript and the Next.js App Router. Domain
 calculations live in pure functions under `lib/calculations`; React components,
 API handlers, and Prisma access cannot own calculation rules.
+
+The Field of View page reads the catalogue directly on the server, caches
+successful results for one hour, and passes serialisable DTOs to the interactive
+client. A failed catalogue read is not cached and produces an explicit manual
+configuration state rather than hidden fallback presets. An unseeded required
+catalogue is handled the same way. Selecting equipment, editing values, changing
+binning, or changing seeing performs no browser API request.
 
 The accepted target environment is Ubuntu 24.04 LTS. Apache serves
 `https://astrotools.smeird.com`, Certbot manages its Let's Encrypt certificate,
