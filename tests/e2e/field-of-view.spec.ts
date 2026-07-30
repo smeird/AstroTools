@@ -64,6 +64,9 @@ test("the configured calculator has no serious or critical accessibility finding
   await page.getByRole("radio", { name: "Portrait" }).check();
   await expectNoSeriousAccessibilityFindings(page);
 
+  await page.getByRole("radio", { name: "Inches (in)" }).check();
+  await expectNoSeriousAccessibilityFindings(page);
+
   await page.getByRole("spinbutton", { name: "Native focal length" }).fill("");
   await expect(page.getByText(/enter a focal length from/i)).toBeVisible();
   await expectNoSeriousAccessibilityFindings(page);
@@ -362,6 +365,116 @@ test("frame rotation and sensor orientation stay independent from calculations",
   await expectScaleLabelAligned();
 });
 
+test("semantic equations and physical-unit displays preserve every optical result", async ({
+  page,
+}) => {
+  await page.goto("/calculators/field-of-view");
+  await page.waitForLoadState("networkidle");
+  const networkCalls: string[] = [];
+  page.on("request", (request) => {
+    if (["fetch", "xhr"].includes(request.resourceType())) {
+      networkCalls.push(request.url());
+    }
+  });
+
+  const panel = page.getByTestId("calculation-equations");
+  await expect(
+    panel.getByRole("heading", { name: "Equations and interpretation" }),
+  ).toBeVisible();
+  for (const title of [
+    "Effective optics",
+    "Sensor geometry",
+    "Exact field of view",
+    "Image scale",
+    "Seeing and sampling",
+  ]) {
+    await expect(
+      panel.getByRole("heading", { level: 3, name: title }),
+    ).toBeVisible();
+  }
+
+  const math = page.getByRole("math");
+  await expect(math).toHaveCount(18);
+  for (let index = 0; index < (await math.count()); index += 1) {
+    await expect(math.nth(index)).toHaveAttribute("display", "block");
+    await expect(math.nth(index)).not.toHaveAttribute("aria-label");
+    await expect(math.nth(index)).not.toHaveAttribute("aria-labelledby");
+  }
+  await expect(panel.locator("mfrac").first()).toBeAttached();
+  await expect(panel.locator("msqrt").first()).toBeAttached();
+  await expect(panel.locator("mtable").first()).toBeAttached();
+  await expect(panel).toContainText("arctan");
+  await expect(panel).not.toContainText("tan⁻¹");
+
+  const primary = page.getByTestId("primary-result");
+  const imageScaleResult = page
+    .locator("dt", { hasText: /^Image scale$/ })
+    .locator("..");
+  const samplingResult = page
+    .locator("dt", { hasText: /^Sampling$/ })
+    .locator("..");
+  const diagram = page.getByRole("img", {
+    name: /proportional framing simulator/i,
+  });
+  const before = {
+    primary: await primary.textContent(),
+    imageScale: await imageScaleResult.textContent(),
+    sampling: await samplingResult.textContent(),
+    fieldWidth: await diagram.getAttribute("data-field-width-deg"),
+    fieldHeight: await diagram.getAttribute("data-field-height-deg"),
+  };
+
+  await page.getByRole("radio", { name: "Inches (in)" }).check();
+
+  await expect(primary).toHaveText(before.primary ?? "");
+  await expect(imageScaleResult).toHaveText(before.imageScale ?? "");
+  await expect(samplingResult).toHaveText(before.sampling ?? "");
+  await expect(diagram).toHaveAttribute(
+    "data-field-width-deg",
+    before.fieldWidth ?? "",
+  );
+  await expect(diagram).toHaveAttribute(
+    "data-field-height-deg",
+    before.fieldHeight ?? "",
+  );
+  await expect(
+    page.locator("dt", { hasText: /^Sensor size$/ }).locator(".."),
+  ).toContainText("0.925 × 0.618 in");
+  await expect(
+    page.locator("dt", { hasText: /^Effective optics$/ }).locator(".."),
+  ).toContainText("23.622 in focal length");
+  await expect(panel).toContainText("25.4");
+  await expect(
+    page.getByRole("spinbutton", { name: "Native focal length" }),
+  ).toHaveValue("600");
+  await expect(page.getByRole("spinbutton", { name: "Aperture" })).toHaveValue(
+    "80",
+  );
+  await expect(page.getByTestId("telescope-status")).not.toContainText(
+    "Customised",
+  );
+
+  const pixelResolution = page
+    .getByRole("group", { name: "Sensor size source" })
+    .getByRole("radio", { name: "Pixel resolution" });
+  await pixelResolution.press("Space");
+  await expect(pixelResolution).toBeChecked();
+  await expect(
+    page.getByText("Sensor width and height — symbolic"),
+  ).toBeVisible();
+  await expect(panel).toContainText("25400");
+
+  const derivedFocalLength = page
+    .getByRole("group", { name: "Focal length input" })
+    .getByRole("radio", { name: "Derive from focal ratio" });
+  await derivedFocalLength.press("Space");
+  await expect(derivedFocalLength).toBeChecked();
+  await expect(
+    page.getByText("Derived native focal length — symbolic"),
+  ).toBeVisible();
+  expect(networkCalls).toEqual([]);
+});
+
 test("every initial target has a recognisable local illustration and source disclosure", async ({
   page,
 }) => {
@@ -546,6 +659,11 @@ test("controls meet minimum pointer targets and expose visible focus", async ({
   });
   expect(focusStyle.style).not.toBe("none");
   expect(focusStyle.width).toBeGreaterThanOrEqual(3);
+
+  const displayUnit = page.getByRole("radio", { name: "Millimetres (mm)" });
+  await displayUnit.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByRole("radio", { name: "Inches (in)" })).toBeChecked();
 });
 
 test("modifier removal and clearing return keyboard focus to a stable control", async ({
@@ -598,6 +716,45 @@ test("the shell avoids page overflow at 320 CSS pixels and 200% content zoom", a
   await expect(
     page.getByRole("heading", { name: "Imaging results" }),
   ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Equations and interpretation" }),
+  ).toBeVisible();
+  const equationViewports = page.locator(
+    '[aria-label$="scroll horizontally if needed"]',
+  );
+  await expect(equationViewports).toHaveCount(18);
+  for (let index = 0; index < (await equationViewports.count()); index += 1) {
+    const metrics = await equationViewports.nth(index).evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        clientWidth: element.clientWidth,
+        overflowX: style.overflowX,
+        scrollWidth: element.scrollWidth,
+      };
+    });
+    expect(["auto", "scroll"]).toContain(metrics.overflowX);
+    expect(metrics.scrollWidth).toBeGreaterThanOrEqual(metrics.clientWidth);
+  }
+  const longEquation = page.getByRole("group", {
+    name: "Horizontal, vertical, and diagonal fields — current values; scroll horizontally if needed",
+  });
+  const longEquationMetrics = await longEquation.evaluate((element) => {
+    element.scrollLeft = 0;
+    return {
+      clientWidth: element.clientWidth,
+      scrollWidth: element.scrollWidth,
+    };
+  });
+  expect(longEquationMetrics.scrollWidth).toBeGreaterThan(
+    longEquationMetrics.clientWidth,
+  );
+  await longEquation.focus();
+  await page.keyboard.press("ArrowRight");
+  await page.keyboard.press("ArrowRight");
+  await page.keyboard.press("ArrowRight");
+  await expect
+    .poll(async () => longEquation.evaluate((element) => element.scrollLeft))
+    .toBeGreaterThan(0);
   await expect(
     page.getByRole("slider", { name: "Display zoom" }),
   ).toBeVisible();

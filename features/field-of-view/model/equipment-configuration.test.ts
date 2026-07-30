@@ -32,11 +32,29 @@ describe("equipment configuration", () => {
       sensorHeightMm: "15.7",
     });
     expect(state.targetSlug).toBe("m31-andromeda-galaxy");
+    expect(state.physicalDisplayUnit).toBe("millimetres");
     expect(state.framing).toEqual({
       displayZoom: 1,
       frameRotationDeg: 0,
       sensorOrientation: "landscape",
     });
+  });
+
+  it("changes only the physical presentation preference", () => {
+    const initial = createEquipmentConfiguration(fieldOfViewCatalogueFixture);
+    const state = equipmentConfigurationReducer(initial, {
+      type: "physical-display-unit",
+      value: "inches",
+    });
+
+    expect(state.physicalDisplayUnit).toBe("inches");
+    expect(state.telescope).toBe(initial.telescope);
+    expect(state.camera).toBe(initial.camera);
+    expect(state.modifiers).toBe(initial.modifiers);
+    expect(state.binning).toBe(initial.binning);
+    expect(state.seeingFwhmArcsec).toBe(initial.seeingFwhmArcsec);
+    expect(state.targetSlug).toBe(initial.targetSlug);
+    expect(state.framing).toBe(initial.framing);
   });
 
   it("bounds framing controls independently from the optical configuration", () => {

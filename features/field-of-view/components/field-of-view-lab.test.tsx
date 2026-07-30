@@ -89,11 +89,202 @@ describe("FieldOfViewLab", () => {
       screen.getByRole("link", { name: "Angular-size source" }),
     ).toHaveAttribute("href", "https://example.com/m31");
 
-    const resultList = screen.getByText("Image scale").closest("dl");
+    const resultList = screen
+      .getByText("Image scale", { selector: "dt" })
+      .closest("dl");
     expect(resultList).toBeTruthy();
     expect(within(resultList as HTMLElement).getAllByRole("term")).toHaveLength(
       5,
     );
+    expect(
+      within(resultList as HTMLElement).getByText(
+        "1.29 arcseconds per output pixel",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(resultList as HTMLElement).getByText(
+        "Equivalent output pitch 3.76 micrometres",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(resultList as HTMLElement).getByText(
+        "2.0 arcseconds stated seeing",
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it("renders structured MathML with every explanatory layer outside the live region", () => {
+    renderLab();
+
+    const panel = screen.getByTestId("calculation-equations");
+    for (const title of [
+      "Effective optics",
+      "Sensor geometry",
+      "Exact field of view",
+      "Image scale",
+      "Seeing and sampling",
+    ]) {
+      expect(
+        within(panel).getByRole("heading", { level: 3, name: title }),
+      ).toBeVisible();
+    }
+
+    for (const sectionTitle of [
+      "In words",
+      "Variables and units",
+      "Final result",
+      "Interpretation",
+    ]) {
+      expect(
+        within(panel).getAllByRole("heading", {
+          level: 4,
+          name: sectionTitle,
+        }),
+      ).toHaveLength(5);
+    }
+
+    const equations = panel.querySelectorAll("math");
+    expect(equations).toHaveLength(18);
+    for (const equation of equations) {
+      expect(equation.namespaceURI).toBe("http://www.w3.org/1998/Math/MathML");
+      expect(equation.getAttribute("display")).toBe("block");
+      expect(equation.hasAttribute("aria-label")).toBe(false);
+      expect(equation.hasAttribute("aria-labelledby")).toBe(false);
+      expect(equation.closest('[aria-live="polite"]')).toBeNull();
+    }
+
+    expect(panel.querySelector("mfrac")).not.toBeNull();
+    expect(panel.querySelector("msqrt")).not.toBeNull();
+    expect(panel.querySelector("mtable")).not.toBeNull();
+    expect(panel).toHaveTextContent("arctan");
+    expect(panel).not.toHaveTextContent("tan⁻¹");
+    expect(panel).toHaveTextContent(
+      /small-angle approximation is shown only for education and is not used/i,
+    );
+    expect(
+      within(panel).getByText("Qualified sampling assessment — current values"),
+    ).toBeVisible();
+    expect(
+      within(panel).getByRole("group", {
+        name: "Physical display units",
+      }),
+    ).toHaveAccessibleDescription(/canonical inputs and calculations remain/i);
+  });
+
+  it("changes only physical displays and substitutions when inches are selected", async () => {
+    const user = userEvent.setup();
+    renderLab();
+
+    const primaryResult = screen.getByTestId("primary-result");
+    const diagram = screen.getByRole("img", {
+      name: /proportional framing simulator/i,
+    });
+    const imageScaleCard = screen.getByText("Image scale", {
+      selector: "dt",
+    }).parentElement;
+    const samplingCard = screen.getByText("Sampling", {
+      selector: "dt",
+    }).parentElement;
+    const before = {
+      primary: primaryResult.textContent,
+      imageScale: imageScaleCard?.textContent,
+      sampling: samplingCard?.textContent,
+      fieldWidth: diagram.getAttribute("data-field-width-deg"),
+      fieldHeight: diagram.getAttribute("data-field-height-deg"),
+    };
+
+    await user.click(screen.getByRole("radio", { name: "Inches (in)" }));
+
+    expect(primaryResult.textContent).toBe(before.primary);
+    expect(imageScaleCard?.textContent).toBe(before.imageScale);
+    expect(samplingCard?.textContent).toBe(before.sampling);
+    expect(diagram).toHaveAttribute("data-field-width-deg", before.fieldWidth);
+    expect(diagram).toHaveAttribute(
+      "data-field-height-deg",
+      before.fieldHeight,
+    );
+    expect(
+      screen.getByText("Sensor size", { selector: "dt" }).parentElement,
+    ).toHaveTextContent("0.925 × 0.618 in");
+    expect(
+      screen.getByText("Effective optics", { selector: "dt" }).parentElement,
+    ).toHaveTextContent("23.622 in focal length");
+    expect(screen.getByTestId("calculation-equations")).toHaveTextContent(
+      "25.4",
+    );
+    expect(
+      screen.getByRole("spinbutton", { name: "Native focal length" }),
+    ).toHaveValue(600);
+    expect(screen.getByRole("spinbutton", { name: "Aperture" })).toHaveValue(
+      80,
+    );
+    expect(screen.queryByText("Customised preset")).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("radio", { name: "Millimetres (mm)" }));
+    expect(
+      screen.getByText("Sensor size", { selector: "dt" }).parentElement,
+    ).toHaveTextContent("23.50 × 15.70 mm");
+    expect(primaryResult.textContent).toBe(before.primary);
+  });
+
+  it("shows only the sensor derivation that supplies the active calculation", async () => {
+    const user = userEvent.setup();
+    renderLab();
+
+    expect(
+      screen.getByText("Supplied active dimensions — current values"),
+    ).toBeVisible();
+    expect(
+      screen.queryByText("Sensor width and height — symbolic"),
+    ).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("radio", { name: "Pixel resolution" }));
+
+    expect(
+      screen.queryByText("Supplied active dimensions — current values"),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText("Sensor width and height — symbolic"),
+    ).toBeVisible();
+    expect(screen.getByTestId("calculation-equations")).toHaveTextContent(
+      "1000",
+    );
+
+    await user.click(screen.getByRole("radio", { name: "Inches (in)" }));
+    expect(screen.getByTestId("calculation-equations")).toHaveTextContent(
+      "25400",
+    );
+  });
+
+  it("shows focal-length derivation only after the explicit derived mode is selected", async () => {
+    const user = userEvent.setup();
+    renderLab();
+
+    expect(
+      screen.queryByText("Derived native focal length — symbolic"),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(/in direct-focal-length mode, aperture alone/i),
+    ).toBeVisible();
+
+    await user.click(
+      screen.getByRole("radio", { name: "Derive from focal ratio" }),
+    );
+
+    expect(
+      screen.getByText("Derived native focal length — symbolic"),
+    ).toBeVisible();
+    expect(
+      screen.getByText("Derived native focal length — current values"),
+    ).toBeVisible();
+    expect(
+      screen.getByText(
+        /in derived-focal-length mode, aperture changes the field only because/i,
+      ),
+    ).toBeVisible();
+    expect(
+      screen.queryByText(/in direct-focal-length mode, aperture alone/i),
+    ).not.toBeInTheDocument();
   });
 
   it("keeps optical results and angular proportions invariant under display zoom", () => {
@@ -268,11 +459,15 @@ describe("FieldOfViewLab", () => {
     expect(focalLength).toHaveAccessibleDescription(/10 to 20,000 mm/i);
     expect(primaryResult).toHaveTextContent(/complete the labelled setup/i);
     expect(screen.getByText(/results are unavailable/i)).toBeVisible();
+    expect(
+      screen.queryByTestId("calculation-equations"),
+    ).not.toBeInTheDocument();
 
     await user.type(focalLength, "1200");
 
     expect(focalLength).toHaveValue(1200);
     expect(primaryResult).toHaveTextContent("1.12° × 0.75°");
+    expect(screen.getByTestId("calculation-equations")).toBeVisible();
   });
 
   it("searches presets, marks edits as customised, preserves manual values, and restores the last telescope", async () => {
@@ -467,16 +662,16 @@ describe("FieldOfViewLab", () => {
     renderLab();
 
     expect(
-      screen.getByText("Likely undersampled for the stated seeing"),
-    ).toBeVisible();
+      screen.getAllByText("Likely undersampled for the stated seeing"),
+    ).toHaveLength(3);
 
     const seeing = screen.getByRole("slider", { name: "Seeing" });
     fireEvent.change(seeing, { target: { value: "5" } });
 
     expect(seeing).toHaveValue("5");
     expect(
-      screen.getByText("Broadly appropriate for many conditions"),
-    ).toBeVisible();
+      screen.getAllByText("Broadly appropriate for many conditions"),
+    ).toHaveLength(3);
 
     const oneByOne = screen.getByRole("radio", { name: "1×" });
     oneByOne.focus();
@@ -484,8 +679,8 @@ describe("FieldOfViewLab", () => {
 
     expect(screen.getByRole("radio", { name: "2×" })).toBeChecked();
     expect(
-      screen.getByText("Likely undersampled for the stated seeing"),
-    ).toBeVisible();
+      screen.getAllByText("Likely undersampled for the stated seeing"),
+    ).toHaveLength(3);
   });
 
   it("keeps mobile reading order logical before CSS changes presentation", () => {

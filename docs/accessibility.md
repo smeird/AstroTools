@@ -84,10 +84,42 @@ Evidence recorded on 30 July 2026:
   browser. The proportional target and sensor outlines, grid, scale bar, text
   equivalent, attribution, and no-overflow mobile layout were reviewed.
 
+## Work Package 6 evidence
+
+Evidence recorded on 30 July 2026:
+
+- Direct MathML elements preserve fractions, roots, subscripts, powers,
+  products, and equation tables. The mathematical content is not replaced by an
+  ARIA text label; every card also provides visible words and a semantic
+  variable/unit definition list.
+- Symbolic and substituted expressions sit outside the single restrained live
+  region. Current control changes therefore update the mathematics without
+  repeatedly announcing the full derivation.
+- Each expression has a visible caption and a bounded keyboard-focusable
+  horizontal viewport. Component and Playwright checks prove that long
+  expressions remain locally scrollable without page overflow at 320 CSS pixels
+  and 200% text enlargement.
+- The millimetre/inch radio control is labelled, described, keyboard-operable,
+  and presentation-only. Automated tests prove the angular field, image scale,
+  sampling assessment, target geometry, canonical inputs, and preset state do
+  not change with units.
+- Axe scans cover default and inch modes across Chromium, Firefox, WebKit, Pixel
+  7, and iPhone 15 profiles. Serious and critical findings remain
+  release-blocking.
+
+Native MathML was selected because the top-level element has an implicit math
+role and is widely available in current browser engines. The implementation
+follows [MathML Core](https://www.w3.org/TR/mathml-core/) and the
+[W3C MathML accessibility guidance](https://www.w3.org/TR/mathml4/#accessibility).
+
 ## Manual release checks still required
 
 Automated evidence is not a screen-reader conformance claim. Before the Release
 1 accessibility gate is signed off, record keyboard operation at 200% browser
 zoom and at least one current VoiceOver/Safari or NVDA/Firefox session,
 including the combobox, live result, invalid-field recovery, visualisation
-equivalent, and result description list.
+equivalent, result description list, navigation by mathematical expression,
+equation speech, braille structure where available, and unit switching. Work
+Package 6 automated evidence is not presented as a screen-reader conformance
+claim. This evidence is scheduled for Work Package 8's manual-accessibility
+deliverable and remains a Release 1 gate.

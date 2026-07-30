@@ -44,6 +44,27 @@ The Field of View Lab owns one polite, atomic live region for its compact
 primary result. Detailed results are ordinary semantic content to avoid repeated
 screen reader announcements.
 
+## Equations
+
+`components/equations` contains the first shared mathematical presentation
+primitives. `MathExpression` places caller-supplied native MathML in a labelled,
+keyboard-scrollable local viewport; overflowing expressions support explicit
+ArrowLeft and ArrowRight scrolling across the supported engines. It never
+converts a string into markup. `EquationCard` groups symbolic and substituted
+expressions with visible prose, a semantic variable definition list, a final
+result, and interpretation.
+
+The MathML remains navigable content and is not replaced by an `aria-label`.
+Ordinary visible “In words” text provides a dependable explanation alongside the
+mathematical structure. Long expressions scroll only inside their own bounded
+viewport, so 320 CSS-pixel layouts and 200% text enlargement do not create
+page-level horizontal overflow.
+
+The physical-unit segmented control sits with results rather than inside the
+equipment hierarchy. It changes only physical result formatting and live
+substitutions. Canonical millimetre inputs, preset customisation state,
+calculation results, target geometry, and image sampling remain untouched.
+
 ## Responsive shell
 
 At desktop widths, a fixed control rail sits beside the primary result,
@@ -54,6 +75,9 @@ single column in this reading order:
 2. compact primary result;
 3. visualisation and its text alternative;
 4. detailed results.
+
+The equations and interpretations follow the detailed results in the same
+results region.
 
 The visualisation remains deterministic and explicitly illustrative. Work
 Package 5 adds an angularly proportional target footprint and sensor frame,

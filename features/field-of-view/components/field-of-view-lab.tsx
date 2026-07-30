@@ -4,10 +4,7 @@ import { useMemo, useReducer } from "react";
 
 import { ResultCard, ResultGrid } from "@/components/design-system";
 import { calculateImagingSystem } from "@/lib/calculations";
-import type {
-  ImagingSystemResult,
-  SamplingAssessment,
-} from "@/lib/calculations";
+import type { ImagingSystemResult } from "@/lib/calculations";
 import {
   createEquipmentConfiguration,
   equipmentConfigurationReducer,
@@ -16,30 +13,28 @@ import {
   resolveTelescopeInputs,
 } from "../model/equipment-configuration";
 import {
+  formatArcminutes,
+  formatDecimal,
+  formatDegrees,
+  presentPhysicalLength,
+  SAMPLING_ASSESSMENT_LABELS,
+} from "../model/calculation-presentation";
+import {
   calculateTargetFramingGeometry,
   positionAngleToDisplayRotationDegrees,
   type TargetFramingGeometry,
 } from "../model/target-framing";
 import type { FieldOfViewCatalogue } from "../services/calculator-catalogue";
 
+import {
+  AccessibleAngularPair,
+  AccessibleArcminutePair,
+  CalculationEquations,
+} from "./calculation-equations";
 import { EquipmentConfigurationPanel } from "./equipment-configuration-panel";
 import styles from "./field-of-view-lab.module.css";
 import { FieldOfViewShell } from "./field-of-view-shell";
 import { TargetFramingSimulator } from "./target-framing-simulator";
-
-const SAMPLING_COPY: Record<SamplingAssessment, string> = {
-  "likely-undersampled": "Likely undersampled for the stated seeing",
-  "broadly-appropriate": "Broadly appropriate for many conditions",
-  "likely-oversampled": "Likely oversampled for the stated seeing",
-};
-
-function formatDegrees(value: number): string {
-  return value.toFixed(2) + "°";
-}
-
-function formatArcminutes(value: number): string {
-  return (value * 60).toFixed(1) + "′";
-}
 
 export function FieldOfViewLab({
   catalogue,
@@ -133,11 +128,15 @@ export function FieldOfViewLab({
         <p className={styles.summaryValue}>
           {result ? (
             <>
-              {formatDegrees(result.fieldOfViewDeg.horizontalDeg)} ×{" "}
-              {formatDegrees(result.fieldOfViewDeg.verticalDeg)}
+              <AccessibleAngularPair
+                horizontalDeg={result.fieldOfViewDeg.horizontalDeg}
+                verticalDeg={result.fieldOfViewDeg.verticalDeg}
+              />
               <span className={styles.summarySecondary}>
-                {formatArcminutes(result.fieldOfViewDeg.horizontalDeg)} ×{" "}
-                {formatArcminutes(result.fieldOfViewDeg.verticalDeg)}
+                <AccessibleArcminutePair
+                  horizontalDeg={result.fieldOfViewDeg.horizontalDeg}
+                  verticalDeg={result.fieldOfViewDeg.verticalDeg}
+                />
               </span>
             </>
           ) : (
@@ -170,62 +169,193 @@ export function FieldOfViewLab({
   );
 
   const results = (
-    <section className={styles.resultsPanel} aria-labelledby="results-title">
-      <div className={styles.sectionHeader}>
-        <p className="eyebrow">Calculated now</p>
-        <h2 id="results-title">Imaging results</h2>
-        <p>Full precision is retained; values below are rounded for display.</p>
-      </div>
-      {result ? (
-        <ResultGrid>
-          <ResultCard
-            label="Diagonal field"
-            secondary={formatArcminutes(result.fieldOfViewDeg.diagonalDeg)}
-            value={formatDegrees(result.fieldOfViewDeg.diagonalDeg)}
-          />
-          <ResultCard
-            label="Sensor size"
-            secondary={
-              result.sensorDimensionsMm.diagonalMm.toFixed(2) + " mm diagonal"
-            }
-            value={
-              result.sensorDimensionsMm.widthMm.toFixed(2) +
-              " × " +
-              result.sensorDimensionsMm.heightMm.toFixed(2) +
-              " mm"
-            }
-          />
-          <ResultCard
-            label="Image scale"
-            secondary={
-              "Effective pixel size " +
-              result.effectivePixelSizeUm.toFixed(2) +
-              " µm"
-            }
-            value={result.imageScaleArcsecPerPixel.toFixed(2) + "″ / px"}
-          />
-          <ResultCard
-            label="Effective optics"
-            secondary={
-              result.effectiveFocalLengthMm.toFixed(2) + " mm focal length"
-            }
-            value={"f/" + result.effectiveFocalRatio.toFixed(1)}
-          />
-          <ResultCard
-            interpretation="Tracking, focus, optics, processing, and target type also affect the useful sampling."
-            label="Sampling"
-            secondary={state.seeingFwhmArcsec.toFixed(1) + "″ stated seeing"}
-            statusText={SAMPLING_COPY[result.samplingAssessment]}
-            value={result.pixelsPerSeeingFwhm.toFixed(2) + " px / FWHM"}
-          />
-        </ResultGrid>
-      ) : (
-        <p className={styles.unavailable}>
-          Results are unavailable while a required value or optical multiplier
-          is invalid. Correct the labelled field to continue.
-        </p>
-      )}
-    </section>
+    <>
+      <section className={styles.resultsPanel} aria-labelledby="results-title">
+        <div className={styles.sectionHeader}>
+          <p className="eyebrow">Calculated now</p>
+          <h2 id="results-title">Imaging results</h2>
+          <p>
+            Full precision is retained; values below are rounded for display.
+          </p>
+        </div>
+        {result ? (
+          <ResultGrid>
+            <ResultCard
+              label="Diagonal field"
+              secondary={
+                <>
+                  <span aria-hidden="true">
+                    {formatArcminutes(result.fieldOfViewDeg.diagonalDeg)}
+                  </span>
+                  <span className={styles.visuallyHidden}>
+                    {formatDecimal(result.fieldOfViewDeg.diagonalDeg * 60, {
+                      minimumFractionDigits: 1,
+                      maximumFractionDigits: 1,
+                    })}{" "}
+                    arcminutes
+                  </span>
+                </>
+              }
+              value={
+                <>
+                  <span aria-hidden="true">
+                    {formatDegrees(result.fieldOfViewDeg.diagonalDeg)}
+                  </span>
+                  <span className={styles.visuallyHidden}>
+                    {formatDecimal(result.fieldOfViewDeg.diagonalDeg, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}{" "}
+                    degrees
+                  </span>
+                </>
+              }
+            />
+            <ResultCard
+              label="Sensor size"
+              secondary={`${
+                presentPhysicalLength(
+                  result.sensorDimensionsMm.diagonalMm,
+                  state.physicalDisplayUnit,
+                ).text
+              } diagonal`}
+              value={`${
+                presentPhysicalLength(
+                  result.sensorDimensionsMm.widthMm,
+                  state.physicalDisplayUnit,
+                ).numberText
+              } × ${
+                presentPhysicalLength(
+                  result.sensorDimensionsMm.heightMm,
+                  state.physicalDisplayUnit,
+                ).text
+              }`}
+            />
+            <ResultCard
+              label="Image scale"
+              secondary={
+                <>
+                  <span aria-hidden="true">
+                    Equivalent output pitch{" "}
+                    {formatDecimal(result.effectivePixelSizeUm, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}{" "}
+                    µm
+                  </span>
+                  <span className={styles.visuallyHidden}>
+                    Equivalent output pitch{" "}
+                    {formatDecimal(result.effectivePixelSizeUm, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}{" "}
+                    micrometres
+                  </span>
+                </>
+              }
+              value={
+                <>
+                  <span aria-hidden="true">
+                    {formatDecimal(result.imageScaleArcsecPerPixel, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                    ″ / output px
+                  </span>
+                  <span className={styles.visuallyHidden}>
+                    {formatDecimal(result.imageScaleArcsecPerPixel, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}{" "}
+                    arcseconds per output pixel
+                  </span>
+                </>
+              }
+            />
+            <ResultCard
+              label="Effective optics"
+              secondary={`${
+                presentPhysicalLength(
+                  result.effectiveFocalLengthMm,
+                  state.physicalDisplayUnit,
+                ).text
+              } focal length`}
+              value={`f/${formatDecimal(result.effectiveFocalRatio, {
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 1,
+              })}`}
+            />
+            <ResultCard
+              interpretation="Tracking, focus, optics, processing, and target type also affect the useful sampling."
+              label="Sampling"
+              secondary={
+                <>
+                  <span aria-hidden="true">
+                    {formatDecimal(state.seeingFwhmArcsec, {
+                      minimumFractionDigits: 1,
+                      maximumFractionDigits: 1,
+                    })}
+                    ″ stated seeing
+                  </span>
+                  <span className={styles.visuallyHidden}>
+                    {formatDecimal(state.seeingFwhmArcsec, {
+                      minimumFractionDigits: 1,
+                      maximumFractionDigits: 1,
+                    })}{" "}
+                    arcseconds stated seeing
+                  </span>
+                </>
+              }
+              statusText={SAMPLING_ASSESSMENT_LABELS[result.samplingAssessment]}
+              value={
+                <>
+                  <span aria-hidden="true">
+                    {formatDecimal(result.pixelsPerSeeingFwhm, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}{" "}
+                    output px / FWHM
+                  </span>
+                  <span className={styles.visuallyHidden}>
+                    {formatDecimal(result.pixelsPerSeeingFwhm, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}{" "}
+                    output pixels per full width at half maximum
+                  </span>
+                </>
+              }
+            />
+          </ResultGrid>
+        ) : (
+          <p className={styles.unavailable}>
+            Results are unavailable while a required value or optical multiplier
+            is invalid. Correct the labelled field to continue.
+          </p>
+        )}
+      </section>
+
+      {result &&
+      cameraSensor &&
+      telescopeInputs.nativeFocalLengthMm !== null &&
+      telescopeInputs.apertureMm !== null &&
+      telescopeInputs.focalRatio !== null &&
+      opticalMultipliers ? (
+        <CalculationEquations
+          apertureMm={telescopeInputs.apertureMm}
+          binningFactor={Number(state.binning)}
+          dispatch={dispatch}
+          focalLengthMode={state.telescope.focalLengthMode}
+          nativeFocalLengthMm={telescopeInputs.nativeFocalLengthMm}
+          nativeFocalRatio={telescopeInputs.focalRatio}
+          opticalMultipliers={opticalMultipliers}
+          physicalDisplayUnit={state.physicalDisplayUnit}
+          result={result}
+          seeingFwhmArcsec={state.seeingFwhmArcsec}
+          sensor={cameraSensor}
+        />
+      ) : null}
+    </>
   );
 
   return (
