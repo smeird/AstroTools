@@ -21,6 +21,25 @@ jobs:
     name: Quality and build
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    env:
+      # Deliberately disposable CI-only credentials for the isolated service
+      # below. Production credentials are never available to this workflow.
+      DATABASE_URL: mysql://astrotools_app:astrotools_ci_runtime_password@127.0.0.1:3306/astrotools_test
+      MIGRATION_DATABASE_URL: mysql://astrotools_migrate:astrotools_ci_migration_password@127.0.0.1:3306/astrotools_test
+    services:
+      mysql:
+        image: mysql:8.4.10
+        env:
+          MYSQL_DATABASE: astrotools_test
+          MYSQL_USER: astrotools_migrate
+          MYSQL_PASSWORD: astrotools_ci_migration_password
+          MYSQL_ROOT_PASSWORD: astrotools_ci_root_password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --protocol=tcp -h 127.0.0.1
+          -uastrotools_migrate -pastrotools_ci_migration_password --silent"
+          --health-interval=5s --health-timeout=5s --health-retries=20
     steps:
       - name: Check out source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -33,6 +52,32 @@ jobs:
 
       - name: Install exact dependencies
         run: npm ci
+
+      - name: Prepare CI database and runtime identity
+        run: >-
+          docker exec --env MYSQL_PWD=astrotools_ci_root_password "${{
+          job.services.mysql.id }}" mysql --protocol=socket --user=root
+          --execute="ALTER DATABASE astrotools_test CHARACTER SET utf8mb4
+          COLLATE utf8mb4_unicode_ci; CREATE USER IF NOT EXISTS
+          'astrotools_app'@'%' IDENTIFIED BY 'astrotools_ci_runtime_password';
+          ALTER USER 'astrotools_app'@'%' IDENTIFIED BY
+          'astrotools_ci_runtime_password'; REVOKE ALL PRIVILEGES, GRANT OPTION
+          FROM 'astrotools_app'@'%';"
+
+      - name: Apply schema for table-specific grants
+        run: npm run db:migrate:deploy
+
+      - name: Grant runtime access to API-readable tables only
+        run: >-
+          docker exec --env MYSQL_PWD=astrotools_ci_root_password "${{
+          job.services.mysql.id }}" mysql --protocol=socket --user=root
+          --execute="GRANT SELECT ON astrotools_test.manufacturers TO
+          'astrotools_app'@'%'; GRANT SELECT ON astrotools_test.telescopes TO
+          'astrotools_app'@'%'; GRANT SELECT ON astrotools_test.cameras TO
+          'astrotools_app'@'%'; GRANT SELECT ON
+          astrotools_test.optical_modifiers TO 'astrotools_app'@'%'; GRANT
+          SELECT ON astrotools_test.astronomical_targets TO
+          'astrotools_app'@'%';"
 
       - name: Audit dependencies
         run: npm run audit:production
@@ -49,7 +94,7 @@ jobs:
       - name: Run unit tests
         run: npm run test
 
-      - name: Run integration tests
+      - name: Generate, migrate, seed twice, and run MySQL integration tests
         run: npm run test:integration
 
       - name: Build standalone application

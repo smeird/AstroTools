@@ -1,0 +1,17 @@
+-- LOCAL POST-MIGRATION TEMPLATE ONLY.
+-- Apply after the reviewed migrations create all five API-readable catalogue
+-- tables. Revoke first so rerunning this template also removes accidental broad
+-- grants from the disposable runtime identity.
+
+REVOKE ALL PRIVILEGES, GRANT OPTION
+  FROM 'astrotools_test_app'@'127.0.0.1';
+GRANT SELECT ON `astrotools_test`.`manufacturers`
+  TO 'astrotools_test_app'@'127.0.0.1';
+GRANT SELECT ON `astrotools_test`.`telescopes`
+  TO 'astrotools_test_app'@'127.0.0.1';
+GRANT SELECT ON `astrotools_test`.`cameras`
+  TO 'astrotools_test_app'@'127.0.0.1';
+GRANT SELECT ON `astrotools_test`.`optical_modifiers`
+  TO 'astrotools_test_app'@'127.0.0.1';
+GRANT SELECT ON `astrotools_test`.`astronomical_targets`
+  TO 'astrotools_test_app'@'127.0.0.1';

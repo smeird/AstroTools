@@ -1,0 +1,16 @@
+-- REVIEWED POST-MIGRATION TEMPLATE ONLY.
+-- Apply after the controlled migration creates all five API-readable catalogue
+-- tables. Revoke first so rerunning this template also removes accidental broad
+-- grants from the long-running runtime identity.
+
+REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'astrotools_app'@'127.0.0.1';
+GRANT SELECT ON `astrotools`.`manufacturers`
+  TO 'astrotools_app'@'127.0.0.1';
+GRANT SELECT ON `astrotools`.`telescopes`
+  TO 'astrotools_app'@'127.0.0.1';
+GRANT SELECT ON `astrotools`.`cameras`
+  TO 'astrotools_app'@'127.0.0.1';
+GRANT SELECT ON `astrotools`.`optical_modifiers`
+  TO 'astrotools_app'@'127.0.0.1';
+GRANT SELECT ON `astrotools`.`astronomical_targets`
+  TO 'astrotools_app'@'127.0.0.1';
