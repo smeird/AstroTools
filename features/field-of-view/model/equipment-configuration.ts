@@ -20,6 +20,7 @@ export type EquipmentMode = "preset" | "manual";
 export type FocalLengthMode = "direct" | "derived";
 export type SensorGeometryMode = "physical-dimensions" | "pixel-resolution";
 export type BinningValue = "1" | "2" | "3" | "4";
+export type PhysicalDisplayUnit = "millimetres" | "inches";
 export type ManualModifierType =
   "reducer" | "field-flattener" | "barlow" | "custom";
 
@@ -79,6 +80,7 @@ export interface EquipmentConfigurationState {
   readonly binning: BinningValue;
   readonly seeingFwhmArcsec: number;
   readonly targetSlug: string | null;
+  readonly physicalDisplayUnit: PhysicalDisplayUnit;
   readonly framing: {
     readonly displayZoom: number;
     readonly frameRotationDeg: number;
@@ -119,6 +121,7 @@ export type EquipmentConfigurationAction =
   | { type: "binning"; value: BinningValue }
   | { type: "seeing"; value: number }
   | { type: "target"; slug: string | null }
+  | { type: "physical-display-unit"; value: PhysicalDisplayUnit }
   | { type: "framing-display-zoom"; value: number }
   | { type: "framing-rotation"; value: number }
   | { type: "framing-orientation"; value: SensorOrientation };
@@ -261,6 +264,7 @@ export function createEquipmentConfiguration(
         ?.slug ??
       catalogue.targets[0]?.slug ??
       null,
+    physicalDisplayUnit: "millimetres",
     framing: {
       displayZoom: 1,
       frameRotationDeg: 0,
@@ -424,6 +428,8 @@ export function equipmentConfigurationReducer(
       return { ...state, seeingFwhmArcsec: action.value };
     case "target":
       return { ...state, targetSlug: action.slug };
+    case "physical-display-unit":
+      return { ...state, physicalDisplayUnit: action.value };
     case "framing-display-zoom":
       return {
         ...state,

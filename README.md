@@ -15,6 +15,10 @@ presets while preserving complete manual configuration and browser-local
 calculation updates. Work Package 5 adds the proportional target-framing
 simulator, deterministic local target illustrations, display-only zoom, frame
 rotation, sensor orientation, angular guides, and a complete text equivalent.
+Work Package 6 exposes the complete calculation chain as native semantic MathML,
+live substituted values, variable and unit definitions, rounded final results,
+and scientifically qualified interpretations. Its millimetre/inch switch is
+presentation-only and cannot alter canonical inputs or results.
 
 ## Requirements
 

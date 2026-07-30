@@ -80,7 +80,10 @@
 }
 
 .results {
+  display: grid;
   grid-area: results;
+  min-width: 0;
+  gap: var(--space-5);
 }
 
 @media (max-width: 900px) {

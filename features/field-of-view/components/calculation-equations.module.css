@@ -1,0 +1,112 @@
+.panel {
+  display: grid;
+  min-width: 0;
+  padding: var(--space-5);
+  gap: var(--space-5);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-panel);
+  background: rgba(8, 16, 25, 0.66);
+}
+
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(17rem, 22rem);
+  gap: var(--space-5);
+  align-items: end;
+}
+
+.header h2 {
+  margin: var(--space-2) 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.55rem, 3vw, 2rem);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+}
+
+.header p {
+  max-width: 52rem;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-small);
+  line-height: 1.55;
+}
+
+.unitControl {
+  min-width: 0;
+}
+
+.grid {
+  display: grid;
+  min-width: 0;
+  gap: var(--space-4);
+}
+
+.angularResults,
+.angularResults p {
+  margin: 0;
+}
+
+.angularResults {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.secondaryResult,
+.diagonalResult {
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: var(--font-size-small);
+  line-height: 1.45;
+}
+
+.approximationNote {
+  margin: calc(-1 * var(--space-2)) 0 0;
+  padding: var(--space-3);
+  border-left: 2px solid var(--color-signal);
+  color: var(--color-text-soft);
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+}
+
+.samplingStatus {
+  margin-top: var(--space-2);
+  color: var(--color-signal);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-small);
+  line-height: 1.45;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 720px) {
+  .header {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+}
+
+@media (max-width: 450px) {
+  .panel {
+    padding: var(--space-4);
+  }
+}
+
+@media (forced-colors: active) {
+  .panel,
+  .approximationNote {
+    border-color: CanvasText;
+  }
+
+  .samplingStatus {
+    color: CanvasText;
+  }
+}

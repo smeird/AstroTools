@@ -1,7 +1,7 @@
-# Calculation engine
+# Calculation engine and presentation
 
-- Status: Work Package 1 implementation
-- Date: 29 July 2026
+- Status: Work Package 6 implementation
+- Date: 30 July 2026
 
 The field-of-view and image-sampling engine is a pure TypeScript library under
 `lib/calculations/`. It imports no React, DOM, Next.js, Prisma, database,
@@ -14,7 +14,7 @@ worker without changing their results.
 | Quantity                                  | Canonical unit   |
 | ----------------------------------------- | ---------------- |
 | Aperture, focal length, sensor dimensions | millimetres (mm) |
-| Native and effective pixel pitch          | micrometres (µm) |
+| Native pitch and equivalent output pitch  | micrometres (µm) |
 | Seeing and image scale                    | arcseconds (″)   |
 | Angular dimensions                        | degrees (°)      |
 | Optical modifiers and focal ratio         | dimensionless    |
@@ -73,9 +73,16 @@ For sensor extent \(d\) and effective focal length \(f_e\):
 \[ \theta = 2\arctan\left(\frac{d}{2f_e}\right)\frac{180}{\pi} \]
 
 The equation is evaluated independently for horizontal, vertical, and diagonal
-sensor extents. This exact arctangent result is authoritative. The small-angle
-approximation may later be shown for education, but is not used by the engine. A
-deliberately wide 90° golden test distinguishes the two equations.
+sensor extents. This is exact arctangent geometry within the calculator's ideal
+rectilinear model. It is not a claim that a real measured sky footprint is
+exact: achieved focal length, active area, distortion, and vignetting can
+differ. The interface shows the small-angle approximation for education only:
+
+\[ \theta_{\mathrm{approx}} \approx \frac{d}{f_e}\frac{180}{\pi} \]
+
+The approximation is never used by the engine and increasingly overestimates the
+field as the angle widens. A deliberately wide 90° golden test distinguishes the
+two equations.
 
 ## Image scale, seeing, and sampling
 
@@ -85,10 +92,13 @@ For native pixel pitch \(s\) and positive integer binning factor \(b\):
 
 \[ \rho = \frac{206.265s_e}{f_e} \]
 
-Image scale \(\rho\) is expressed in arcseconds per pixel. For seeing full width
-at half maximum \(\sigma\):
+Image scale \(\rho\) is expressed in arcseconds per output pixel. It is the
+conventional paraxial plate-scale relation: the constant is rounded and a
+calibrated plate scale can vary across a distorted field. In this unit form,
+`206.265` carries arcsecond millimetres per micrometre. For stated atmospheric
+seeing full width at half maximum \(w_{\mathrm{seeing}}\):
 
-\[ P_{\mathrm{FWHM}} = \frac{\sigma}{\rho} \]
+\[ P_{\mathrm{FWHM}} = \frac{w_{\mathrm{seeing}}}{\rho} \]
 
 The central, immutable default thresholds are:
 
@@ -101,8 +111,44 @@ The central, immutable default thresholds are:
 These are qualified planning defaults, not universal laws. Tracking, focus,
 optics, processing method, target type, and the distinction between true
 hardware binning and software resampling can all change their interpretation.
-Binning changes effective pixel pitch and image scale; it cannot change field of
-view.
+Binning changes equivalent output sampling pitch and image scale; it cannot
+change field of view. True hardware binning and post-read software resampling
+have different noise behaviour, and software does not create physically larger
+pixels.
+
+## User-facing equation contract
+
+Work Package 6 renders direct, structured MathML rather than mathematical
+strings or positioned characters. Five calculation groups expose:
+
+1. formal symbolic equations;
+2. live equations with the current values substituted;
+3. a definition and unit for every variable;
+4. the rounded final result; and
+5. a plain-language interpretation and model limits.
+
+The groups cover derived native focal length when that mode is active, effective
+focal length and ratio, source-sensitive sensor geometry, all three exact field
+dimensions, equivalent output pitch, image scale, pixels per seeing FWHM, and
+the central sampling thresholds. Supplied physical sensor dimensions are
+identified as inputs; the pixel-count derivation is shown only when it actually
+supplies the active calculation.
+
+The physical display switch never enters `calculateImagingSystem`. In inch mode,
+sensor derivations use `25,400 µm/in`, and image-scale substitutions retain the
+required focal-length conversion:
+
+\[ \rho = \frac{206.265s_e}{25.4f_{e,\mathrm{in}}} \]
+
+Putting an inch value beneath the unmodified `206.265` constant would introduce
+a factor-of-25.4 error. Tests lock both the dimensional conversion and complete
+angular-result invariance.
+
+References:
+
+- [W3C MathML Core](https://www.w3.org/TR/mathml-core/)
+- [NASA PDS plate-scale definition](https://pds.nasa.gov/datastandards/documents/dd/all/current/ch37s28.html)
+- [ESO image-sampling guidance](https://www.eso.org/sci/software/esomidas/doc/user/98NOV/volb/node12.html)
 
 ## Public contract
 
@@ -117,9 +163,10 @@ complete result from:
 - positive seeing FWHM in arcseconds.
 
 The result contains effective focal length and ratio, resolved sensor
-dimensions, exact field dimensions, effective pixel pitch, image scale, pixels
-per seeing FWHM, and the qualified sampling assessment. Inputs and outputs carry
-their units in property names and are readonly at the TypeScript boundary.
+dimensions, exact field dimensions, equivalent output sampling pitch, image
+scale, pixels per seeing FWHM, and the qualified sampling assessment. Inputs and
+outputs carry their units in property names and are readonly at the TypeScript
+boundary.
 
 ## Numerical policy
 
@@ -144,19 +191,19 @@ and 2× modifiers, a 9576 × 6388 sensor at 3.76 µm, binning 2, and 2.4″ seei
 Expected values were evaluated separately from the TypeScript implementation
 with `bc -l`, a scale of 100 decimal places, and \(\pi = 4\arctan(1)\).
 
-| Result                 |       Frozen expectation |
-| ---------------------- | -----------------------: |
-| Effective focal length |                  1400 mm |
-| Effective focal ratio  |                      f/7 |
-| Sensor dimensions      |   36.00576 × 24.01888 mm |
-| Sensor diagonal        |    43.281882464051861 mm |
-| Horizontal field       |       1.473474561971489° |
-| Vertical field         |       0.982961927640769° |
-| Diagonal field         |       1.771194075872283° |
-| Effective pixel pitch  |                  7.52 µm |
-| Image scale            | 1.107937714285714″/pixel |
-| Pixels per seeing FWHM |        2.166186753149094 |
-| Assessment             |      broadly appropriate |
+| Result                  |              Frozen expectation |
+| ----------------------- | ------------------------------: |
+| Effective focal length  |                         1400 mm |
+| Effective focal ratio   |                             f/7 |
+| Sensor dimensions       |          36.00576 × 24.01888 mm |
+| Sensor diagonal         |           43.281882464051861 mm |
+| Horizontal field        |              1.473474561971489° |
+| Vertical field          |              0.982961927640769° |
+| Diagonal field          |              1.771194075872283° |
+| Equivalent output pitch |                         7.52 µm |
+| Image scale             | 1.107937714285714″/output pixel |
+| Pixels per seeing FWHM  |               2.166186753149094 |
+| Assessment              |             broadly appropriate |
 
 Tests compare trigonometric results within `1e-12` absolute precision and keep
 the high-precision expectations as literals. The implementation under test is
@@ -173,8 +220,8 @@ A second fixture uses manufacturer-published specifications, verified on 29 July
   6248 × 4176 resolution and 3.76 µm native pixels.
 
 With no modifier, binning 1, and 2.0″ seeing, the independent reference produces
-a 2.243080057669° × 1.499322068146° field, 1.292594″/pixel image scale, and
-1.547276252249 pixels per seeing FWHM: likely undersampled under the qualified
-default threshold. The test derives 23.49248 × 15.70176 mm from resolution and
-pitch; its difference from ZWO's rounded physical dimensions is below the future
-catalogue's 0.1 mm discrepancy tolerance.
+a 2.243080057669° × 1.499322068146° field, 1.292594″/output-pixel image scale,
+and 1.547276252249 pixels per seeing FWHM: likely undersampled under the
+qualified default threshold. The test derives 23.49248 × 15.70176 mm from
+resolution and pitch; its difference from ZWO's rounded physical dimensions is
+below the future catalogue's 0.1 mm discrepancy tolerance.

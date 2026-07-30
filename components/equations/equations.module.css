@@ -1,0 +1,151 @@
+.card {
+  display: grid;
+  min-width: 0;
+  padding: var(--space-5);
+  gap: var(--space-5);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-panel);
+  background: var(--color-surface-raised);
+}
+
+.title,
+.sectionTitle,
+.prose,
+.finalResult {
+  margin: 0;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.35rem, 3vw, 1.75rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.expressions,
+.explanation {
+  display: grid;
+  min-width: 0;
+  gap: var(--space-3);
+}
+
+.expression {
+  min-width: 0;
+  margin: 0;
+}
+
+.expressionLabel,
+.sectionTitle {
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-meta);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.expressionLabel {
+  margin-bottom: var(--space-2);
+}
+
+.expressionViewport {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  padding: var(--space-3) var(--space-4);
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+}
+
+.math {
+  display: block;
+  width: max-content;
+  min-width: 100%;
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1.08rem;
+}
+
+.prose {
+  color: var(--color-text-soft);
+  line-height: 1.55;
+}
+
+.variables {
+  display: grid;
+  grid-template-columns: minmax(4.5rem, auto) minmax(0, 1fr);
+  margin: 0;
+  gap: 0;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.symbol,
+.definition {
+  min-width: 0;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.symbol {
+  padding-right: var(--space-4);
+  color: var(--color-signal);
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+}
+
+.definition {
+  display: grid;
+  margin: 0;
+  gap: var(--space-1);
+  color: var(--color-text-soft);
+  line-height: 1.45;
+}
+
+.unit {
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-meta);
+}
+
+.finalResult {
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: clamp(1.3rem, 3vw, 1.75rem);
+  line-height: 1.2;
+}
+
+@media (max-width: 450px) {
+  .card {
+    padding: var(--space-4);
+  }
+
+  .expressionViewport {
+    padding: var(--space-3);
+  }
+
+  .variables {
+    grid-template-columns: minmax(3.5rem, auto) minmax(0, 1fr);
+  }
+}
+
+@media (forced-colors: active) {
+  .card,
+  .expressionViewport,
+  .variables,
+  .symbol,
+  .definition {
+    border-color: CanvasText;
+  }
+
+  .expressionLabel,
+  .sectionTitle,
+  .symbol,
+  .unit {
+    color: CanvasText;
+  }
+}
