@@ -5,13 +5,27 @@ import { describe, expect, it } from "vitest";
 import { unavailableFieldOfViewCatalogue } from "../services/calculator-catalogue";
 import { fieldOfViewCatalogueFixture } from "@/tests/fixtures/field-of-view-catalogue";
 import { FieldOfViewLab } from "./field-of-view-lab";
+import { formatSignedAngularMargin } from "./target-framing-simulator";
 
-function renderLab() {
-  return render(<FieldOfViewLab catalogue={fieldOfViewCatalogueFixture} />);
+function renderLab(catalogue = fieldOfViewCatalogueFixture) {
+  return render(<FieldOfViewLab catalogue={catalogue} />);
 }
 
+describe("formatSignedAngularMargin", () => {
+  it.each([
+    { valueDeg: 1.234, expected: "1.23°" },
+    { valueDeg: -0.5, expected: "-30′" },
+    { valueDeg: 0.02, expected: "1.2′" },
+    { valueDeg: -0.004, expected: "-14.4″" },
+    { valueDeg: -0.0001, expected: "-0.36″" },
+    { valueDeg: -0, expected: "0°" },
+  ])("formats $valueDeg degrees as $expected", ({ valueDeg, expected }) => {
+    expect(formatSignedAngularMargin(valueDeg)).toBe(expected);
+  });
+});
+
 describe("FieldOfViewLab", () => {
-  it("renders the required input hierarchy, one restrained live result, and a visual equivalent", () => {
+  it("renders the required input hierarchy, one restrained live result, and a proportional visual equivalent", () => {
     renderLab();
 
     expect(
@@ -49,17 +63,194 @@ describe("FieldOfViewLab", () => {
     expect(liveRegions).toHaveLength(1);
     expect(liveRegions[0]).toHaveAttribute("aria-atomic", "true");
     expect(liveRegions[0]).toHaveTextContent("2.24° × 1.50°");
+    expect(screen.getByTestId("framing-live-status")).toHaveTextContent(
+      /andromeda galaxy \(m31\): extends beyond the centred sensor frame/i,
+    );
+    expect(screen.getByTestId("framing-fit-status")).toHaveTextContent(
+      "Centred total clearance: -37.8′ horizontal, -1.90° vertical.",
+    );
 
     expect(
-      screen.getByRole("img", { name: /illustrative sensor frame/i }),
-    ).toHaveAccessibleDescription(/no target scale is represented yet/i);
+      screen.getByRole("heading", { name: "Target framing simulator" }),
+    ).toBeVisible();
+    expect(
+      screen.getByRole("img", {
+        name: /proportional framing simulator for andromeda galaxy/i,
+      }),
+    ).toHaveAccessibleDescription(
+      /target extent 3\.33° by 1\.18°.*display zoom 1\.00 times changes only this view/i,
+    );
     expect(screen.getByText(/not a calibrated sky survey/i)).toBeVisible();
+    expect(screen.getByRole("link", { name: "Asset licence" })).toHaveAttribute(
+      "href",
+      "https://creativecommons.org/licenses/by/4.0/",
+    );
+    expect(
+      screen.getByRole("link", { name: "Angular-size source" }),
+    ).toHaveAttribute("href", "https://example.com/m31");
 
     const resultList = screen.getByText("Image scale").closest("dl");
     expect(resultList).toBeTruthy();
     expect(within(resultList as HTMLElement).getAllByRole("term")).toHaveLength(
       5,
     );
+  });
+
+  it("keeps optical results and angular proportions invariant under display zoom", () => {
+    renderLab();
+    const diagram = screen.getByRole("img", {
+      name: /proportional framing simulator/i,
+    });
+    const zoom = screen.getByRole("slider", { name: "Display zoom" });
+    const primaryResult = screen.getByTestId("primary-result");
+    const fitStatus = screen.getByTestId("framing-fit-status");
+    const framingLiveStatus = screen.getByTestId("framing-live-status");
+    const initial = {
+      fieldWidth: diagram.getAttribute("data-field-width-deg"),
+      fieldHeight: diagram.getAttribute("data-field-height-deg"),
+      targetWidth: diagram.getAttribute("data-target-width-deg"),
+      targetHeight: diagram.getAttribute("data-target-height-deg"),
+      fieldResult: primaryResult.textContent,
+      fit: fitStatus.textContent,
+      liveFit: framingLiveStatus.textContent,
+      viewBox: diagram.getAttribute("viewBox"),
+    };
+
+    fireEvent.change(zoom, { target: { value: "2" } });
+
+    expect(zoom).toHaveAttribute("aria-valuetext", "2.00 times; display only");
+    expect(diagram.getAttribute("viewBox")).not.toBe(initial.viewBox);
+    expect(diagram).toHaveAttribute("data-field-width-deg", initial.fieldWidth);
+    expect(diagram).toHaveAttribute(
+      "data-field-height-deg",
+      initial.fieldHeight,
+    );
+    expect(diagram).toHaveAttribute(
+      "data-target-width-deg",
+      initial.targetWidth,
+    );
+    expect(diagram).toHaveAttribute(
+      "data-target-height-deg",
+      initial.targetHeight,
+    );
+    expect(primaryResult.textContent).toBe(initial.fieldResult);
+    expect(fitStatus.textContent).toBe(initial.fit);
+    expect(screen.getByTestId("framing-live-status")).toBe(framingLiveStatus);
+    expect(framingLiveStatus.textContent).toBe(initial.liveFit);
+  });
+
+  it("exposes a catalogue framing qualification in both visible and non-visual output", () => {
+    const framingNote =
+      "Planning proxy based on a cited image frame; not a calibrated target boundary.";
+    renderLab({
+      ...fieldOfViewCatalogueFixture,
+      targets: fieldOfViewCatalogueFixture.targets.map((target) =>
+        target.slug === "m31-andromeda-galaxy"
+          ? { ...target, framingNote }
+          : target,
+      ),
+    });
+
+    expect(screen.getByTestId("target-framing-note")).toHaveTextContent(
+      "Footprint qualification. " + framingNote,
+    );
+    expect(screen.getByTestId("framing-text-equivalent")).toHaveTextContent(
+      framingNote,
+    );
+    expect(
+      screen.getByRole("img", {
+        name: /proportional framing simulator for andromeda galaxy/i,
+      }),
+    ).toHaveAccessibleDescription(new RegExp(framingNote));
+  });
+
+  it("announces a concise fit decision when the target changes", async () => {
+    const user = userEvent.setup();
+    renderLab();
+    const liveStatus = screen.getByTestId("framing-live-status");
+    const target = screen.getByRole("combobox", {
+      name: "Astronomical target",
+    });
+
+    expect(liveStatus).toHaveTextContent(/andromeda galaxy.*extends beyond/i);
+    await user.clear(target);
+    await user.type(target, "Orion");
+    await user.click(
+      screen.getByRole("option", { name: "Orion Nebula · M42" }),
+    );
+
+    expect(screen.getByTestId("framing-live-status")).toBe(liveStatus);
+    expect(liveStatus).toHaveTextContent(/orion nebula.*fits within/i);
+  });
+
+  it("rotates and reorients only the displayed sensor frame", async () => {
+    const user = userEvent.setup();
+    renderLab();
+    const diagram = screen.getByRole("img", {
+      name: /proportional framing simulator/i,
+    });
+    const primaryResult = screen.getByTestId("primary-result");
+    const initialResult = primaryResult.textContent;
+    const landscapeWidth = Number(diagram.dataset.fieldWidthDeg);
+    const landscapeHeight = Number(diagram.dataset.fieldHeightDeg);
+
+    await user.click(screen.getByRole("radio", { name: "Portrait" }));
+
+    expect(diagram).toHaveAttribute("data-orientation", "portrait");
+    expect(Number(diagram.dataset.fieldWidthDeg)).toBeCloseTo(
+      landscapeHeight,
+      12,
+    );
+    expect(Number(diagram.dataset.fieldHeightDeg)).toBeCloseTo(
+      landscapeWidth,
+      12,
+    );
+
+    fireEvent.change(screen.getByRole("slider", { name: "Frame rotation" }), {
+      target: { value: "35" },
+    });
+
+    expect(screen.getByTestId("sensor-frame")).toHaveAttribute(
+      "data-frame-rotation-deg",
+      "35",
+    );
+    expect(primaryResult.textContent).toBe(initialResult);
+  });
+
+  it("uses one direction-neutral announcement for a half-turn", () => {
+    renderLab();
+    const rotation = screen.getByRole("slider", { name: "Frame rotation" });
+
+    fireEvent.change(rotation, { target: { value: "180" } });
+
+    expect(rotation).toHaveAttribute("aria-valuetext", "180 degrees");
+    expect(screen.getByTestId("framing-text-equivalent")).toHaveTextContent(
+      /frame rotated 180 degrees\./i,
+    );
+    expect(screen.getByTestId("framing-text-equivalent")).not.toHaveTextContent(
+      /180 degrees (?:clockwise|counter-clockwise)/i,
+    );
+  });
+
+  it("anchors the scale label to its SVG bar in wide and portrait views", async () => {
+    const user = userEvent.setup();
+    renderLab();
+
+    function expectScaleLabelAligned() {
+      const line = screen.getByTestId("angular-scale-bar-line");
+      const label = screen.getByTestId("angular-scale-bar-label");
+      expect(Number(label.getAttribute("x"))).toBeCloseTo(
+        Number(line.getAttribute("x1")),
+        12,
+      );
+      expect(Number(label.getAttribute("y"))).toBeLessThan(
+        Number(line.getAttribute("y1")),
+      );
+    }
+
+    expectScaleLabelAligned();
+    await user.click(screen.getByRole("radio", { name: "Portrait" }));
+    expectScaleLabelAligned();
   });
 
   it("updates browser-only calculations and preserves raw invalid input", async () => {
@@ -305,7 +496,7 @@ describe("FieldOfViewLab", () => {
     }).parentElement?.parentElement;
     const primaryResult = screen.getByTestId("primary-result");
     const visual = screen.getByRole("heading", {
-      name: "Framing workspace",
+      name: "Target framing simulator",
     }).parentElement?.parentElement;
     const results = screen.getByRole("heading", {
       name: "Imaging results",

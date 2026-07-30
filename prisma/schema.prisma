@@ -98,6 +98,7 @@ model AstronomicalTarget {
   assetPath          String?  @map("asset_path") @db.VarChar(2048)
   assetCredit        String?  @map("asset_credit") @db.VarChar(1024)
   assetLicenseUrl    String?  @map("asset_license_url") @db.VarChar(2048)
+  framingNote        String?  @map("framing_note") @db.VarChar(1024)
   sourceUrl          String   @map("source_url") @db.VarChar(2048)
   verifiedAt         DateTime @map("verified_at") @db.Date
   createdAt          DateTime @default(now()) @map("created_at") @db.DateTime(3)

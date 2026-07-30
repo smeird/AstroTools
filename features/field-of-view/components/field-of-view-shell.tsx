@@ -35,8 +35,8 @@ export function FieldOfViewShell({
         <p className={styles.introNote}>
           Catalogue presets are sourced from MySQL and copied into local
           calculator state. Ordinary control changes never wait for the network;
-          target imagery remains illustrative until proportional framing is
-          implemented.
+          target illustrations are scaled from catalogue angles but remain
+          visual guides rather than calibrated sky-survey imagery.
         </p>
       </section>
 

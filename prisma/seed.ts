@@ -1,12 +1,14 @@
 import "dotenv/config";
 
+import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 
 import { parseDatabaseConfiguration } from "../lib/db/config";
 import { PrismaClient, type Prisma } from "../lib/db/generated/prisma/client";
+import { validateStaticTargetSvg } from "../lib/security/static-svg";
 import {
   catalogueSeed,
   type CatalogueAstronomicalTarget,
@@ -379,6 +381,7 @@ function desiredTargetSnapshot(
     assetPath: target.assetPath,
     assetCredit: target.assetCredit,
     assetLicenseUrl: target.assetLicenseUrl,
+    framingNote: target.framingNote,
     sourceUrl: target.sourceUrl,
     verifiedAt: target.verifiedAt,
   };
@@ -404,6 +407,7 @@ async function seedTarget(
         assetPath: existing.assetPath,
         assetCredit: existing.assetCredit,
         assetLicenseUrl: existing.assetLicenseUrl,
+        framingNote: existing.framingNote,
         sourceUrl: existing.sourceUrl,
         verifiedAt: calendarDate(existing.verifiedAt),
       }
@@ -424,6 +428,7 @@ async function seedTarget(
     assetPath: target.assetPath,
     assetCredit: target.assetCredit,
     assetLicenseUrl: target.assetLicenseUrl,
+    framingNote: target.framingNote,
     sourceUrl: target.sourceUrl,
     verifiedAt: verifiedDate(target.verifiedAt),
   };
@@ -443,7 +448,40 @@ async function seedTarget(
   });
 }
 
+export function validateSeedTargetSvgs(
+  publicDirectory = fileURLToPath(new URL("../public/", import.meta.url)),
+): void {
+  for (const target of catalogueSeed.astronomicalTargets) {
+    if (!target.assetPath?.endsWith(".svg")) {
+      continue;
+    }
+
+    const assetFile = resolve(publicDirectory, target.assetPath.slice(1));
+    let source: string;
+
+    try {
+      source = readFileSync(assetFile, "utf8");
+    } catch (cause) {
+      throw new Error(
+        `Target ${target.slug} SVG could not be read from ${target.assetPath}.`,
+        { cause },
+      );
+    }
+
+    try {
+      validateStaticTargetSvg(source);
+    } catch (cause) {
+      throw new Error(
+        `Target ${target.slug} SVG failed safety validation at ${target.assetPath}.`,
+        { cause },
+      );
+    }
+  }
+}
+
 export async function seedCatalogue(client: PrismaClient) {
+  validateSeedTargetSvgs();
+
   await client.$transaction(
     async (transaction) => {
       const manufacturerIds = new Map<string, string>();

@@ -28,6 +28,10 @@ flowchart LR
 - `lib/db/` owns Prisma client creation and catalogue queries from Work
   Package 3.
 - Browser-side calculations update without API latency or database writes.
+- The Work Package 5 framing model remains pure feature code. It consumes exact
+  calculated field dimensions and catalogue target angles; display zoom,
+  rotation, orientation, grids, and illustrative assets never feed values back
+  into the scientific calculation engine.
 - The Field of View Server Component reads all pages of each active catalogue,
   with a 100-page hard limit and sequential follow-up reads, caches only
   successful results for one hour, and passes plain DTOs across the

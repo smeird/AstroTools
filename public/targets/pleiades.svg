@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">
+  <defs>
+    <radialGradient id="pleiades-halo">
+      <stop offset="0" stop-color="#cffff5" stop-opacity="0.7"/>
+      <stop offset="0.18" stop-color="#72e5d2" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#336f86" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g fill="url(#pleiades-halo)">
+    <circle cx="333" cy="280" r="190"/>
+    <circle cx="587" cy="228" r="172"/>
+    <circle cx="704" cy="433" r="184"/>
+    <circle cx="502" cy="506" r="196"/>
+    <circle cx="286" cy="550" r="165"/>
+    <circle cx="594" cy="708" r="180"/>
+    <circle cx="778" cy="678" r="144"/>
+  </g>
+  <g fill="#effffb" stroke="#72e5d2">
+    <circle cx="333" cy="280" r="18" stroke-width="6"/>
+    <circle cx="587" cy="228" r="22" stroke-width="7"/>
+    <circle cx="704" cy="433" r="16" stroke-width="6"/>
+    <circle cx="502" cy="506" r="24" stroke-width="8"/>
+    <circle cx="286" cy="550" r="14" stroke-width="5"/>
+    <circle cx="594" cy="708" r="19" stroke-width="7"/>
+    <circle cx="778" cy="678" r="12" stroke-width="5"/>
+  </g>
+  <g stroke="#d9ff70" stroke-linecap="round" opacity="0.5">
+    <path d="M333 232v96M285 280h96M587 164v128M523 228h128M502 434v144M430 506h144" stroke-width="7"/>
+  </g>
+</svg>

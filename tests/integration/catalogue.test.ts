@@ -172,6 +172,30 @@ describe("MySQL catalogue integration", () => {
     expect(decimalRows.every(({ dataType }) => dataType === "decimal")).toBe(
       true,
     );
+
+    const [framingNoteColumn] = await migrationPrisma.$queryRaw<
+      Array<{
+        dataType: string;
+        isNullable: string;
+        maximumLength: bigint;
+      }>
+    >`
+      SELECT
+        DATA_TYPE AS dataType,
+        IS_NULLABLE AS isNullable,
+        CHARACTER_MAXIMUM_LENGTH AS maximumLength
+      FROM information_schema.COLUMNS
+      WHERE TABLE_SCHEMA = DATABASE()
+        AND TABLE_NAME = 'astronomical_targets'
+        AND COLUMN_NAME = 'framing_note'
+    `;
+
+    expect(framingNoteColumn).toBeDefined();
+    expect(framingNoteColumn).toMatchObject({
+      dataType: "varchar",
+      isNullable: "YES",
+    });
+    expect(Number(framingNoteColumn!.maximumLength)).toBe(1024);
   });
 
   it("limits the runtime identity to API-readable catalogue tables", async () => {
@@ -197,14 +221,34 @@ describe("MySQL catalogue integration", () => {
       orderBy: { slug: "asc" },
       select: { id: true, slug: true },
     });
+    const rosette = await prisma.astronomicalTarget.findUniqueOrThrow({
+      where: { slug: "ngc-2237-rosette-nebula" },
+      select: { id: true, framingNote: true },
+    });
 
-    expect(countsBefore).toEqual({
+    expect(countsBefore).toMatchObject({
       manufacturers: 4,
       telescopes: 3,
       cameras: 2,
       modifiers: 2,
       targets: 6,
-      changes: 17,
+    });
+    expect(countsBefore.changes).toBeGreaterThanOrEqual(17);
+    expect(rosette.framingNote).toBe(
+      "Planning proxy based on the cited 126 × 115 arcminute north-up, east-left image frame; not a calibrated boundary of the nebula.",
+    );
+
+    const rosetteChange = await migrationPrisma.catalogueChangeLog.findFirst({
+      where: {
+        entityType: "astronomical_target",
+        entityId: rosette.id,
+      },
+      orderBy: { createdAt: "desc" },
+      select: { afterJson: true },
+    });
+    expect(rosetteChange?.afterJson).toMatchObject({
+      framingNote:
+        "Planning proxy based on the cited 126 × 115 arcminute north-up, east-left image frame; not a calibrated boundary of the nebula.",
     });
 
     await seedCatalogue(migrationPrisma);
@@ -218,7 +262,7 @@ describe("MySQL catalogue integration", () => {
         prisma.astronomicalTarget.count(),
         migrationPrisma.catalogueChangeLog.count(),
       ]),
-    ).resolves.toEqual([4, 3, 2, 2, 6, 17]);
+    ).resolves.toEqual([4, 3, 2, 2, 6, countsBefore.changes]);
     await expect(
       prisma.telescope.findMany({
         orderBy: { slug: "asc" },

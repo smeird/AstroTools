@@ -32,6 +32,35 @@ describe("equipment configuration", () => {
       sensorHeightMm: "15.7",
     });
     expect(state.targetSlug).toBe("m31-andromeda-galaxy");
+    expect(state.framing).toEqual({
+      displayZoom: 1,
+      frameRotationDeg: 0,
+      sensorOrientation: "landscape",
+    });
+  });
+
+  it("bounds framing controls independently from the optical configuration", () => {
+    const initial = createEquipmentConfiguration(fieldOfViewCatalogueFixture);
+    const originalTelescope = initial.telescope;
+    let state = equipmentConfigurationReducer(initial, {
+      type: "framing-display-zoom",
+      value: 99,
+    });
+    state = equipmentConfigurationReducer(state, {
+      type: "framing-rotation",
+      value: -999,
+    });
+    state = equipmentConfigurationReducer(state, {
+      type: "framing-orientation",
+      value: "portrait",
+    });
+
+    expect(state.framing).toEqual({
+      displayZoom: 4,
+      frameRotationDeg: -180,
+      sensorOrientation: "portrait",
+    });
+    expect(state.telescope).toBe(originalTelescope);
   });
 
   it("preserves values in manual mode and resets to the last selected telescope", () => {

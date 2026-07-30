@@ -84,6 +84,7 @@ function serializeTarget(
     assetPath: record.assetPath,
     assetCredit: record.assetCredit,
     assetLicenseUrl: record.assetLicenseUrl,
+    framingNote: record.framingNote,
     sourceUrl: record.sourceUrl,
     verifiedAt: record.verifiedAt.toISOString(),
   };

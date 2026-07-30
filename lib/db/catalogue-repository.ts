@@ -66,6 +66,7 @@ const targetSelect = {
   assetPath: true,
   assetCredit: true,
   assetLicenseUrl: true,
+  framingNote: true,
   sourceUrl: true,
   verifiedAt: true,
 } as const;

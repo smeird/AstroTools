@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
 import { describe, expect, it } from "vitest";
 
 import {
@@ -6,7 +9,8 @@ import {
   SENSOR_DIMENSION_TOLERANCE_MM,
   validateCatalogueSeed,
 } from "../prisma/data/catalogue";
-import { resolveSeedDatabaseUrl } from "../prisma/seed";
+import { resolveSeedDatabaseUrl, validateSeedTargetSvgs } from "../prisma/seed";
+import { validateStaticTargetSvg } from "./security/static-svg";
 
 function mutableCatalogue() {
   return structuredClone(catalogueSeed);
@@ -49,6 +53,43 @@ describe("catalogue seed data", () => {
       expect(new URL(record.sourceUrl).protocol).toBe("https:");
       expect(record.verifiedAt).toBe(CATALOGUE_VERIFICATION_DATE);
     }
+  });
+
+  it("stores target orientation as a canonical north-through-east position angle", () => {
+    for (const target of catalogueSeed.astronomicalTargets) {
+      expect(target.defaultRotationDeg).toBeGreaterThanOrEqual(0);
+      expect(target.defaultRotationDeg).toBeLessThan(180);
+    }
+
+    expect(
+      catalogueSeed.astronomicalTargets.find(
+        ({ slug }) => slug === "m31-andromeda-galaxy",
+      ),
+    ).toMatchObject({
+      angularWidthDeg: 3.3255,
+      angularHeightDeg: 1.179833,
+      defaultRotationDeg: 35,
+      sourceUrl:
+        "https://simbad.cds.unistra.fr/simbad/sim-basic?Ident=Messier+31",
+    });
+    expect(
+      catalogueSeed.astronomicalTargets.find(
+        ({ slug }) => slug === "ngc-2237-rosette-nebula",
+      ),
+    ).toMatchObject({
+      angularWidthDeg: 2.1,
+      angularHeightDeg: 1.916667,
+      defaultRotationDeg: 90,
+      framingNote:
+        "Planning proxy based on the cited 126 × 115 arcminute north-up, east-left image frame; not a calibrated boundary of the nebula.",
+      sourceUrl: "https://www.ing.iac.es/PR/press/rosette.html",
+    });
+
+    expect(
+      catalogueSeed.astronomicalTargets
+        .filter(({ slug }) => slug !== "ngc-2237-rosette-nebula")
+        .every(({ framingNote }) => framingNote === null),
+    ).toBe(true);
   });
 
   it("keeps every equipment manufacturer reference resolvable", () => {
@@ -123,6 +164,24 @@ describe("catalogue seed data", () => {
     expect(() => validateCatalogueSeed(oversizedSource)).toThrow();
   });
 
+  it("rejects target position angles outside the canonical interval", () => {
+    for (const invalidPositionAngle of [-0.01, 180]) {
+      const input = mutableCatalogue();
+      input.astronomicalTargets[0]!.defaultRotationDeg = invalidPositionAngle;
+
+      expect(() => validateCatalogueSeed(input)).toThrow();
+    }
+  });
+
+  it("rejects blank or oversized target framing qualifications", () => {
+    for (const invalidFramingNote of ["   ", "x".repeat(1025)]) {
+      const input = mutableCatalogue();
+      input.astronomicalTargets[0]!.framingNote = invalidFramingNote;
+
+      expect(() => validateCatalogueSeed(input)).toThrow();
+    }
+  });
+
   it("rejects camera dimension discrepancies over 0.1 mm", () => {
     const input = mutableCatalogue();
     input.cameras[0]!.sensorWidthMm = 24;
@@ -132,12 +191,54 @@ describe("catalogue seed data", () => {
     );
   });
 
-  it("requires complete credit and licence metadata for future assets", () => {
+  it("requires complete credit and licence metadata for target assets", () => {
     const input = mutableCatalogue();
-    input.astronomicalTargets[0]!.assetPath = "/targets/moon.webp";
+    input.astronomicalTargets[0]!.assetCredit = null;
 
     expect(() => validateCatalogueSeed(input)).toThrow(
       /path, credit, and licence URL together/,
     );
+  });
+
+  it("allows only safe local target asset paths", () => {
+    for (const unsafePath of [
+      "https://example.test/moon.svg",
+      "/targets/../secrets.svg",
+      "/uploads/moon.svg",
+      "/targets/moon.html",
+    ]) {
+      const input = mutableCatalogue();
+      input.astronomicalTargets[0]!.assetPath = unsafePath;
+
+      expect(() => validateCatalogueSeed(input)).toThrow(
+        /safe local path under \/targets\//,
+      );
+    }
+  });
+
+  it("ships deterministic local illustrations with complete attribution", () => {
+    for (const target of catalogueSeed.astronomicalTargets) {
+      expect(target.assetPath).toMatch(/^\/targets\/.+\.svg$/);
+      expect(target.assetCredit).toBe(
+        "Astrotools target illustration, CC BY 4.0",
+      );
+      expect(target.assetLicenseUrl).toBe(
+        "https://creativecommons.org/licenses/by/4.0/",
+      );
+
+      if (!target.assetPath) {
+        throw new Error(`Target ${target.slug} has no local illustration.`);
+      }
+
+      const source = readFileSync(
+        new URL("../public" + target.assetPath, import.meta.url),
+        "utf8",
+      );
+      expect(() => validateStaticTargetSvg(source)).not.toThrow();
+    }
+
+    expect(() =>
+      validateSeedTargetSvgs(resolve(process.cwd(), "public")),
+    ).not.toThrow();
   });
 });

@@ -1018,7 +1018,7 @@ export function EquipmentConfigurationPanel({
             </div>
           </div>
           <Combobox
-            description="Target selection is retained now; proportional rendering arrives in Work Package 5."
+            description="The selected target is drawn from its catalogue angular dimensions in the framing workspace."
             disabled={catalogueUnavailable}
             error={
               state.targetSlug && !targetSelection

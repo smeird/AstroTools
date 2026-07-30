@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">
+  <defs>
+    <radialGradient id="orion-centre" cx="50%" cy="48%" r="52%">
+      <stop offset="0" stop-color="#fffbd0"/>
+      <stop offset="0.16" stop-color="#d9ff70" stop-opacity="0.9"/>
+      <stop offset="0.44" stop-color="#72e5d2" stop-opacity="0.62"/>
+      <stop offset="0.72" stop-color="#9a73bd" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#283d62" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <path d="M103 363c153-117 257-125 397-23 140-102 244-94 397 23-82 42-127 95-159 175 12 103-42 202-173 299-11-122-71-185-165-211-94 26-154 89-165 211-131-97-185-196-173-299-32-80-77-133-159-175Z" fill="#7c5ca3" opacity="0.22"/>
+  <path d="M164 314c141 13 236 73 336 191 100-118 195-178 336-191-73 91-111 181-112 270-103-13-178-3-224 83-46-86-121-96-224-83-1-89-39-179-112-270Z" fill="#72e5d2" opacity="0.24"/>
+  <ellipse cx="500" cy="500" rx="294" ry="306" fill="url(#orion-centre)"/>
+  <g fill="#fffbd0">
+    <circle cx="475" cy="480" r="16"/>
+    <circle cx="526" cy="493" r="13"/>
+    <circle cx="506" cy="533" r="10"/>
+    <circle cx="454" cy="523" r="8"/>
+  </g>
+  <path d="M252 675c95-47 166-52 248-12 82-40 153-35 248 12" fill="none" stroke="#d9ff70" stroke-width="18" opacity="0.22"/>
+</svg>

@@ -37,6 +37,29 @@ Target imagery must be either:
   credit, and verification date are recorded in the repository; or
 - an internally created representation labelled as illustrative.
 
+Work Package 5 supplies six original local SVG illustrations under
+public/targets/, credited as Astrotools and licensed under CC BY 4.0. Every
+target seed now records its safe /targets/ path, credit, and HTTPS licence URL
+as an all-or-none set. Seed validation rejects remote paths, traversal,
+unsupported file types, and incomplete attribution. Before any database write,
+the seed command parser-validates every declared SVG against a static
+element-and-attribute allowlist and rejects declarations, executable content,
+unsafe resource references, and malformed XML. Adversarial repository tests lock
+that policy. The separate target sourceUrl continues to identify the scientific
+angular-size and orientation source; it is not overloaded as an artwork source.
+
+`framingNote` is a nullable, catalogue-governed scientific qualification for a
+target footprint. The Rosette Nebula's 2.1° × 1.916667° footprint is a planning
+proxy derived from the cited photograph's 126 × 115 arcminute north-up,
+east-left frame, not a calibrated boundary of the nebula. Other initial targets
+do not require a framing note. Any interface that presents a qualified footprint
+must expose the note alongside that framing result.
+
+`defaultRotationDeg` is the target's astronomical position angle, measured from
+celestial north through east and stored from 0° inclusive to 180° exclusive. The
+north-up, east-left simulator converts that value to its SVG coordinate system
+before assessing fit. Equal-axis targets are rotation-invariant.
+
 Runtime scraping is prohibited. A catalogue change updates its repository seed,
 provenance evidence, validation tests, and change-log representation in the same
 review.
