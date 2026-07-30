@@ -8,6 +8,7 @@ import type {
   PaginatedResult,
   TelescopeDto,
 } from "./catalogue-types";
+import type { FieldOfViewShareReferences } from "../schemas/shareable-state";
 
 export const FIELD_OF_VIEW_CATALOGUE_REVALIDATE_SECONDS = 3_600;
 export const FIELD_OF_VIEW_CATALOGUE_CACHE_TAG = "field-of-view-catalogue";
@@ -81,5 +82,70 @@ export function unavailableFieldOfViewCatalogue(): FieldOfViewCatalogue {
     cameras: [],
     opticalModifiers: [],
     targets: [],
+  };
+}
+
+function appendUniqueBySlug<T extends { readonly slug: string }>(
+  values: readonly T[],
+  additions: readonly (T | null)[],
+): readonly T[] {
+  const existingSlugs = new Set(values.map(({ slug }) => slug));
+  return [
+    ...values,
+    ...additions.filter((value): value is T => {
+      if (!value || existingSlugs.has(value.slug)) {
+        return false;
+      }
+      existingSlugs.add(value.slug);
+      return true;
+    }),
+  ];
+}
+
+export async function supplementFieldOfViewCatalogue(
+  catalogue: FieldOfViewCatalogue,
+  references: FieldOfViewShareReferences,
+  service?: CatalogueService,
+): Promise<FieldOfViewCatalogue> {
+  if (catalogue.status !== "ready") {
+    return catalogue;
+  }
+
+  const catalogueService = service ?? getCatalogueService();
+
+  const telescopePromise =
+    references.telescopeSlug &&
+    !catalogue.telescopes.some(({ slug }) => slug === references.telescopeSlug)
+      ? catalogueService
+          .getTelescope(references.telescopeSlug)
+          .catch(() => null)
+      : Promise.resolve(null);
+  const cameraPromise =
+    references.cameraSlug &&
+    !catalogue.cameras.some(({ slug }) => slug === references.cameraSlug)
+      ? catalogueService.getCamera(references.cameraSlug).catch(() => null)
+      : Promise.resolve(null);
+  const missingModifierSlugs = references.modifierSlugs.filter(
+    (slug) =>
+      !catalogue.opticalModifiers.some((modifier) => modifier.slug === slug),
+  );
+  const [telescope, camera, opticalModifiers] = await Promise.all([
+    telescopePromise,
+    cameraPromise,
+    Promise.all(
+      missingModifierSlugs.map((slug) =>
+        catalogueService.getOpticalModifier(slug).catch(() => null),
+      ),
+    ),
+  ]);
+
+  return {
+    ...catalogue,
+    telescopes: appendUniqueBySlug(catalogue.telescopes, [telescope]),
+    cameras: appendUniqueBySlug(catalogue.cameras, [camera]),
+    opticalModifiers: appendUniqueBySlug(
+      catalogue.opticalModifiers,
+      opticalModifiers,
+    ),
   };
 }

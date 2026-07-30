@@ -12,6 +12,7 @@ import type {
 import {
   MAX_FIELD_OF_VIEW_CATALOGUE_PAGES,
   loadFieldOfViewCatalogue,
+  supplementFieldOfViewCatalogue,
   unavailableFieldOfViewCatalogue,
 } from "./calculator-catalogue";
 
@@ -55,6 +56,7 @@ function serviceWith(
     ),
     getCamera: vi.fn(async () => null),
     listOpticalModifiers: vi.fn(async () => emptyPage<OpticalModifierDto>()),
+    getOpticalModifier: vi.fn(async () => null),
     listTargets: vi.fn(async () =>
       singlePage(fieldOfViewCatalogueFixture.targets[0]!),
     ),
@@ -125,6 +127,78 @@ describe("loadFieldOfViewCatalogue", () => {
     await expect(loadFieldOfViewCatalogue(service)).rejects.toThrow(
       /has not been seeded/i,
     );
+  });
+});
+
+describe("supplementFieldOfViewCatalogue", () => {
+  it("returns an unavailable catalogue without constructing a database service", async () => {
+    const unavailable = unavailableFieldOfViewCatalogue();
+
+    await expect(
+      supplementFieldOfViewCatalogue(unavailable, {
+        telescopeSlug: "retired-telescope",
+        cameraSlug: "retired-camera",
+        modifierSlugs: ["retired-reducer"],
+      }),
+    ).resolves.toBe(unavailable);
+  });
+
+  it("loads only missing referenced equipment and preserves inactive records", async () => {
+    const retiredTelescope = {
+      ...fieldOfViewCatalogueFixture.telescopes[0]!,
+      slug: "retired-telescope",
+      active: false,
+    };
+    const retiredCamera = {
+      ...fieldOfViewCatalogueFixture.cameras[0]!,
+      slug: "retired-camera",
+      active: false,
+    };
+    const retiredModifier = {
+      ...fieldOfViewCatalogueFixture.opticalModifiers[0]!,
+      slug: "retired-reducer",
+      active: false,
+    };
+    const service = serviceWith({
+      getTelescope: vi.fn(async () => retiredTelescope),
+      getCamera: vi.fn(async () => retiredCamera),
+      getOpticalModifier: vi.fn(async () => retiredModifier),
+    });
+
+    const catalogue = await supplementFieldOfViewCatalogue(
+      fieldOfViewCatalogueFixture,
+      {
+        telescopeSlug: retiredTelescope.slug,
+        cameraSlug: retiredCamera.slug,
+        modifierSlugs: [retiredModifier.slug],
+      },
+      service,
+    );
+
+    expect(catalogue.telescopes.at(-1)).toEqual(retiredTelescope);
+    expect(catalogue.cameras.at(-1)).toEqual(retiredCamera);
+    expect(catalogue.opticalModifiers.at(-1)).toEqual(retiredModifier);
+    expect(service.getTelescope).toHaveBeenCalledTimes(1);
+    expect(service.getCamera).toHaveBeenCalledTimes(1);
+    expect(service.getOpticalModifier).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not query references already present in the active catalogue", async () => {
+    const service = serviceWith();
+
+    await supplementFieldOfViewCatalogue(
+      fieldOfViewCatalogueFixture,
+      {
+        telescopeSlug: fieldOfViewCatalogueFixture.telescopes[0]!.slug,
+        cameraSlug: fieldOfViewCatalogueFixture.cameras[0]!.slug,
+        modifierSlugs: [fieldOfViewCatalogueFixture.opticalModifiers[0]!.slug],
+      },
+      service,
+    );
+
+    expect(service.getTelescope).not.toHaveBeenCalled();
+    expect(service.getCamera).not.toHaveBeenCalled();
+    expect(service.getOpticalModifier).not.toHaveBeenCalled();
   });
 });
 

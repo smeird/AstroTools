@@ -5,6 +5,7 @@ import type {
   AstronomicalTargetRecord,
   CameraRecord,
   CatalogueRepository,
+  OpticalModifierRecord,
   TelescopeRecord,
 } from "./catalogue-types";
 
@@ -19,6 +20,7 @@ function createRepository(
     listCameras: vi.fn().mockResolvedValue({ items: [], total: 0 }),
     findCameraBySlug: vi.fn().mockResolvedValue(null),
     listOpticalModifiers: vi.fn().mockResolvedValue({ items: [], total: 0 }),
+    findOpticalModifierBySlug: vi.fn().mockResolvedValue(null),
     listTargets: vi.fn().mockResolvedValue({ items: [], total: 0 }),
     ...overrides,
   };
@@ -94,6 +96,32 @@ describe("catalogue service", () => {
       slug: "retired-scope",
       active: false,
       apertureMm: "80.0",
+    });
+  });
+
+  it("preserves an inactive modifier requested by an old shared configuration", async () => {
+    const modifier: OpticalModifierRecord = {
+      id: "modifier-id",
+      slug: "retired-reducer",
+      manufacturer: { slug: "example", name: "Example" },
+      model: "Retired reducer",
+      modifierType: "reducer",
+      multiplier: "0.8",
+      compatibleNotes: null,
+      active: false,
+      sourceUrl: "https://example.test/modifier",
+      verifiedAt,
+    };
+    const repository = createRepository({
+      findOpticalModifierBySlug: vi.fn().mockResolvedValue(modifier),
+    });
+
+    await expect(
+      createCatalogueService(repository).getOpticalModifier(modifier.slug),
+    ).resolves.toMatchObject({
+      slug: "retired-reducer",
+      active: false,
+      multiplier: "0.8",
     });
   });
 

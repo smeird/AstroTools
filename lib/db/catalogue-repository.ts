@@ -186,6 +186,12 @@ export function createPrismaCatalogueRepository(
 
       return { items, total };
     },
+    async findOpticalModifierBySlug(slug) {
+      return prisma.opticalModifier.findUnique({
+        where: { slug },
+        select: opticalModifierSelect,
+      });
+    },
     async listTargets(query) {
       const where = targetWhere(query);
       const [items, total] = await Promise.all([

@@ -44,6 +44,31 @@
   line-height: 1.6;
 }
 
+.shareNotice {
+  margin-bottom: var(--space-5);
+  padding: var(--space-4);
+  border: 1px solid var(--color-signal);
+  border-radius: var(--radius-control);
+  background: rgba(114, 229, 210, 0.08);
+}
+
+.shareNotice h2,
+.shareNotice p {
+  margin: 0;
+}
+
+.shareNotice h2 {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.shareNotice p {
+  margin-top: var(--space-2);
+  color: var(--color-text-soft);
+  line-height: 1.5;
+}
+
 .lede {
   max-width: 46rem;
   font-size: clamp(1rem, 1.5vw, 1.2rem);

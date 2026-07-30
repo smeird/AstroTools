@@ -42,6 +42,10 @@ flowchart LR
   camera, or target seed data is treated as unavailable rather than caching an
   apparently healthy empty catalogue.
 - Zod schemas validate URL, API, and environment input at their boundaries.
+- The versioned share schema is parsed beside the Server Component before the
+  reducer's first render. It whitelists and bounds known values, supplements the
+  active catalogue with at most one referenced telescope, one camera, and eight
+  modifier detail reads, then performs every later interaction locally.
 - Apache owns public forwarding, request limits, static caching, and security
   headers. Only forwarding headers from the loopback proxy are trusted.
 

@@ -25,6 +25,8 @@ import {
   type TargetFramingGeometry,
 } from "../model/target-framing";
 import type { FieldOfViewCatalogue } from "../services/calculator-catalogue";
+import type { EquipmentConfigurationState } from "../model/equipment-configuration";
+import type { FieldOfViewShareNotice } from "../schemas/shareable-state";
 
 import {
   AccessibleAngularPair,
@@ -34,17 +36,21 @@ import {
 import { EquipmentConfigurationPanel } from "./equipment-configuration-panel";
 import styles from "./field-of-view-lab.module.css";
 import { FieldOfViewShell } from "./field-of-view-shell";
+import { ShareConfiguration } from "./share-configuration";
 import { TargetFramingSimulator } from "./target-framing-simulator";
 
 export function FieldOfViewLab({
   catalogue,
+  initialConfiguration,
+  shareNotice,
 }: {
   catalogue: FieldOfViewCatalogue;
+  initialConfiguration?: EquipmentConfigurationState | undefined;
+  shareNotice?: FieldOfViewShareNotice | null | undefined;
 }) {
   const [state, dispatch] = useReducer(
     equipmentConfigurationReducer,
-    catalogue,
-    createEquipmentConfiguration,
+    initialConfiguration ?? createEquipmentConfiguration(catalogue),
   );
   const telescopeInputs = resolveTelescopeInputs(state.telescope);
   const cameraSensor = resolveCameraSensor(state.camera);
@@ -114,17 +120,19 @@ export function FieldOfViewLab({
   );
 
   const summary = (
-    <section
-      aria-atomic="true"
-      aria-live="polite"
-      className={styles.summary}
-      role="status"
-    >
+    <section className={styles.summary} aria-labelledby="current-field-title">
       <span aria-hidden="true" className={styles.summaryMark}>
         FOV
       </span>
-      <div data-testid="primary-result">
-        <span className={styles.summaryLabel}>Current field</span>
+      <div
+        aria-atomic="true"
+        aria-live="polite"
+        data-testid="primary-result"
+        role="status"
+      >
+        <span className={styles.summaryLabel} id="current-field-title">
+          Current field
+        </span>
         <p className={styles.summaryValue}>
           {result ? (
             <>
@@ -143,19 +151,20 @@ export function FieldOfViewLab({
             <span>Complete the labelled setup to restore results.</span>
           )}
         </p>
+        {selectedTargetLabel && framingGeometry ? (
+          <span
+            className={styles.visuallyHidden}
+            data-testid="framing-live-status"
+          >
+            {selectedTargetLabel}:{" "}
+            {framingGeometry.centeredTargetFit.fits
+              ? "fits within the centred sensor frame"
+              : "extends beyond the centred sensor frame"}
+            .
+          </span>
+        ) : null}
       </div>
-      {selectedTargetLabel && framingGeometry ? (
-        <span
-          className={styles.visuallyHidden}
-          data-testid="framing-live-status"
-        >
-          {selectedTargetLabel}:{" "}
-          {framingGeometry.centeredTargetFit.fits
-            ? "fits within the centred sensor frame"
-            : "extends beyond the centred sensor frame"}
-          .
-        </span>
-      ) : null}
+      <ShareConfiguration state={state} />
     </section>
   );
 
@@ -361,6 +370,7 @@ export function FieldOfViewLab({
   return (
     <FieldOfViewShell
       controls={controls}
+      notice={shareNotice}
       results={results}
       summary={summary}
       visualisation={visualisation}

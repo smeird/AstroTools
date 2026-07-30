@@ -109,6 +109,7 @@ test("the complete configuration reading order is reachable by keyboard", async 
     "pixel-size",
     "seeing",
     "target-preset",
+    "copy-configuration-link",
     "display-zoom",
     "frame-rotation",
   ];
@@ -233,6 +234,243 @@ test("catalogue presets and an optical reducer update the imaging result locally
   await page.getByRole("slider", { name: "Seeing" }).fill("2.5");
   await expect(page.getByText("1400.00 mm focal length")).toBeVisible();
   expect(networkCalls).toEqual([]);
+});
+
+test("a copied versioned URL reproduces the complete configuration in a fresh context", async ({
+  browser,
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {
+        writeText: async (value: string) => {
+          (
+            window as typeof window & { __copiedConfigurationUrl?: string }
+          ).__copiedConfigurationUrl = value;
+        },
+      },
+    });
+  });
+  await page.goto("/calculators/field-of-view");
+  await page.waitForLoadState("networkidle");
+  const localRequests: string[] = [];
+  page.on("request", (request) => {
+    if (
+      ["fetch", "xhr"].includes(request.resourceType()) ||
+      request.method() !== "GET"
+    ) {
+      localRequests.push(`${request.method()} ${request.url()}`);
+    }
+  });
+
+  await chooseComboboxOption(
+    page,
+    "Telescope preset",
+    "Celestron EdgeHD",
+    /celestron edgehd 8-inch/i,
+  );
+  const telescopeManual = page
+    .getByRole("group", { name: "Telescope source" })
+    .getByRole("radio", { name: "Manual" });
+  await telescopeManual.press("Space");
+  await page
+    .getByRole("spinbutton", { name: "Native focal length" })
+    .fill("1800");
+
+  await chooseComboboxOption(
+    page,
+    "Modifier preset",
+    "Celestron reducer",
+    /celestron reducer lens 0\.7x/i,
+  );
+  await page.getByRole("button", { name: "Add selected modifier" }).click();
+  await page
+    .getByRole("spinbutton", { name: "Magnification factor" })
+    .fill("0.72");
+  await page.getByRole("button", { name: "Add manual modifier" }).click();
+  const modifierTypes = page.getByRole("group", { name: "Modifier type" });
+  await modifierTypes.getByRole("radio", { name: "Barlow" }).press("Space");
+  await page
+    .getByRole("spinbutton", { name: "Magnification factor" })
+    .nth(1)
+    .fill("2");
+
+  await chooseComboboxOption(
+    page,
+    "Camera preset",
+    "ASI533",
+    "ZWO ASI533MC Pro",
+  );
+  const pixelResolution = page
+    .getByRole("group", { name: "Sensor size source" })
+    .getByRole("radio", { name: "Pixel resolution" });
+  await pixelResolution.press("Space");
+  await page.getByRole("radio", { name: "2×" }).press("Space");
+  await page.getByRole("slider", { name: "Seeing" }).fill("1.8");
+  await chooseComboboxOption(
+    page,
+    "Astronomical target",
+    "Orion",
+    "Orion Nebula · M42",
+  );
+  await page.getByRole("radio", { name: "Inches (in)" }).press("Space");
+  await page.getByRole("slider", { name: "Display zoom" }).fill("2.5");
+  await page.getByRole("slider", { name: "Frame rotation" }).fill("35");
+  await page.getByRole("radio", { name: "Portrait" }).press("Space");
+
+  const expectedResult = await page.getByTestId("primary-result").textContent();
+  const expectedDiagram = await page
+    .getByRole("img", { name: /proportional framing simulator/i })
+    .evaluate((element) => ({
+      displayZoom: element.getAttribute("data-display-zoom"),
+      fieldHeight: element.getAttribute("data-field-height-deg"),
+      fieldWidth: element.getAttribute("data-field-width-deg"),
+      orientation: element.getAttribute("data-orientation"),
+    }));
+
+  const copyLink = page.getByRole("button", { name: "Copy link" });
+  await copyLink.focus();
+  await copyLink.press("Enter");
+  await expect(copyLink).toBeFocused();
+  await expect(
+    page.getByText("Link copied. It includes the current configuration."),
+  ).toBeVisible();
+  const copiedUrl = await page.evaluate(
+    () =>
+      (window as typeof window & { __copiedConfigurationUrl?: string })
+        .__copiedConfigurationUrl ?? "",
+  );
+  expect(copiedUrl).toBe(page.url());
+  const parsedCopiedUrl = new URL(copiedUrl);
+  expect(parsedCopiedUrl.searchParams.get("v")).toBe("1");
+  expect(parsedCopiedUrl.searchParams.getAll("m")).toEqual([
+    "preset:reducer-lens-0-7x-edgehd-800:reducer:0.72",
+    "manual:manual:barlow:2",
+  ]);
+  expect(localRequests).toEqual([]);
+
+  const reproducedContext = await browser.newContext();
+  try {
+    const reproduced = await reproducedContext.newPage();
+    await reproduced.goto(copiedUrl);
+    await expect(
+      reproduced.getByRole("combobox", { name: "Telescope preset" }),
+    ).toHaveValue("Celestron EdgeHD 8-inch Optical Tube Assembly");
+    await expect(
+      reproduced
+        .getByRole("group", { name: "Telescope source" })
+        .getByRole("radio", { name: "Manual" }),
+    ).toBeChecked();
+    await expect(
+      reproduced.getByRole("spinbutton", { name: "Native focal length" }),
+    ).toHaveValue("1800");
+    await expect(
+      reproduced.getByRole("combobox", { name: "Camera preset" }),
+    ).toHaveValue("ZWO ASI533MC Pro");
+    await expect(
+      reproduced.getByRole("radio", { name: "Pixel resolution" }),
+    ).toBeChecked();
+    await expect(reproduced.getByRole("radio", { name: "2×" })).toBeChecked();
+    await expect(
+      reproduced.getByRole("slider", { name: "Seeing" }),
+    ).toHaveValue("1.8");
+    await expect(
+      reproduced.getByRole("combobox", { name: "Astronomical target" }),
+    ).toHaveValue("Orion Nebula · M42");
+    await expect(
+      reproduced.getByRole("radio", { name: "Inches (in)" }),
+    ).toBeChecked();
+    await expect(
+      reproduced.getByRole("radio", { name: "Portrait" }),
+    ).toBeChecked();
+    await expect(
+      reproduced.getByRole("slider", { name: "Display zoom" }),
+    ).toHaveValue("2.5");
+    await expect(
+      reproduced.getByRole("slider", { name: "Frame rotation" }),
+    ).toHaveValue("35");
+    expect(
+      await reproduced
+        .getByRole("spinbutton", { name: "Magnification factor" })
+        .evaluateAll((elements) =>
+          elements.map((element) => (element as HTMLInputElement).value),
+        ),
+    ).toEqual(["0.72", "2"]);
+    await expect(reproduced.getByTestId("primary-result")).toHaveText(
+      expectedResult ?? "",
+    );
+    await expect(
+      reproduced.getByRole("img", {
+        name: /proportional framing simulator/i,
+      }),
+    ).toHaveAttribute("data-display-zoom", expectedDiagram.displayZoom ?? "");
+    await expect(
+      reproduced.getByRole("img", {
+        name: /proportional framing simulator/i,
+      }),
+    ).toHaveAttribute(
+      "data-field-height-deg",
+      expectedDiagram.fieldHeight ?? "",
+    );
+    await expect(
+      reproduced.getByRole("img", {
+        name: /proportional framing simulator/i,
+      }),
+    ).toHaveAttribute("data-field-width-deg", expectedDiagram.fieldWidth ?? "");
+    await expect(
+      reproduced.getByRole("img", {
+        name: /proportional framing simulator/i,
+      }),
+    ).toHaveAttribute("data-orientation", expectedDiagram.orientation ?? "");
+    await expect(reproduced.getByRole("note")).toHaveCount(0);
+  } finally {
+    await reproducedContext.close();
+  }
+});
+
+test("invalid shared parameters fall back safely and are omitted from the next link", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {
+        writeText: async (value: string) => {
+          (
+            window as typeof window & { __copiedConfigurationUrl?: string }
+          ).__copiedConfigurationUrl = value;
+        },
+      },
+    });
+  });
+  await page.goto(
+    "/calculators/field-of-view?v=1&f=not-a-number&zoom=999&future=ok&token=secret&target=m42-orion-nebula",
+  );
+
+  await expect(page.getByRole("note")).toContainText(
+    "Safe defaults were restored for: native focal length, display zoom",
+  );
+  await expect(page.getByRole("note")).not.toContainText("not-a-number");
+  await expect(
+    page.getByRole("spinbutton", { name: "Native focal length" }),
+  ).toHaveValue("600");
+  await expect(
+    page.getByRole("combobox", { name: "Astronomical target" }),
+  ).toHaveValue("Orion Nebula · M42");
+
+  await page.getByRole("button", { name: "Copy link" }).click();
+  const copiedUrl = new URL(
+    await page.evaluate(
+      () =>
+        (window as typeof window & { __copiedConfigurationUrl?: string })
+          .__copiedConfigurationUrl ?? "",
+    ),
+  );
+  expect(copiedUrl.searchParams.get("f")).toBe("600");
+  expect(copiedUrl.searchParams.get("target")).toBe("m42-orion-nebula");
+  expect(copiedUrl.searchParams.has("future")).toBe(false);
+  expect(copiedUrl.searchParams.has("token")).toBe(false);
 });
 
 test("display zoom changes only the deterministic view geometry", async ({
@@ -637,6 +875,7 @@ test("controls meet minimum pointer targets and expose visible focus", async ({
     page.getByRole("slider", { name: "Display zoom" }),
     page.getByRole("slider", { name: "Frame rotation" }),
     page.getByRole("button", { name: "Add manual modifier" }),
+    page.getByRole("button", { name: "Copy link" }),
   ]) {
     await expectMinimumTarget(control);
   }
@@ -691,8 +930,19 @@ test("modifier removal and clearing return keyboard focus to a stable control", 
 test("the shell avoids page overflow at 320 CSS pixels and 200% content zoom", async ({
   page,
 }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText: async () => Promise.reject(new Error("denied")) },
+    });
+  });
   await page.setViewportSize({ width: 320, height: 800 });
   await page.goto("/calculators/field-of-view");
+
+  await page.getByRole("button", { name: "Copy link" }).click();
+  await expect(
+    page.getByRole("textbox", { name: "Configuration link" }),
+  ).toBeVisible();
 
   await expect(page.getByTestId("framing-orientation-mark")).toBeVisible();
   await expect(page.getByTestId("framing-grid-label")).toBeHidden();
@@ -707,6 +957,24 @@ test("the shell avoids page overflow at 320 CSS pixels and 200% content zoom", a
   await page.evaluate(() => {
     document.documentElement.style.fontSize = "200%";
   });
+  const copyButtonBounds = await page
+    .getByRole("button", { name: "Copy link" })
+    .evaluate((element) => {
+      const button = element.getBoundingClientRect();
+      const container = element.parentElement?.getBoundingClientRect();
+      return {
+        buttonLeft: button.left,
+        buttonRight: button.right,
+        containerLeft: container?.left ?? Number.NEGATIVE_INFINITY,
+        containerRight: container?.right ?? Number.POSITIVE_INFINITY,
+      };
+    });
+  expect(copyButtonBounds.buttonLeft).toBeGreaterThanOrEqual(
+    copyButtonBounds.containerLeft,
+  );
+  expect(copyButtonBounds.buttonRight).toBeLessThanOrEqual(
+    copyButtonBounds.containerRight,
+  );
   const afterZoom = await page.evaluate(
     () =>
       document.documentElement.scrollWidth <=

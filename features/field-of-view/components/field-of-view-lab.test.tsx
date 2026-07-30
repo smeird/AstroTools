@@ -1,15 +1,21 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { unavailableFieldOfViewCatalogue } from "../services/calculator-catalogue";
 import { fieldOfViewCatalogueFixture } from "@/tests/fixtures/field-of-view-catalogue";
+import { COMPLEX_FIELD_OF_VIEW_SHARE_V1 } from "@/tests/fixtures/field-of-view-shareable-state-v1";
+import { parseFieldOfViewShareState } from "../schemas/shareable-state";
 import { FieldOfViewLab } from "./field-of-view-lab";
 import { formatSignedAngularMargin } from "./target-framing-simulator";
 
 function renderLab(catalogue = fieldOfViewCatalogueFixture) {
   return render(<FieldOfViewLab catalogue={catalogue} />);
 }
+
+afterEach(() => {
+  window.history.replaceState(null, "", "/");
+});
 
 describe("formatSignedAngularMargin", () => {
   it.each([
@@ -60,9 +66,10 @@ describe("FieldOfViewLab", () => {
     ).toBeInTheDocument();
 
     const liveRegions = document.querySelectorAll('[aria-live="polite"]');
-    expect(liveRegions).toHaveLength(1);
+    expect(liveRegions).toHaveLength(2);
     expect(liveRegions[0]).toHaveAttribute("aria-atomic", "true");
     expect(liveRegions[0]).toHaveTextContent("2.24° × 1.50°");
+    expect(liveRegions[1]).toHaveTextContent("");
     expect(screen.getByTestId("framing-live-status")).toHaveTextContent(
       /andromeda galaxy \(m31\): extends beyond the centred sensor frame/i,
     );
@@ -111,6 +118,192 @@ describe("FieldOfViewLab", () => {
         "2.0 arcseconds stated seeing",
       ),
     ).toBeInTheDocument();
+  });
+
+  it("hydrates a complete shared state before the first client render", () => {
+    const shared = parseFieldOfViewShareState(
+      new URLSearchParams(COMPLEX_FIELD_OF_VIEW_SHARE_V1),
+      fieldOfViewCatalogueFixture,
+    );
+
+    render(
+      <FieldOfViewLab
+        catalogue={fieldOfViewCatalogueFixture}
+        initialConfiguration={shared.state}
+      />,
+    );
+
+    expect(
+      screen.getByRole("combobox", { name: "Telescope preset" }),
+    ).toHaveValue("Celestron EdgeHD 8-inch Optical Tube Assembly");
+    expect(
+      screen.getByRole("radio", { name: "Manual", checked: true }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("spinbutton", { name: "Native focal length" }),
+    ).toHaveValue(1800);
+    expect(screen.getByRole("combobox", { name: "Camera preset" })).toHaveValue(
+      "ZWO ASI533MC Pro",
+    );
+    expect(
+      screen.getByRole("radio", { name: "Pixel resolution" }),
+    ).toBeChecked();
+    expect(screen.getByRole("radio", { name: "2×" })).toBeChecked();
+    expect(screen.getByRole("slider", { name: "Seeing" })).toHaveValue("1.8");
+    expect(
+      screen.getByRole("combobox", { name: "Astronomical target" }),
+    ).toHaveValue("Orion Nebula · M42");
+    expect(screen.getByRole("radio", { name: "Inches (in)" })).toBeChecked();
+    expect(screen.getByRole("radio", { name: "Portrait" })).toBeChecked();
+    expect(screen.getByRole("slider", { name: "Display zoom" })).toHaveValue(
+      "2.5",
+    );
+    expect(screen.getByRole("slider", { name: "Frame rotation" })).toHaveValue(
+      "35",
+    );
+    expect(
+      screen.getByText("Customised preset", { exact: true }),
+    ).toBeVisible();
+  });
+
+  it("copies the latest canonical state and keeps focus on the action", async () => {
+    const user = userEvent.setup();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
+    renderLab();
+
+    const focalLength = screen.getByRole("spinbutton", {
+      name: "Native focal length",
+    });
+    await user.clear(focalLength);
+    await user.type(focalLength, "1200");
+    const copyLink = screen.getByRole("button", { name: "Copy link" });
+    await user.click(copyLink);
+
+    expect(writeText).toHaveBeenCalledTimes(1);
+    const copiedUrl = new URL(String(writeText.mock.calls[0]?.[0]));
+    expect(copiedUrl.pathname).toBe("/calculators/field-of-view");
+    expect(copiedUrl.searchParams.get("v")).toBe("1");
+    expect(copiedUrl.searchParams.get("f")).toBe("1200");
+    expect(copiedUrl.searchParams.has("email")).toBe(false);
+    expect(copyLink).toHaveFocus();
+    expect(
+      screen.getByText("Link copied. It includes the current configuration."),
+    ).toBeVisible();
+
+    const status = document.getElementById("share-configuration-status")!;
+    const firstAnnouncement = status.firstElementChild;
+    await user.click(copyLink);
+    expect(writeText).toHaveBeenCalledTimes(2);
+    expect(status.firstElementChild).not.toBe(firstAnnouncement);
+  });
+
+  it("still copies when address-bar synchronization is unavailable", async () => {
+    const user = userEvent.setup();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
+    const replaceState = vi
+      .spyOn(window.history, "replaceState")
+      .mockImplementation(() => {
+        throw new DOMException("History unavailable", "SecurityError");
+      });
+
+    try {
+      renderLab();
+      await user.click(screen.getByRole("button", { name: "Copy link" }));
+
+      expect(writeText).toHaveBeenCalledTimes(1);
+      expect(
+        screen.getByText("Link copied. It includes the current configuration."),
+      ).toBeVisible();
+    } finally {
+      replaceState.mockRestore();
+    }
+  });
+
+  it("provides a selectable fallback when clipboard access fails", async () => {
+    const user = userEvent.setup();
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText: vi.fn().mockRejectedValue(new Error("denied")) },
+    });
+    renderLab();
+
+    const copyLink = screen.getByRole("button", { name: "Copy link" });
+    await user.click(copyLink);
+
+    expect(copyLink).toHaveFocus();
+    expect(
+      screen.getByText("Could not copy the link. Select and copy it below."),
+    ).toBeVisible();
+    expect(
+      screen.getByRole("textbox", { name: "Configuration link" }),
+    ).toHaveAttribute("readonly");
+  });
+
+  it("reports an invalid current form without disabling the copy action", async () => {
+    const user = userEvent.setup();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
+    renderLab();
+
+    await user.clear(
+      screen.getByRole("spinbutton", { name: "Native focal length" }),
+    );
+    const copyLink = screen.getByRole("button", { name: "Copy link" });
+    expect(copyLink).toBeEnabled();
+    await user.click(copyLink);
+
+    expect(writeText).not.toHaveBeenCalled();
+    expect(copyLink).toHaveFocus();
+    expect(
+      screen.getByText(
+        "Complete the labelled required fields before copying a link.",
+      ),
+    ).toBeVisible();
+  });
+
+  it("copies a valid visible camera setup after normalizing an inactive invalid draft", async () => {
+    const user = userEvent.setup();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
+    renderLab();
+
+    const geometry = screen.getByRole("group", { name: "Sensor size source" });
+    await user.click(
+      within(geometry).getByRole("radio", { name: "Pixel resolution" }),
+    );
+    await user.clear(
+      screen.getByRole("spinbutton", { name: "Resolution width" }),
+    );
+    await user.click(
+      within(geometry).getByRole("radio", { name: "Physical dimensions" }),
+    );
+
+    expect(screen.getByTestId("camera-status")).toHaveTextContent(
+      /catalogue preset/i,
+    );
+    await user.click(screen.getByRole("button", { name: "Copy link" }));
+
+    expect(writeText).toHaveBeenCalledTimes(1);
+    expect(
+      new URL(String(writeText.mock.calls[0]?.[0])).searchParams.has("rw"),
+    ).toBe(false);
+    expect(
+      screen.getByText("Link copied. It includes the current configuration."),
+    ).toBeVisible();
   });
 
   it("renders structured MathML with every explanatory layer outside the live region", () => {

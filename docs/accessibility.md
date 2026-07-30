@@ -112,6 +112,28 @@ role and is widely available in current browser engines. The implementation
 follows [MathML Core](https://www.w3.org/TR/mathml-core/) and the
 [W3C MathML accessibility guidance](https://www.w3.org/TR/mathml4/#accessibility).
 
+## Work Package 7 evidence
+
+Evidence recorded on 30 July 2026:
+
+- Shared configuration state is resolved before the first client render, so
+  controls, preset labels, results, and framing geometry do not flash from a
+  default state or trigger a hydration announcement.
+- `Copy link` remains a native keyboard-operable button with a stable label and
+  retained focus. A separate, initially empty polite status reports success,
+  clipboard failure, or an invalid current form without placing an interactive
+  element inside the calculated-result status.
+- Clipboard failure exposes a labelled, read-only URL field without moving
+  focus. Its width and overflow are bounded at 320 CSS pixels and 200% text
+  enlargement.
+- Invalid recognised URL values produce a visible static `role=note`, not an
+  alert or live announcement. The note uses fixed field labels and never
+  reflects raw query text.
+- Component tests cover success, failure, focus retention, invalid forms, and
+  first-render hydration. Playwright covers complete keyboard order, minimum
+  pointer size, fresh-context reproduction, invalid-URL recovery, mobile
+  overflow, and the absence of browser API writes during local interaction.
+
 ## Manual release checks still required
 
 Automated evidence is not a screen-reader conformance claim. Before the Release
