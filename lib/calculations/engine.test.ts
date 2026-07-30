@@ -12,6 +12,7 @@ import {
   calculateImageScale,
   calculateImagingSystem,
   calculatePixelsPerSeeingFwhm,
+  deriveFocalLength,
   deriveSensorDimensions,
   resolveSensorDimensions,
 } from "./index";
@@ -114,6 +115,29 @@ describe("effective optics", () => {
         apertureMm: 200,
       }),
     ).toBe(7);
+  });
+
+  it.each([
+    { apertureMm: 80, focalRatio: 7.5, expected: 600 },
+    { apertureMm: 203.2, focalRatio: 10, expected: 2032 },
+    { apertureMm: 51, focalRatio: 4.901960784313726, expected: 250 },
+  ])(
+    "derives $expected mm from $apertureMm mm at f/$focalRatio",
+    ({ apertureMm, focalRatio, expected }) => {
+      expect(deriveFocalLength({ apertureMm, focalRatio })).toBeCloseTo(
+        expected,
+        12,
+      );
+    },
+  );
+
+  it("rejects non-positive values when deriving focal length", () => {
+    expect(() => deriveFocalLength({ apertureMm: 0, focalRatio: 5 })).toThrow(
+      /apertureMm/,
+    );
+    expect(() => deriveFocalLength({ apertureMm: 80, focalRatio: 0 })).toThrow(
+      /focalRatio/,
+    );
   });
 });
 

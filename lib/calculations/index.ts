@@ -12,11 +12,13 @@ export {
   calculateImageScale,
   calculateImagingSystem,
   calculatePixelsPerSeeingFwhm,
+  deriveFocalLength,
   deriveSensorDimensions,
   resolveSensorDimensions,
 } from "./engine";
 export type {
   CameraSensorInput,
+  DerivedFocalLengthInput,
   DerivedSensorDimensionsInput,
   EffectiveFocalLengthInput,
   EffectiveFocalRatioInput,

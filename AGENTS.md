@@ -53,8 +53,10 @@ default. Keep Playwright and the future Apache proxy target aligned with this
 port.
 
 Work Package 3 supplies the catalogue schema, reviewed migration,
-provenance-rich seed, and read-only services. Run database commands against
-MySQL 8.4 LTS with a non-root identity:
+provenance-rich seed, and read-only services. Work Package 4 consumes those
+services during server rendering and keeps all ordinary equipment interaction
+local to the browser. Run database commands against MySQL 8.4 LTS with a
+non-root identity:
 
 ```bash
 npm run db:generate

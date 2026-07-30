@@ -9,6 +9,7 @@ import type { FieldProps } from "./field-types";
 export interface NumericInputProps extends FieldProps {
   name: string;
   value: string;
+  readOnly?: boolean;
   min?: number;
   max?: number;
   step?: number | "any";
@@ -26,6 +27,7 @@ export function NumericInput({
   required,
   name,
   value,
+  readOnly,
   min,
   max,
   step,
@@ -78,6 +80,7 @@ export function NumericInput({
           min={min}
           name={name}
           onChange={(event) => onValueChange(event.currentTarget.value)}
+          readOnly={readOnly}
           required={required}
           step={step}
           type="number"
