@@ -1,0 +1,32 @@
+-- REVIEWED TEMPLATE ONLY — do not execute before replacing every {{...}} token.
+-- Generate one 64-character hexadecimal value per distinct placeholder name
+-- with `openssl rand -hex 32`, then replace each repeated occurrence of that
+-- name consistently. Hexadecimal values need no additional SQL or URL escaping.
+-- Keep the rendered file outside source control and run it only during approved
+-- database provisioning.
+
+CREATE DATABASE IF NOT EXISTS `astrotools`
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+CREATE USER IF NOT EXISTS 'astrotools_app'@'127.0.0.1'
+  IDENTIFIED BY '{{RUNTIME_PASSWORD}}';
+ALTER USER 'astrotools_app'@'127.0.0.1'
+  IDENTIFIED BY '{{RUNTIME_PASSWORD}}';
+REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'astrotools_app'@'127.0.0.1';
+
+CREATE USER IF NOT EXISTS 'astrotools_migrate'@'127.0.0.1'
+  IDENTIFIED BY '{{MIGRATION_PASSWORD}}';
+ALTER USER 'astrotools_migrate'@'127.0.0.1'
+  IDENTIFIED BY '{{MIGRATION_PASSWORD}}';
+REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'astrotools_migrate'@'127.0.0.1';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, DROP, INDEX, REFERENCES,
+  CREATE VIEW, SHOW VIEW, TRIGGER
+  ON `astrotools`.* TO 'astrotools_migrate'@'127.0.0.1';
+
+-- After the controlled migration creates the tables, apply
+-- runtime-read-grants.sql.template as the administrator. Keeping grants in that
+-- second phase avoids database-wide access and permits a clean bootstrap.
+
+-- MySQL applies account and grant statements immediately. FLUSH PRIVILEGES is
+-- intentionally unnecessary here.

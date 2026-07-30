@@ -17,6 +17,7 @@ lib/db/generated/
 .env
 .env.*
 !.env.example
+!.env.integration.example
 
 # Editors and operating systems
 .DS_Store

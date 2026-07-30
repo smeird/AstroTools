@@ -7,4 +7,118 @@ datasource db {
   provider = "mysql"
 }
 
-// Catalogue models are intentionally deferred to Work Package 3.
+model Manufacturer {
+  id         String            @id @default(uuid()) @db.Char(36)
+  slug       String            @unique @db.VarChar(191)
+  name       String            @db.VarChar(255)
+  websiteUrl String            @map("website_url") @db.VarChar(2048)
+  createdAt  DateTime          @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt  DateTime          @updatedAt @map("updated_at") @db.DateTime(3)
+  telescopes Telescope[]
+  cameras    Camera[]
+  modifiers  OpticalModifier[]
+
+  @@map("manufacturers")
+}
+
+model Telescope {
+  id                  String       @id @default(uuid()) @db.Char(36)
+  manufacturerId      String       @map("manufacturer_id") @db.Char(36)
+  slug                String       @unique @db.VarChar(191)
+  model               String       @db.VarChar(255)
+  opticalDesign       String       @map("optical_design") @db.VarChar(255)
+  apertureMm          Decimal      @map("aperture_mm") @db.Decimal(9, 3)
+  nativeFocalLengthMm Decimal      @map("native_focal_length_mm") @db.Decimal(10, 3)
+  active              Boolean      @default(true)
+  sourceUrl           String       @map("source_url") @db.VarChar(2048)
+  verifiedAt          DateTime     @map("verified_at") @db.Date
+  createdAt           DateTime     @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt           DateTime     @updatedAt @map("updated_at") @db.DateTime(3)
+  manufacturer        Manufacturer @relation(fields: [manufacturerId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@unique([manufacturerId, model])
+  @@index([active])
+  @@map("telescopes")
+}
+
+model Camera {
+  id                 String       @id @default(uuid()) @db.Char(36)
+  manufacturerId     String       @map("manufacturer_id") @db.Char(36)
+  slug               String       @unique @db.VarChar(191)
+  model              String       @db.VarChar(255)
+  sensorName         String       @map("sensor_name") @db.VarChar(255)
+  sensorWidthMm      Decimal      @map("sensor_width_mm") @db.Decimal(9, 4)
+  sensorHeightMm     Decimal      @map("sensor_height_mm") @db.Decimal(9, 4)
+  pixelSizeUm        Decimal      @map("pixel_size_um") @db.Decimal(7, 3)
+  resolutionWidthPx  Int          @map("resolution_width_px") @db.UnsignedInt
+  resolutionHeightPx Int          @map("resolution_height_px") @db.UnsignedInt
+  sensorType         String       @map("sensor_type") @db.VarChar(100)
+  colourMode         String       @map("colour_mode") @db.VarChar(100)
+  active             Boolean      @default(true)
+  sourceUrl          String       @map("source_url") @db.VarChar(2048)
+  verifiedAt         DateTime     @map("verified_at") @db.Date
+  createdAt          DateTime     @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt          DateTime     @updatedAt @map("updated_at") @db.DateTime(3)
+  manufacturer       Manufacturer @relation(fields: [manufacturerId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@unique([manufacturerId, model])
+  @@index([active])
+  @@map("cameras")
+}
+
+model OpticalModifier {
+  id              String       @id @default(uuid()) @db.Char(36)
+  manufacturerId  String       @map("manufacturer_id") @db.Char(36)
+  slug            String       @unique @db.VarChar(191)
+  model           String       @db.VarChar(255)
+  modifierType    String       @map("modifier_type") @db.VarChar(100)
+  multiplier      Decimal      @db.Decimal(7, 4)
+  compatibleNotes String?      @map("compatible_notes") @db.Text
+  active          Boolean      @default(true)
+  sourceUrl       String       @map("source_url") @db.VarChar(2048)
+  verifiedAt      DateTime     @map("verified_at") @db.Date
+  createdAt       DateTime     @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt       DateTime     @updatedAt @map("updated_at") @db.DateTime(3)
+  manufacturer    Manufacturer @relation(fields: [manufacturerId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@unique([manufacturerId, model])
+  @@index([active])
+  @@map("optical_modifiers")
+}
+
+model AstronomicalTarget {
+  id                 String   @id @default(uuid()) @db.Char(36)
+  slug               String   @unique @db.VarChar(191)
+  catalogueName      String   @unique @map("catalogue_name") @db.VarChar(255)
+  commonName         String   @map("common_name") @db.VarChar(255)
+  category           String   @db.VarChar(100)
+  angularWidthDeg    Decimal  @map("angular_width_deg") @db.Decimal(10, 6)
+  angularHeightDeg   Decimal  @map("angular_height_deg") @db.Decimal(10, 6)
+  defaultRotationDeg Decimal  @map("default_rotation_deg") @db.Decimal(7, 3)
+  assetPath          String?  @map("asset_path") @db.VarChar(2048)
+  assetCredit        String?  @map("asset_credit") @db.VarChar(1024)
+  assetLicenseUrl    String?  @map("asset_license_url") @db.VarChar(2048)
+  sourceUrl          String   @map("source_url") @db.VarChar(2048)
+  verifiedAt         DateTime @map("verified_at") @db.Date
+  createdAt          DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt          DateTime @updatedAt @map("updated_at") @db.DateTime(3)
+
+  @@index([category])
+  @@map("astronomical_targets")
+}
+
+model CatalogueChangeLog {
+  id         String   @id @default(uuid()) @db.Char(36)
+  entityType String   @map("entity_type") @db.VarChar(100)
+  entityId   String   @map("entity_id") @db.Char(36)
+  changeType String   @map("change_type") @db.VarChar(50)
+  beforeJson Json?    @map("before_json")
+  afterJson  Json?    @map("after_json")
+  sourceUrl  String   @map("source_url") @db.VarChar(2048)
+  changedBy  String   @map("changed_by") @db.VarChar(191)
+  createdAt  DateTime @default(now()) @map("created_at") @db.DateTime(3)
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@map("catalogue_change_log")
+}

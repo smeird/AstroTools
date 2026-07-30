@@ -1,7 +1,7 @@
 # Security foundation
 
-- Status: Work Package 0 baseline
-- Last reviewed: 29 July 2026
+- Status: Work Package 3 baseline
+- Last reviewed: 30 July 2026
 - Owner: Astrotools maintainers
 
 Release 1 must not collect personal data or require accounts. Apache2 remains
@@ -9,6 +9,41 @@ the only public endpoint; application and database hardening is delivered in
 later work packages under the canonical implementation plan. Next.js telemetry
 is disabled in the documented development and CI build commands; no application
 analytics are included.
+
+## Catalogue and database controls
+
+MySQL 8.4 LTS runs on the Ubuntu 24.04 application host and binds to
+`127.0.0.1`. The application must not connect as MySQL root. Its runtime
+identity receives only the permissions needed for read-only catalogue access; a
+separate migration identity is injected as `MIGRATION_DATABASE_URL` only during
+a controlled release. Connection URLs and backup credentials remain outside the
+repository in root-controlled environment files or an approved secret store.
+Runtime SELECT grants enumerate the five API-readable catalogue tables rather
+than using a database wildcard, so change history, migration metadata, and
+future tables are denied by default.
+
+CI uses separate literal, disposable migration and SELECT-only runtime
+credentials with an isolated MySQL service. The integration suite proves that
+the runtime identity cannot write. Those identities have no authority outside
+that ephemeral job and must never be reused in a deployed environment. Runtime
+configuration rejects root and non-loopback database connections. Catalogue
+input is repository-reviewed, boundary-validated and queried through
+parameterised Prisma access. Runtime manufacturer or asset scraping is
+prohibited.
+
+The runtime pool bounds connection acquisition, initial connection, and pool
+initialisation to two seconds. MySQL's session `max_execution_time` separately
+bounds read-only SELECT execution without treating healthy idle sockets as
+failed connections. The readiness endpoint also has its own two-second response
+deadline so a stalled driver promise cannot hold the health request open. These
+are deliberately distinct controls; the MariaDB connector's `socketTimeout` and
+`queryTimeout` options are not used because the former expires idle pooled
+connections and the latter is not supported against MySQL.
+
+Nightly backups are encrypted before or during transfer to an S3-compatible
+destination and retain 30 daily restore points. Provider selection, key
+rotation, restore testing, and deployment are Work Package 9 concerns. No
+analytics or non-essential tracking is authorised.
 
 ## Dependency audit policy
 

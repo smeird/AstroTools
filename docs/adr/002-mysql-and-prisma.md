@@ -2,6 +2,7 @@
 
 - Status: Accepted
 - Date: 29 July 2026
+- Updated: 30 July 2026
 
 ## Context
 
@@ -10,25 +11,27 @@ history, numeric integrity, and typed access from the TypeScript application.
 
 ## Decision
 
-Use MySQL 8.4 LTS with InnoDB and current stable Prisma ORM using the MySQL
-connector. Store catalogue measurements in appropriate DECIMAL columns. Use
-Prisma Migrate for reviewed migrations and repository-controlled, idempotent
+Use the MySQL 8.4 LTS series with InnoDB and current stable Prisma ORM using the
+MySQL connector. Store catalogue measurements in appropriate DECIMAL columns.
+Use Prisma Migrate for reviewed migrations and repository-controlled, idempotent
 seed data with provenance on every record.
 
-MySQL listens only on localhost or a private interface. The application uses a
-least-privilege non-root account. Migration credentials are separate where
-practicable. Production invokes `prisma migrate deploy`, never interactive
-development or destructive migration commands.
+The confirmed initial topology places MySQL on the Ubuntu 24.04 application
+host, bound to `127.0.0.1`. The application uses a least-privilege non-root
+account. Production migration credentials are separate from runtime credentials
+and are injected only into the controlled release step. Production invokes
+`prisma migrate deploy`, never interactive development or destructive migration
+commands.
 
-Prisma 7 uses `prisma.config.ts`, the `prisma-client` generator, and—when
-database access is introduced in Work Package 3—the official MariaDB/MySQL
-driver adapter. No catalogue model is part of Work Package 0.
+Prisma 7 uses `prisma.config.ts`, the `prisma-client` generator, and the
+official MariaDB/MySQL driver adapter.
 
 ## Consequences
 
 - Schema changes are versioned and deployed independently of application
   rollback assumptions.
-- Integration testing requires a real MySQL 8.4 service from Work Package 3.
+- Integration testing uses a pinned MySQL 8.4.10 service and disposable,
+  non-root credentials.
 - Backups must be encrypted and restoration-tested.
 - Runtime manufacturer scraping and root database access are prohibited.
 

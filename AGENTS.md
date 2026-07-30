@@ -52,8 +52,9 @@ Development and standalone production previews bind to `127.0.0.1:3100` by
 default. Keep Playwright and the future Apache proxy target aligned with this
 port.
 
-Database commands are configured now but catalogue models arrive in Work Package
-3:
+Work Package 3 supplies the catalogue schema, reviewed migration,
+provenance-rich seed, and read-only services. Run database commands against
+MySQL 8.4 LTS with a non-root identity:
 
 ```bash
 npm run db:generate
@@ -63,8 +64,13 @@ npm run db:seed
 ```
 
 Create `.env` from `.env.example` and replace the placeholder database password
-before running any database command. Never use production credentials for
-development migration or seed commands.
+before running any database command. Provision the isolated development and test
+identities from `ops/mysql/development.sql.template`; `db:migrate:dev` also
+requires the separate `astrotools_shadow` database. Keep integration credentials
+in a permission-restricted, gitignored `.env.integration`; integration tests
+must use the `astrotools_test` database. Apply the matching table-specific
+runtime grant template only after migrations create the catalogue tables. Never
+use production credentials for development migration or seed commands.
 
 `db:migrate:dev` is development-only. Production releases may run only
 `db:migrate:deploy` with controlled migration credentials.
@@ -95,6 +101,12 @@ development migration or seed commands.
   not as an execution sandbox.
 - MySQL uses DECIMAL for catalogue measurements, InnoDB, provenance on every
   record, and a least-privilege non-root application identity.
+- The accepted production profile is Ubuntu 24.04 LTS, MySQL 8.4 LTS on
+  `127.0.0.1`, and Node on `127.0.0.1:3100` under systemd. Releases use direct,
+  versioned directories. Apache/systemd implementation remains Work Package 9.
+- Catalogue administration is repository-driven. Target imagery requires
+  recorded public-domain or Creative Commons evidence, or an internally created
+  representation. Do not add an administration UI or analytics.
 - Apache2 is the sole public endpoint. Node listens on loopback and trusts
   forwarding information only from local Apache.
 - Add shared abstractions only when the first real calculator demonstrates the
@@ -110,8 +122,8 @@ security, privacy, and migrations. Review the final diff for unrelated changes,
 secrets, generated credentials, and compliance with the active work package.
 Never report completion without reviewing actual command results.
 
-Before Work Package 3, resolve the nine product decisions listed in the baseline
-or explicitly adopt its defaults.
+The nine prerequisite decisions for Work Package 3 are recorded in ADR-004.
+Changes to that production profile require an ADR update.
 
 ## Delivery workflow
 
