@@ -39,10 +39,15 @@ async function chooseComboboxOption(
   await page.getByRole("option", { name: optionName }).click();
 }
 
+async function openCalculator(page: Page, url = "/calculators/field-of-view") {
+  await page.goto(url);
+  await page.waitForLoadState("networkidle");
+}
+
 test("the configured calculator has no serious or critical accessibility findings", async ({
   page,
 }) => {
-  await page.goto("/calculators/field-of-view");
+  await openCalculator(page);
   await expect(
     page.getByRole("combobox", { name: "Telescope preset" }),
   ).toHaveValue(/evostar/i);
@@ -78,7 +83,7 @@ test("the complete configuration reading order is reachable by keyboard", async 
 }) => {
   const focusNext = browserName === "webkit" ? "Alt+Tab" : "Tab";
 
-  await page.goto("/calculators/field-of-view");
+  await openCalculator(page);
   await page.keyboard.press(focusNext);
   await expect(
     page.getByRole("link", { name: "Skip to main content" }),
@@ -181,8 +186,7 @@ test("the complete configuration reading order is reachable by keyboard", async 
 test("catalogue presets and an optical reducer update the imaging result locally", async ({
   page,
 }) => {
-  await page.goto("/calculators/field-of-view");
-  await page.waitForLoadState("networkidle");
+  await openCalculator(page);
   const networkCalls: string[] = [];
   page.on("request", (request) => {
     if (["fetch", "xhr"].includes(request.resourceType())) {
@@ -252,8 +256,7 @@ test("a copied versioned URL reproduces the complete configuration in a fresh co
       },
     });
   });
-  await page.goto("/calculators/field-of-view");
-  await page.waitForLoadState("networkidle");
+  await openCalculator(page);
   const localRequests: string[] = [];
   page.on("request", (request) => {
     if (
@@ -353,7 +356,7 @@ test("a copied versioned URL reproduces the complete configuration in a fresh co
   const reproducedContext = await browser.newContext();
   try {
     const reproduced = await reproducedContext.newPage();
-    await reproduced.goto(copiedUrl);
+    await openCalculator(reproduced, copiedUrl);
     await expect(
       reproduced.getByRole("combobox", { name: "Telescope preset" }),
     ).toHaveValue("Celestron EdgeHD 8-inch Optical Tube Assembly");
@@ -444,7 +447,8 @@ test("invalid shared parameters fall back safely and are omitted from the next l
       },
     });
   });
-  await page.goto(
+  await openCalculator(
+    page,
     "/calculators/field-of-view?v=1&f=not-a-number&zoom=999&future=ok&token=secret&target=m42-orion-nebula",
   );
 
@@ -476,8 +480,7 @@ test("invalid shared parameters fall back safely and are omitted from the next l
 test("display zoom changes only the deterministic view geometry", async ({
   page,
 }) => {
-  await page.goto("/calculators/field-of-view");
-  await page.waitForLoadState("networkidle");
+  await openCalculator(page);
   const networkCalls: string[] = [];
   page.on("request", (request) => {
     if (["fetch", "xhr"].includes(request.resourceType())) {
@@ -527,7 +530,7 @@ test("display zoom changes only the deterministic view geometry", async ({
 test("frame rotation and sensor orientation stay independent from calculations", async ({
   page,
 }) => {
-  await page.goto("/calculators/field-of-view");
+  await openCalculator(page);
   const primaryResult = page.getByTestId("primary-result");
   const diagram = page.getByRole("img", {
     name: /proportional framing simulator/i,
@@ -606,8 +609,7 @@ test("frame rotation and sensor orientation stay independent from calculations",
 test("semantic equations and physical-unit displays preserve every optical result", async ({
   page,
 }) => {
-  await page.goto("/calculators/field-of-view");
-  await page.waitForLoadState("networkidle");
+  await openCalculator(page);
   const networkCalls: string[] = [];
   page.on("request", (request) => {
     if (["fetch", "xhr"].includes(request.resourceType())) {
@@ -716,7 +718,7 @@ test("semantic equations and physical-unit displays preserve every optical resul
 test("every initial target has a recognisable local illustration and source disclosure", async ({
   page,
 }) => {
-  await page.goto("/calculators/field-of-view");
+  await openCalculator(page);
 
   const targets = [
     { query: "Moon", option: "Moon", name: /for moon/i, asset: "moon.svg" },
@@ -782,7 +784,7 @@ test("every initial target has a recognisable local illustration and source disc
 test("manual edits are preserved and reset to the latest selected presets", async ({
   page,
 }) => {
-  await page.goto("/calculators/field-of-view");
+  await openCalculator(page);
   await chooseComboboxOption(
     page,
     "Telescope preset",
@@ -835,7 +837,7 @@ test("manual edits are preserved and reset to the latest selected presets", asyn
 test("aperture changes field only after derived focal length is selected", async ({
   page,
 }) => {
-  await page.goto("/calculators/field-of-view");
+  await openCalculator(page);
   const primaryResult = page.getByTestId("primary-result");
   const aperture = page.getByRole("spinbutton", { name: "Aperture" });
   const focalLength = page.getByRole("spinbutton", {
@@ -859,7 +861,7 @@ test("aperture changes field only after derived focal length is selected", async
 test("controls meet minimum pointer targets and expose visible focus", async ({
   page,
 }) => {
-  await page.goto("/calculators/field-of-view");
+  await openCalculator(page);
   await expect(
     page.getByRole("combobox", { name: "Telescope preset" }),
   ).toHaveValue(/evostar/i);
@@ -908,7 +910,7 @@ test("controls meet minimum pointer targets and expose visible focus", async ({
 test("modifier removal and clearing return keyboard focus to a stable control", async ({
   page,
 }) => {
-  await page.goto("/calculators/field-of-view");
+  await openCalculator(page);
   const addManual = page.getByRole("button", { name: "Add manual modifier" });
 
   await addManual.click();
@@ -937,7 +939,7 @@ test("the shell avoids page overflow at 320 CSS pixels and 200% content zoom", a
     });
   });
   await page.setViewportSize({ width: 320, height: 800 });
-  await page.goto("/calculators/field-of-view");
+  await openCalculator(page);
 
   await page.getByRole("button", { name: "Copy link" }).click();
   await expect(
@@ -1036,7 +1038,7 @@ test("reduced-motion preference suppresses non-essential motion", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/calculators/field-of-view");
+  await openCalculator(page);
 
   const durations = await page
     .getByRole("combobox", { name: "Telescope preset" })
