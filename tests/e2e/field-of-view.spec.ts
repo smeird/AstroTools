@@ -454,19 +454,21 @@ test("semantic equations and physical-unit displays preserve every optical resul
     "Customised",
   );
 
-  await page
+  const pixelResolution = page
     .getByRole("group", { name: "Sensor size source" })
-    .getByRole("radio", { name: "Pixel resolution" })
-    .check();
+    .getByRole("radio", { name: "Pixel resolution" });
+  await pixelResolution.press("Space");
+  await expect(pixelResolution).toBeChecked();
   await expect(
     page.getByText("Sensor width and height — symbolic"),
   ).toBeVisible();
   await expect(panel).toContainText("25400");
 
-  await page
+  const derivedFocalLength = page
     .getByRole("group", { name: "Focal length input" })
-    .getByRole("radio", { name: "Derive from focal ratio" })
-    .check();
+    .getByRole("radio", { name: "Derive from focal ratio" });
+  await derivedFocalLength.press("Space");
+  await expect(derivedFocalLength).toBeChecked();
   await expect(
     page.getByText("Derived native focal length — symbolic"),
   ).toBeVisible();
