@@ -1,6 +1,7 @@
 import type { z } from "zod";
 
 import { getCatalogueService } from "@/features/field-of-view/services/catalogue";
+import { log } from "@/lib/observability/logger";
 import type {
   CatalogueService,
   PaginatedResult,
@@ -47,7 +48,12 @@ export function createCatalogueListHandler<TQuery, TItem>(
     try {
       const result = await load(getService(), query.data);
       return catalogueSuccess(result.items, result.pagination);
-    } catch {
+    } catch (error) {
+      log("error", {
+        event: "catalogue_list_failed",
+        errorName: error instanceof Error ? error.name : "unknown",
+        status: 500,
+      });
       return internalError();
     }
   };
@@ -70,7 +76,12 @@ export function createCatalogueDetailHandler<TItem>(
 
     try {
       routeParameters = await context.params;
-    } catch {
+    } catch (error) {
+      log("error", {
+        event: "catalogue_detail_failed",
+        errorName: error instanceof Error ? error.name : "unknown",
+        status: 500,
+      });
       return internalError();
     }
 
@@ -83,7 +94,12 @@ export function createCatalogueDetailHandler<TItem>(
     try {
       const result = await load(getService(), slug.data);
       return result ? catalogueSuccess(result) : notFound();
-    } catch {
+    } catch (error) {
+      log("error", {
+        event: "catalogue_detail_failed",
+        errorName: error instanceof Error ? error.name : "unknown",
+        status: 500,
+      });
       return internalError();
     }
   };

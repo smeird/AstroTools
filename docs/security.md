@@ -1,6 +1,6 @@
 # Security foundation
 
-- Status: Work Package 3 baseline
+- Status: Work Package 8 hardening baseline
 - Last reviewed: 30 July 2026
 - Owner: Astrotools maintainers
 
@@ -9,6 +9,23 @@ the only public endpoint; application and database hardening is delivered in
 later work packages under the canonical implementation plan. Next.js telemetry
 is disabled in the documented development and CI build commands; no application
 analytics are included.
+
+## Application boundary
+
+The application sets a defence-in-depth response-header baseline in Next.js and
+Apache repeats public-edge headers in Work Package 9. It includes `nosniff`,
+same-origin framing, restrictive referrer and permissions policies, and a
+Content Security Policy with no `unsafe-eval`. Inline framework bootstrap/style
+support remains explicitly limited to same-origin pages; a nonce-based CSP and
+HTTPS-only `upgrade-insecure-requests` policy belong at the Apache TLS boundary,
+not the loopback Node response, and are deferred until that delivery model is
+exercised together.
+
+Route and global error boundaries present safe recovery language without stack
+traces, SQL details, connection strings, or request values. Operational events
+are bounded JSON objects containing only route, status, duration, correlation
+identifier, error name, and event type. Request bodies, cookies, authorisation
+headers, raw query strings, and database URLs are never accepted by logging.
 
 ## Catalogue and database controls
 

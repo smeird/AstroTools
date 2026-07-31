@@ -52,6 +52,11 @@ jobs:
       - name: Install exact dependencies
         run: npm ci
 
+      - name: Reject committed private keys
+        run: >-
+          ! git grep -n -I -E '-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----'
+          -- . ':!*.test.ts' ':!*.test.tsx'
+
       - name: Prepare CI database and runtime identity
         run: >-
           docker exec --env MYSQL_PWD=astrotools_ci_root_password "${{
