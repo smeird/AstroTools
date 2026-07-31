@@ -228,9 +228,9 @@ describe("MySQL catalogue integration", () => {
 
     expect(countsBefore).toMatchObject({
       manufacturers: 4,
-      telescopes: 3,
-      cameras: 2,
-      modifiers: 2,
+      telescopes: 4,
+      cameras: 3,
+      modifiers: 4,
       targets: 6,
     });
     expect(countsBefore.changes).toBeGreaterThanOrEqual(17);
@@ -335,8 +335,8 @@ describe("MySQL catalogue integration", () => {
     expect(cameraBody.meta).toEqual({
       page: 1,
       pageSize: 1,
-      total: 2,
-      totalPages: 2,
+      total: 3,
+      totalPages: 3,
     });
     expect(cameraBody.data[0]).toMatchObject({
       slug: "asi2600mc-pro",
