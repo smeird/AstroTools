@@ -1,0 +1,14 @@
+# Copy to /etc/astrotools/maintenance.conf and create the marker file to
+# enable maintenance mode. Remove the marker to return to normal service.
+#
+#   sudo install -o root -g root -m 0644 ops/apache/maintenance.conf.example \
+#     /etc/astrotools/maintenance.conf
+#   sudo touch /etc/astrotools/maintenance.enabled
+#   sudo apachectl configtest && sudo systemctl reload apache2
+
+RewriteEngine On
+RewriteCond /etc/astrotools/maintenance.enabled -f
+RewriteCond %{REQUEST_URI} !^/maintenance\.html$
+RewriteCond %{REQUEST_URI} !^/\.well-known/acme-challenge/
+RewriteRule ^ - [R=503,L]
+ErrorDocument 503 /maintenance.html

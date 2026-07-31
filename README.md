@@ -21,7 +21,11 @@ and scientifically qualified interpretations. Its millimetre/inch switch is
 presentation-only and cannot alter canonical inputs or results. Work Package 7
 adds bounded, versioned share URLs that reproduce the complete configuration in
 a fresh browser context, plus an accessible Copy link action with no account or
-server-side write.
+server-side write. Work Package 8 adds safe production error boundaries,
+structured operational logging, security headers, secret scanning, and a threat
+model. Work Package 9 adds Apache2/systemd deployment examples, atomic release
+and rollback scripts, encrypted backup/restore tooling, maintenance mode, smoke
+tests, and Prometheus alert rules.
 
 ## Requirements
 
