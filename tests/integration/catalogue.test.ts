@@ -228,9 +228,9 @@ describe("MySQL catalogue integration", () => {
 
     expect(countsBefore).toMatchObject({
       manufacturers: 4,
-      telescopes: 3,
-      cameras: 2,
-      modifiers: 2,
+      telescopes: 4,
+      cameras: 3,
+      modifiers: 4,
       targets: 6,
     });
     expect(countsBefore.changes).toBeGreaterThanOrEqual(17);
@@ -262,7 +262,7 @@ describe("MySQL catalogue integration", () => {
         prisma.astronomicalTarget.count(),
         migrationPrisma.catalogueChangeLog.count(),
       ]),
-    ).resolves.toEqual([4, 3, 2, 2, 6, countsBefore.changes]);
+    ).resolves.toEqual([4, 4, 3, 4, 6, countsBefore.changes]);
     await expect(
       prisma.telescope.findMany({
         orderBy: { slug: "asc" },
@@ -335,12 +335,12 @@ describe("MySQL catalogue integration", () => {
     expect(cameraBody.meta).toEqual({
       page: 1,
       pageSize: 1,
-      total: 2,
-      totalPages: 2,
+      total: 3,
+      totalPages: 3,
     });
     expect(cameraBody.data[0]).toMatchObject({
-      slug: "asi2600mc-pro",
-      sensorWidthMm: "23.5",
+      slug: "asi1600mm-pro",
+      sensorWidthMm: "17.6",
     });
 
     const [modifierResponse, targetResponse] = await Promise.all([
@@ -357,8 +357,10 @@ describe("MySQL catalogue integration", () => {
       angularWidthDeg: string;
     }>;
 
-    expect(modifierBody.meta.total).toBe(2);
+    expect(modifierBody.meta.total).toBe(4);
     expect(modifierBody.data.map(({ multiplier }) => multiplier)).toEqual([
+      "0.2",
+      "0.7",
       "0.7",
       "0.85",
     ]);

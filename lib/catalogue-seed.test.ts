@@ -31,10 +31,44 @@ describe("catalogue seed data", () => {
 
   it("contains the reviewed Work Package 3 catalogue", () => {
     expect(catalogueSeed.manufacturers).toHaveLength(4);
-    expect(catalogueSeed.telescopes).toHaveLength(3);
-    expect(catalogueSeed.cameras).toHaveLength(2);
-    expect(catalogueSeed.opticalModifiers).toHaveLength(2);
+    expect(catalogueSeed.telescopes).toHaveLength(4);
+    expect(catalogueSeed.cameras).toHaveLength(3);
+    expect(catalogueSeed.opticalModifiers).toHaveLength(4);
     expect(catalogueSeed.astronomicalTargets).toHaveLength(6);
+  });
+
+  it("includes the user's EdgeHD 11 imaging configuration", () => {
+    expect(
+      catalogueSeed.telescopes.find(
+        ({ slug }) => slug === "edgehd-11-optical-tube-assembly",
+      ),
+    ).toMatchObject({
+      apertureMm: 279.4,
+      nativeFocalLengthMm: 2800,
+      sourceUrl:
+        "https://www.celestron.com/products/edgehd-11-optical-tube-assembly-cge-dovetail",
+    });
+    expect(
+      catalogueSeed.cameras.find(({ slug }) => slug === "asi1600mm-pro"),
+    ).toMatchObject({
+      sensorName: "Panasonic MN34230ALJ",
+      sensorWidthMm: 17.6,
+      sensorHeightMm: 13.3,
+      pixelSizeUm: 3.8,
+      resolutionWidthPx: 4656,
+      resolutionHeightPx: 3520,
+      colourMode: "monochrome",
+    });
+    expect(
+      catalogueSeed.opticalModifiers.find(
+        ({ slug }) => slug === "reducer-lens-0-7x-edgehd-1100",
+      ),
+    ).toMatchObject({ multiplier: 0.7 });
+    expect(
+      catalogueSeed.opticalModifiers.find(
+        ({ slug }) => slug === "fastar-hyperstar-f-2-edgehd-1100",
+      ),
+    ).toMatchObject({ multiplier: 0.2 });
   });
 
   it("has valid provenance and the agreed verification date", () => {

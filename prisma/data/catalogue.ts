@@ -373,6 +373,18 @@ export const catalogueSeed = validateCatalogueSeed({
       verifiedAt: CATALOGUE_VERIFICATION_DATE,
     },
     {
+      manufacturerSlug: "celestron",
+      slug: "edgehd-11-optical-tube-assembly",
+      model: "EdgeHD 11-inch Optical Tube Assembly",
+      opticalDesign: "EdgeHD aplanatic Schmidt-Cassegrain",
+      apertureMm: 279.4,
+      nativeFocalLengthMm: 2800,
+      active: true,
+      sourceUrl:
+        "https://www.celestron.com/products/edgehd-11-optical-tube-assembly-cge-dovetail",
+      verifiedAt: CATALOGUE_VERIFICATION_DATE,
+    },
+    {
       manufacturerSlug: "sky-watcher",
       slug: "evostar-80edx-apo-refractor",
       model: "Evostar 80EDX APO Refractor",
@@ -419,6 +431,23 @@ export const catalogueSeed = validateCatalogueSeed({
         "https://i.zwoastro.com/zwo-website/manuals/ASI533_Manual_EN_V1.2.pdf",
       verifiedAt: CATALOGUE_VERIFICATION_DATE,
     },
+    {
+      manufacturerSlug: "zwo",
+      slug: "asi1600mm-pro",
+      model: "ASI1600MM Pro",
+      sensorName: "Panasonic MN34230ALJ",
+      sensorWidthMm: 17.6,
+      sensorHeightMm: 13.3,
+      pixelSizeUm: 3.8,
+      resolutionWidthPx: 4656,
+      resolutionHeightPx: 3520,
+      sensorType: "CMOS",
+      colourMode: "monochrome",
+      active: true,
+      sourceUrl:
+        "https://i.zwoastro.com/zwo-website/manuals/ASI1600_Manual_EN_V1.5.pdf",
+      verifiedAt: CATALOGUE_VERIFICATION_DATE,
+    },
   ],
   opticalModifiers: [
     {
@@ -431,6 +460,30 @@ export const catalogueSeed = validateCatalogueSeed({
       active: true,
       sourceUrl:
         "https://www.celestron.com/products/reducer-lens-7x-edgehd-800/1000",
+      verifiedAt: CATALOGUE_VERIFICATION_DATE,
+    },
+    {
+      manufacturerSlug: "celestron",
+      slug: "reducer-lens-0-7x-edgehd-1100",
+      model: "Reducer Lens 0.7x – EdgeHD 1100",
+      modifierType: "reducer",
+      multiplier: 0.7,
+      compatibleNotes: "Compatible with the EdgeHD 11-inch optical tube.",
+      active: true,
+      sourceUrl:
+        "https://www.celestron.com/products/reducer-lens-7x-edgehd-1100",
+      verifiedAt: CATALOGUE_VERIFICATION_DATE,
+    },
+    {
+      manufacturerSlug: "celestron",
+      slug: "fastar-hyperstar-f-2-edgehd-1100",
+      model: "Fastar/HyperStar f/2 configuration – EdgeHD 1100",
+      modifierType: "reducer",
+      multiplier: 0.2,
+      compatibleNotes:
+        "Use with a Fastar-compatible EdgeHD 11 front-cell lens. The HyperStar/accessory lens is third-party; use this configuration instead of, not together with, the rear-cell 0.7x reducer.",
+      active: true,
+      sourceUrl: "https://www.celestron.com/pages/fastar-technology",
       verifiedAt: CATALOGUE_VERIFICATION_DATE,
     },
     {
