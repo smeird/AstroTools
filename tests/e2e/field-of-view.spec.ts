@@ -609,7 +609,7 @@ test("frame rotation and sensor orientation stay independent from calculations",
 test("wide layouts keep framing controls alongside the live diagram", async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.setViewportSize({ width: 2560, height: 1440 });
   await openCalculator(page);
 
   const slider = page.getByRole("slider", { name: "Display zoom" });
@@ -620,6 +620,10 @@ test("wide layouts keep framing controls alongside the live diagram", async ({
     (element) => getComputedStyle(element).gridTemplateAreas,
   );
   expect(gridTemplateAreas).toContain("controls figure");
+  const mainWidth = await page
+    .locator("main")
+    .evaluate((element) => element.getBoundingClientRect().width);
+  expect(mainWidth).toBeGreaterThan(0.85 * 2560);
 });
 
 test("semantic equations and physical-unit displays preserve every optical result", async ({
