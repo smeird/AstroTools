@@ -75,6 +75,14 @@
   letter-spacing: 0;
 }
 
+.summaryMetrics {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  gap: var(--space-3);
+}
+
 .visuallyHidden {
   position: absolute;
   width: 1px;
@@ -105,8 +113,8 @@
 }
 
 @media (min-width: 1500px) {
-  .summary {
-    grid-template-columns: auto minmax(0, 1fr) minmax(18rem, 25rem);
+  .resultsPanel {
+    padding: var(--space-4);
   }
 }
 
@@ -117,6 +125,10 @@
 
   .summary {
     padding: var(--space-4);
+  }
+
+  .summaryMetrics {
+    grid-template-columns: 1fr;
   }
 }
 

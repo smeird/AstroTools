@@ -92,22 +92,38 @@
   min-width: 0;
 }
 
-.workspaceMain,
-.workspaceContent {
+.workspaceMain {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "summary"
+    "visualisation"
+    "results"
+    "equations";
   min-width: 0;
   gap: var(--space-5);
 }
 
-.workspaceContent {
-  grid-template-columns: minmax(0, 1fr);
-  align-items: start;
+.summary {
+  display: grid;
+  grid-area: summary;
+  min-width: 0;
+}
+
+.visualisation {
+  grid-area: visualisation;
 }
 
 .results {
   display: grid;
+  grid-area: results;
   min-width: 0;
   gap: var(--space-5);
+}
+
+.equations {
+  grid-area: equations;
+  min-width: 0;
 }
 
 @media (min-width: 1500px) {
@@ -127,8 +143,12 @@
     font-size: clamp(3.25rem, 4vw, 4.75rem);
   }
 
-  .workspaceContent {
-    grid-template-columns: minmax(38rem, 1.2fr) minmax(22rem, 0.8fr);
+  .workspaceMain {
+    grid-template-columns: minmax(24rem, 0.7fr) minmax(42rem, 1.3fr);
+    grid-template-areas:
+      "summary results"
+      "visualisation visualisation"
+      "equations equations";
     gap: clamp(1.5rem, 2vw, 3rem);
   }
 }

@@ -6,6 +6,7 @@ import styles from "./field-of-view-shell.module.css";
 
 interface FieldOfViewShellProps {
   controls: ReactNode;
+  equations: ReactNode;
   summary: ReactNode;
   visualisation: ReactNode;
   results: ReactNode;
@@ -14,6 +15,7 @@ interface FieldOfViewShellProps {
 
 export function FieldOfViewShell({
   controls,
+  equations,
   summary,
   visualisation,
   results,
@@ -62,10 +64,11 @@ export function FieldOfViewShell({
         <div className={styles.controls}>{controls}</div>
         <div className={styles.workspaceMain}>
           <div className={styles.summary}>{summary}</div>
-          <div className={styles.workspaceContent}>
-            <div className={styles.visualisation}>{visualisation}</div>
-            <div className={styles.results}>{results}</div>
-          </div>
+          <div className={styles.visualisation}>{visualisation}</div>
+          <div className={styles.results}>{results}</div>
+          {equations ? (
+            <div className={styles.equations}>{equations}</div>
+          ) : null}
         </div>
       </div>
     </>

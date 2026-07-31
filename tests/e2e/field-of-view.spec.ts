@@ -606,7 +606,7 @@ test("frame rotation and sensor orientation stay independent from calculations",
   await expectScaleLabelAligned();
 });
 
-test("wide layouts keep framing controls alongside the live diagram", async ({
+test("wide layouts pack results and framing into the live workspace", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 2560, height: 1440 });
@@ -615,18 +615,24 @@ test("wide layouts keep framing controls alongside the live diagram", async ({
   const slider = page.getByRole("slider", { name: "Display zoom" });
   const simulator = page.getByTestId("framing-simulator");
   const results = page.getByTestId("imaging-results");
+  const summary = page.getByRole("region", { name: "Current field" });
   await expect(slider).toBeVisible();
   await expect(simulator).toBeVisible();
   await expect(results).toBeVisible();
+  await expect(summary).toBeVisible();
   const gridTemplateAreas = await simulator.evaluate(
     (element) => getComputedStyle(element).gridTemplateAreas,
   );
-  expect(gridTemplateAreas).toContain("controls figure");
+  expect(gridTemplateAreas).toContain("controls figure equivalent");
   const mainWidth = await page
     .locator("main")
     .evaluate((element) => element.getBoundingClientRect().width);
   expect(mainWidth).toBeGreaterThan(0.85 * 2560);
-  const [simulatorBounds, resultsBounds] = await Promise.all([
+  const [summaryBounds, simulatorBounds, resultsBounds] = await Promise.all([
+    summary.evaluate((element) => {
+      const { x, y, width } = element.getBoundingClientRect();
+      return { x, y, width };
+    }),
     simulator.evaluate((element) => {
       const { x, y, width } = element.getBoundingClientRect();
       return { x, y, width };
@@ -637,9 +643,12 @@ test("wide layouts keep framing controls alongside the live diagram", async ({
     }),
   ]);
   expect(resultsBounds.x).toBeGreaterThan(
-    simulatorBounds.x + simulatorBounds.width,
+    summaryBounds.x + summaryBounds.width,
   );
-  expect(resultsBounds.y).toBeCloseTo(simulatorBounds.y, 0);
+  expect(resultsBounds.y).toBeCloseTo(summaryBounds.y, 0);
+  expect(simulatorBounds.x).toBeCloseTo(summaryBounds.x, 0);
+  expect(simulatorBounds.y).toBeGreaterThan(summaryBounds.y);
+  expect(simulatorBounds.width).toBeGreaterThan(resultsBounds.width);
 });
 
 test("semantic equations and physical-unit displays preserve every optical result", async ({

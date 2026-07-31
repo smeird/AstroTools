@@ -94,8 +94,11 @@ diagram so a slider can be adjusted while its visual effect remains in view. The
 DOM and keyboard order remain controls, fit result, then graphic; the layout
 returns to that vertical order below the desktop breakpoint.
 
-At 1500 CSS pixels and wider, the calculator places the live imaging results and
-equations in a column to the right of the simulator. This uses wide desktop
-space for changing numerical and formula feedback without changing the document
-or keyboard order. The intro and setup summary also compact at that breakpoint,
-leaving more of the changing workspace in the initial desktop viewport.
+At 1500 CSS pixels and wider, the calculator packs the current field and imaging
+results into one overview row above the simulator. The intro and overview also
+compact at that breakpoint, leaving more of the changing workspace in the
+initial desktop viewport. At 1900 pixels, the simulator uses separate control,
+diagram, and description columns. Equations follow at full workspace width and
+balance their cards into two columns, or three columns from 2100 pixels, instead
+of producing a long narrow rail with empty space beside it. The document and
+keyboard order remain unchanged.

@@ -96,25 +96,27 @@ describe("FieldOfViewLab", () => {
       screen.getByRole("link", { name: "Angular-size source" }),
     ).toHaveAttribute("href", "https://example.com/m31");
 
-    const resultList = screen
-      .getByText("Image scale", { selector: "dt" })
-      .closest("dl");
-    expect(resultList).toBeTruthy();
-    expect(within(resultList as HTMLElement).getAllByRole("term")).toHaveLength(
-      5,
-    );
+    const currentField = screen.getByRole("region", {
+      name: "Current field",
+    });
+    const imagingResults = screen
+      .getByRole("heading", { name: "Imaging results" })
+      .closest("section");
+    expect(imagingResults).toBeTruthy();
+    expect(within(currentField).getAllByRole("term")).toHaveLength(2);
     expect(
-      within(resultList as HTMLElement).getByText(
-        "1.29 arcseconds per output pixel",
-      ),
+      within(imagingResults as HTMLElement).getAllByRole("term"),
+    ).toHaveLength(3);
+    expect(
+      within(currentField).getByText("1.29 arcseconds per output pixel"),
     ).toBeInTheDocument();
     expect(
-      within(resultList as HTMLElement).getByText(
+      within(currentField).getByText(
         "Equivalent output pitch 3.76 micrometres",
       ),
     ).toBeInTheDocument();
     expect(
-      within(resultList as HTMLElement).getByText(
+      within(imagingResults as HTMLElement).getByText(
         "2.0 arcseconds stated seeing",
       ),
     ).toBeInTheDocument();

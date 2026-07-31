@@ -87,6 +87,26 @@
   border: 0;
 }
 
+@media (min-width: 1500px) {
+  .grid {
+    display: block;
+    column-count: 2;
+    column-gap: var(--space-4);
+    column-fill: balance;
+  }
+
+  .grid > * {
+    margin-bottom: var(--space-4);
+    break-inside: avoid;
+  }
+}
+
+@media (min-width: 2100px) {
+  .grid {
+    column-count: 3;
+  }
+}
+
 @media (max-width: 720px) {
   .header {
     grid-template-columns: 1fr;
