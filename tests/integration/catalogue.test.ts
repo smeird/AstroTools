@@ -262,7 +262,7 @@ describe("MySQL catalogue integration", () => {
         prisma.astronomicalTarget.count(),
         migrationPrisma.catalogueChangeLog.count(),
       ]),
-    ).resolves.toEqual([4, 3, 2, 2, 6, countsBefore.changes]);
+    ).resolves.toEqual([4, 4, 3, 4, 6, countsBefore.changes]);
     await expect(
       prisma.telescope.findMany({
         orderBy: { slug: "asc" },
@@ -339,8 +339,8 @@ describe("MySQL catalogue integration", () => {
       totalPages: 3,
     });
     expect(cameraBody.data[0]).toMatchObject({
-      slug: "asi2600mc-pro",
-      sensorWidthMm: "23.5",
+      slug: "asi1600mm-pro",
+      sensorWidthMm: "17.6",
     });
 
     const [modifierResponse, targetResponse] = await Promise.all([
