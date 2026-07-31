@@ -7,30 +7,84 @@
 - Let's Encrypt certificate lifecycle managed by Certbot
 - Next.js standalone Node process on `127.0.0.1:3100`, supervised by systemd
 - MySQL 8.4 LTS on the same host, bound to `127.0.0.1`
-- Direct, immutable versioned release directories with an atomic current link
+- Direct, immutable versioned release directories with atomic `current` and
+  `previous` symlinks
 - Prometheus/Alertmanager-compatible monitoring
-- Nightly encrypted S3-compatible database backups with 30 daily restore points
+- Encrypted database backups with 30 daily restore points
 
-No S3-compatible provider has been selected. Work Package 9 must choose the
-destination, credentials mechanism, lifecycle policy, and restoration tooling
-before production acceptance. The baseline's initial 24-hour recovery-point and
-four-hour recovery-time objectives, plus quarterly restoration tests, remain the
-working targets.
+The repository provides encrypted local dump and restore scripts plus a
+Prometheus textfile metric. The final off-host destination, credentials
+mechanism, lifecycle policy, and restoration schedule require operator approval.
+The working objectives are a 24-hour recovery point, four-hour recovery time,
+and quarterly restoration tests.
 
-## Package boundary
+## Release deployment
 
-Apache2, systemd, MySQL backup and restore, release, rollback, monitoring, and
-alerting procedures arrive in Work Package 9. ADR-001 already fixes Apache2 as
-the only public endpoint and the standalone Node service as loopback-only. Work
-Package 3 adds only the catalogue schema, services, test database integration,
-and safe MySQL identity template; it does not make this a deployable production
-topology.
+The production host uses `/var/www/AstroTools` with immutable directories under
+`releases/`, an atomic `current` symlink, and a `previous` rollback symlink.
+From the reviewed checkout, run the release script as root:
 
-Version-controlled examples may name the public domain but must not contain a
-real certificate path, credential, backup location, or other host-specific
-secret. Deploying Apache, systemd, MySQL, certificate, monitoring, or backup
-configuration always requires separate operational approval.
+```bash
+sudo BACKUP_BEFORE_MIGRATION=1 scripts/deploy-release.sh
+```
 
-See [ADR-004](adr/004-production-profile-and-catalogue-governance.md) for the
-confirmed decisions and [ops/mysql/README.md](../ops/mysql/README.md) for the
-non-deploying least-privilege template.
+The script archives the reviewed commit, installs exact dependencies, applies
+production migrations with the short-lived migration environment, seeds the
+catalogue, builds the standalone Next.js server, switches the symlink, restarts
+systemd, and waits for `/api/health/ready`. It does not put migration
+credentials in the long-running service environment.
+
+To restore the last application release:
+
+```bash
+sudo scripts/rollback-release.sh
+```
+
+Database rollback is separate from application rollback. A schema migration must
+have an explicitly reviewed forward-compatible rollback plan before it is
+deployed.
+
+## Apache and maintenance mode
+
+Install `ops/apache/astrotools.conf`, enable the required proxy, TLS, headers,
+rewrite, compression, and cache modules, then run `apachectl configtest` before
+reloading Apache. Certbot owns the certificate files. A controlled maintenance
+page is enabled by installing `ops/apache/maintenance.conf.example` as
+`/etc/astrotools/maintenance.conf` and creating
+`/etc/astrotools/maintenance.enabled`.
+
+## Operational checks
+
+```bash
+sudo scripts/smoke-test.sh
+sudo systemctl --no-pager --full status astrotools
+sudo journalctl -u astrotools -n 100 --no-pager
+sudo tail -n 100 /var/log/apache2/astrotools-error.log
+```
+
+Prometheus rules are supplied in `ops/prometheus/astrotools.rules.yml`; label
+names must be aligned with the installed blackbox-exporter and node-exporter
+jobs during operational acceptance.
+
+The optional nightly backup units are `ops/systemd/astrotools-backup.service`
+and `ops/systemd/astrotools-backup.timer`. Install the protected backup
+environment and MySQL client files first, then enable the timer:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now astrotools-backup.timer
+sudo systemctl list-timers astrotools-backup.timer
+```
+
+## Package boundary and safety
+
+ADR-001 fixes Apache2 as the only public endpoint and the standalone Node
+service as loopback-only. MySQL identity templates remain in `ops/mysql/`, and
+MySQL must keep `bind-address = 127.0.0.1`. Version-controlled examples never
+contain real certificate paths, credentials, backup locations, or other
+host-specific secrets. Deploying Apache, systemd, MySQL, certificates,
+monitoring, or backup configuration requires separate operational approval.
+
+See [ADR-004](adr/004-production-profile-and-catalogue-governance.md) and
+[ops/mysql/README.md](../ops/mysql/README.md) for the accepted profile and
+least-privilege model.

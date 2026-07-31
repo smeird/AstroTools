@@ -104,8 +104,9 @@ use production credentials for development migration or seed commands.
 - MySQL uses DECIMAL for catalogue measurements, InnoDB, provenance on every
   record, and a least-privilege non-root application identity.
 - The accepted production profile is Ubuntu 24.04 LTS, MySQL 8.4 LTS on
-  `127.0.0.1`, and Node on `127.0.0.1:3100` under systemd. Releases use direct,
-  versioned directories. Apache/systemd implementation remains Work Package 9.
+  `127.0.0.1`, and Node on `127.0.0.1:3100` under systemd. Work Package 9
+  supplies reviewed Apache/systemd/release examples; production installation
+  still requires operational approval.
 - Catalogue administration is repository-driven. Target imagery requires
   recorded public-domain or Creative Commons evidence, or an internally created
   representation. Do not add an administration UI or analytics.

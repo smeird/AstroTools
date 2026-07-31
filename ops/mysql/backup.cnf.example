@@ -1,0 +1,9 @@
+# Install as /etc/astrotools/mysql-backup.cnf with mode 0600 and root-only
+# ownership. Use a dedicated backup identity; do not use the MySQL root account
+# from automation.
+[client]
+host=127.0.0.1
+port=3306
+user=astrotools_backup
+password=CHANGE_ME_BACKUP
+database=astrotools

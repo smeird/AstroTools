@@ -38,9 +38,41 @@ administrator. That final template revokes broad or stale permissions before
 granting only the five tables used by public API routes; it does not grant
 access to `catalogue_change_log`, `_prisma_migrations`, or future tables.
 
-Binding, TLS, firewall, backup, restore, and password-rotation procedures remain
-Work Package 9. The accepted same-host topology requires
-`bind-address = 127.0.0.1`; do not expose port 3306 publicly.
+The accepted same-host topology requires `bind-address = 127.0.0.1`; do not
+expose port 3306 publicly. The backup and restore scripts below are examples
+that still require an operator-approved destination, schedule, and restoration
+procedure.
+
+## Backups and restoration
+
+Install `backup.cnf.example` as `/etc/astrotools/mysql-backup.cnf` with mode
+`0600`, replace its placeholder, and configure a GPG recipient whose private key
+is stored outside the database host:
+
+```bash
+sudo install -o root -g root -m 0600 ops/mysql/backup.cnf.example \
+  /etc/astrotools/mysql-backup.cnf
+sudo BACKUP_GPG_RECIPIENT='BACKUP_KEY_FINGERPRINT' ops/mysql/backup.sh
+```
+
+The script creates encrypted, compressed dumps, retains 30 days by default, and
+writes a Prometheus node-exporter textfile metric when the collector directory
+exists. Configure the final off-host destination and schedule through the
+approved backup platform; never put private GPG keys or cloud credentials in
+this repository.
+
+Restoration is a controlled operation against a designated MySQL database. The
+restore client file must be mode `0600`, and the operator must opt in
+explicitly:
+
+```bash
+CONFIRM_RESTORE=YES ops/mysql/restore.sh \
+  /var/backups/astrotools/astrotools-YYYYMMDDTHHMMSSZ.sql.gz.gpg
+```
+
+After restoring, run `npm run db:migrate:deploy`, seed if required, and verify
+`/api/health/ready` plus the catalogue endpoints. Perform a restoration test at
+least quarterly and record its duration against the four-hour recovery target.
 
 ## Disposable local databases
 

@@ -1,0 +1,81 @@
+groups:
+  - name: astrotools-availability
+    rules:
+      - alert: AstrotoolsHttpsUnavailable
+        expr:
+          probe_success{instance="https://astrotools.smeird.com/api/health/live"}
+          == 0
+        for: 5m
+        labels:
+          severity: critical
+          service: astrotools
+        annotations:
+          summary: Astrotools HTTPS endpoint is unavailable
+          description:
+            The Apache HTTPS black-box probe has failed for five minutes.
+
+      - alert: AstrotoolsReadinessFailed
+        expr:
+          probe_success{instance="https://astrotools.smeird.com/api/health/ready"}
+          == 0
+        for: 5m
+        labels:
+          severity: critical
+          service: astrotools
+        annotations:
+          summary: Astrotools readiness check is failing
+          description:
+            The application or its private MySQL dependency is not ready.
+
+      - alert: AstrotoolsCertificateExpiringSoon
+        expr:
+          probe_ssl_earliest_cert_expiry{instance="https://astrotools.smeird.com/api/health/live"}
+          - time() < 14 * 24 * 60 * 60
+        for: 1h
+        labels:
+          severity: warning
+          service: astrotools
+        annotations:
+          summary: Astrotools TLS certificate expires within 14 days
+          description:
+            Certbot renewal or Apache certificate loading requires attention.
+
+      - alert: AstrotoolsBackupStale
+        expr:
+          time() - astrotools_backup_last_success_timestamp_seconds > 36 * 60 *
+          60
+        for: 30m
+        labels:
+          severity: critical
+          service: astrotools
+        annotations:
+          summary: Astrotools database backup is stale
+          description:
+            No successful encrypted backup has been recorded in 36 hours.
+
+      - alert: AstrotoolsDiskSpaceLow
+        expr:
+          (node_filesystem_avail_bytes{mountpoint="/",fstype!~"tmpfs|overlay"} /
+          node_filesystem_size_bytes{mountpoint="/",fstype!~"tmpfs|overlay"}) <
+          0.15
+        for: 15m
+        labels:
+          severity: warning
+          service: astrotools
+        annotations:
+          summary: Astrotools host disk space is low
+          description:
+            Less than 15 percent of the root filesystem remains available.
+
+      - alert: AstrotoolsSystemdServiceFailed
+        expr:
+          node_systemd_unit_state{name="astrotools.service",state="failed"} == 1
+        for: 2m
+        labels:
+          severity: critical
+          service: astrotools
+        annotations:
+          summary: Astrotools systemd service is failed
+          description:
+            Inspect journalctl -u astrotools and the application readiness
+            endpoint.
