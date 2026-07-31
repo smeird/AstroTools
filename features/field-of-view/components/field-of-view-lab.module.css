@@ -104,6 +104,12 @@
   line-height: 1.5;
 }
 
+@media (min-width: 1500px) {
+  .summary {
+    grid-template-columns: auto minmax(0, 1fr) minmax(18rem, 25rem);
+  }
+}
+
 @media (max-width: 450px) {
   .resultsPanel {
     padding: var(--space-4);

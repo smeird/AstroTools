@@ -179,7 +179,11 @@ export function FieldOfViewLab({
 
   const results = (
     <>
-      <section className={styles.resultsPanel} aria-labelledby="results-title">
+      <section
+        aria-labelledby="results-title"
+        className={styles.resultsPanel}
+        data-testid="imaging-results"
+      >
         <div className={styles.sectionHeader}>
           <p className="eyebrow">Calculated now</p>
           <h2 id="results-title">Imaging results</h2>

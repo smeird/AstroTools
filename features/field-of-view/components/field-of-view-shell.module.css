@@ -84,31 +84,53 @@
 .workspace {
   display: grid;
   grid-template-columns: minmax(19rem, 23rem) minmax(0, 1fr);
-  grid-template-areas:
-    "controls summary"
-    "controls visualisation"
-    "controls results";
-  gap: var(--space-5) clamp(1.5rem, 3vw, 3.5rem);
+  gap: clamp(1.5rem, 3vw, 3.5rem);
   align-items: start;
 }
 
 .controls {
-  grid-area: controls;
+  min-width: 0;
 }
 
-.summary {
-  grid-area: summary;
+.workspaceMain,
+.workspaceContent {
+  display: grid;
+  min-width: 0;
+  gap: var(--space-5);
 }
 
-.visualisation {
-  grid-area: visualisation;
+.workspaceContent {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
 }
 
 .results {
   display: grid;
-  grid-area: results;
   min-width: 0;
   gap: var(--space-5);
+}
+
+@media (min-width: 1500px) {
+  .page {
+    padding-top: var(--space-5);
+  }
+
+  .intro {
+    grid-template-columns: minmax(38rem, 1.35fr) minmax(22rem, 0.65fr);
+    gap: clamp(var(--space-6), 3vw, 4rem);
+    padding-bottom: var(--space-6);
+  }
+
+  .title {
+    max-width: none;
+    margin-bottom: var(--space-3);
+    font-size: clamp(3.25rem, 4vw, 4.75rem);
+  }
+
+  .workspaceContent {
+    grid-template-columns: minmax(38rem, 1.2fr) minmax(22rem, 0.8fr);
+    gap: clamp(1.5rem, 2vw, 3rem);
+  }
 }
 
 @media (max-width: 960px) {
@@ -118,11 +140,6 @@
 
   .workspace {
     grid-template-columns: 1fr;
-    grid-template-areas:
-      "controls"
-      "summary"
-      "visualisation"
-      "results";
   }
 }
 

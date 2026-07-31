@@ -93,3 +93,9 @@ On screens at least 1100 CSS pixels wide, the framing controls sit alongside the
 diagram so a slider can be adjusted while its visual effect remains in view. The
 DOM and keyboard order remain controls, fit result, then graphic; the layout
 returns to that vertical order below the desktop breakpoint.
+
+At 1500 CSS pixels and wider, the calculator places the live imaging results and
+equations in a column to the right of the simulator. This uses wide desktop
+space for changing numerical and formula feedback without changing the document
+or keyboard order. The intro and setup summary also compact at that breakpoint,
+leaving more of the changing workspace in the initial desktop viewport.

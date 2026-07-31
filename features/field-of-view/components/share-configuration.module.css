@@ -84,6 +84,14 @@
   font: inherit;
 }
 
+@media (min-width: 1500px) {
+  .share {
+    grid-column: 3;
+    padding-top: 0;
+    border-top: 0;
+  }
+}
+
 @media (max-width: 450px) {
   .share {
     grid-template-columns: 1fr;

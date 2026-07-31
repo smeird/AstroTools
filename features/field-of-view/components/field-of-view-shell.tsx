@@ -60,9 +60,13 @@ export function FieldOfViewShell({
 
       <div className={styles.workspace}>
         <div className={styles.controls}>{controls}</div>
-        <div className={styles.summary}>{summary}</div>
-        <div className={styles.visualisation}>{visualisation}</div>
-        <div className={styles.results}>{results}</div>
+        <div className={styles.workspaceMain}>
+          <div className={styles.summary}>{summary}</div>
+          <div className={styles.workspaceContent}>
+            <div className={styles.visualisation}>{visualisation}</div>
+            <div className={styles.results}>{results}</div>
+          </div>
+        </div>
       </div>
     </>
   );

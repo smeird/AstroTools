@@ -614,8 +614,10 @@ test("wide layouts keep framing controls alongside the live diagram", async ({
 
   const slider = page.getByRole("slider", { name: "Display zoom" });
   const simulator = page.getByTestId("framing-simulator");
+  const results = page.getByTestId("imaging-results");
   await expect(slider).toBeVisible();
   await expect(simulator).toBeVisible();
+  await expect(results).toBeVisible();
   const gridTemplateAreas = await simulator.evaluate(
     (element) => getComputedStyle(element).gridTemplateAreas,
   );
@@ -624,6 +626,20 @@ test("wide layouts keep framing controls alongside the live diagram", async ({
     .locator("main")
     .evaluate((element) => element.getBoundingClientRect().width);
   expect(mainWidth).toBeGreaterThan(0.85 * 2560);
+  const [simulatorBounds, resultsBounds] = await Promise.all([
+    simulator.evaluate((element) => {
+      const { x, y, width } = element.getBoundingClientRect();
+      return { x, y, width };
+    }),
+    results.evaluate((element) => {
+      const { x, y, width } = element.getBoundingClientRect();
+      return { x, y, width };
+    }),
+  ]);
+  expect(resultsBounds.x).toBeGreaterThan(
+    simulatorBounds.x + simulatorBounds.width,
+  );
+  expect(resultsBounds.y).toBeCloseTo(simulatorBounds.y, 0);
 });
 
 test("semantic equations and physical-unit displays preserve every optical result", async ({
