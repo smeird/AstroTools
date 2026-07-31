@@ -6,6 +6,7 @@ set -Eeuo pipefail
 
 APP_ROOT="${APP_ROOT:-/var/www/AstroTools}"
 RELEASES_DIR="$APP_ROOT/releases"
+NEXT_CACHE_DIR="$APP_ROOT/shared/next-cache"
 CURRENT_LINK="$APP_ROOT/current"
 PREVIOUS_LINK="$APP_ROOT/previous"
 KEEP_RELEASES="${KEEP_RELEASES:-2}"
@@ -127,6 +128,9 @@ if [[ -d "$RELEASES_DIR" ]]; then
       continue
     fi
     show_candidate "$release_path"
+    if [[ -d "$NEXT_CACHE_DIR/$release_name" ]]; then
+      show_candidate "$NEXT_CACHE_DIR/$release_name"
+    fi
   done < <(
     find "$RELEASES_DIR" -mindepth 1 -maxdepth 1 -type d \
       -name '20????????????-*' -printf '%f\n' | sort -r
@@ -146,6 +150,7 @@ fi
 if [[ "$CLEAN_CHECKOUT_CACHES" == 1 ]]; then
   for cache_path in \
     "$APP_ROOT/.next" \
+    "$APP_ROOT/node_modules" \
     "$APP_ROOT/test-results" \
     "$APP_ROOT/coverage" \
     "$APP_ROOT/playwright-report" \

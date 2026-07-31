@@ -39,9 +39,15 @@ When `BACKUP_BEFORE_MIGRATION=1`, the release also requires the protected
 GPG-recipient configuration. It stops before migrations if either is absent.
 
 The release step installs development dependencies explicitly because Prisma's
-migration CLI and the `tsx` seed runner are build-time tools. It prunes those
-dependencies after the standalone build, so they are not retained in the runtime
-release.
+migration CLI and the `tsx` seed runner are build-time tools. The immutable
+release then contains only Next's traced standalone runtime and the MySQL backup
+entry point; root dependencies, source files, tests, and build caches remain in
+the disposable staging directory.
+
+Next's writable prerender cache is release-specific under
+`shared/next-cache/<release-id>` and is linked into the standalone tree. This
+keeps the release immutable under systemd's `ProtectSystem=strict` while making
+rollback return to the matching cache.
 
 To restore the last application release:
 
@@ -51,10 +57,10 @@ sudo scripts/rollback-release.sh
 
 ## Disk cleanup
 
-Release directories contain a complete standalone application, including its
-production dependencies, so retaining every historical release can consume
-significant disk space. The cleanup utility is report-only by default and
-protects both the `current` and `previous` release symlinks:
+Release directories contain the compact standalone application and its traced
+production dependencies. The cleanup utility is report-only by default, protects
+both the `current` and `previous` release symlinks, and removes a deleted
+release's matching shared Next cache:
 
 ```bash
 cd /var/www/AstroTools
@@ -69,9 +75,9 @@ days:
 sudo scripts/cleanup-server.sh --apply
 ```
 
-If the checkout itself contains old build and test caches, they can be removed
-only when the service uses an atomic `current` release symlink. This option does
-not remove `node_modules`:
+If the checkout itself contains reproducible dependencies or old build and test
+caches, they can be removed only when the service uses an atomic `current`
+release symlink:
 
 ```bash
 sudo scripts/cleanup-server.sh --clean-checkout-caches

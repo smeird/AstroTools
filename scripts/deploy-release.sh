@@ -6,6 +6,7 @@ set -Eeuo pipefail
 
 APP_ROOT="${APP_ROOT:-/var/www/AstroTools}"
 RELEASES_DIR="$APP_ROOT/releases"
+SHARED_DIR="$APP_ROOT/shared"
 CURRENT_LINK="$APP_ROOT/current"
 PREVIOUS_LINK="$APP_ROOT/previous"
 RUNTIME_ENV="${RUNTIME_ENV:-/etc/astrotools/astrotools.env}"
@@ -34,6 +35,7 @@ commit="$(git rev-parse --short=12 HEAD)"
 release_id="$(date -u +%Y%m%d%H%M%S)-$commit"
 release_dir="$RELEASES_DIR/$release_id"
 staging_dir="$RELEASES_DIR/.staging-$release_id"
+next_cache_dir="$SHARED_DIR/next-cache/$release_id"
 
 mkdir -p "$RELEASES_DIR"
 rm -rf "$staging_dir"
@@ -66,15 +68,30 @@ fi
 "$NPM_BIN" run db:migrate:deploy
 "$NPM_BIN" run db:seed
 "$NPM_BIN" run build
-# The standalone server has its production dependencies under .next/standalone;
-# do not carry test and build tooling into the immutable runtime release.
-"$NPM_BIN" prune --omit=dev
 unset MIGRATION_DATABASE_URL
 
-install -d -o astrotools -g astrotools -m 0755 "$release_dir"
-cp -a "$staging_dir/." "$release_dir/"
+# Next standalone output already contains the traced production dependencies,
+# public assets, and static assets. Copying the complete staging checkout would
+# duplicate root node_modules, build caches, source, and tests in every release.
+install -d -o astrotools -g astrotools -m 0755 \
+  "$release_dir/.next" \
+  "$release_dir/ops/mysql" \
+  "$next_cache_dir"
+cp -a "$staging_dir/.next/standalone" "$release_dir/.next/standalone"
+install -m 0755 \
+  "$staging_dir/ops/mysql/backup.sh" \
+  "$release_dir/ops/mysql/backup.sh"
+
+# ProtectSystem=strict keeps releases immutable. Next's prerender cache remains
+# writable through a release-specific directory under the systemd-approved
+# shared path, and rollback naturally returns to the matching cache.
+install -d "$release_dir/.next/standalone/.next"
+rm -rf "$release_dir/.next/standalone/.next/cache"
+ln -s "$next_cache_dir" "$release_dir/.next/standalone/.next/cache"
 chown -R astrotools:astrotools "$release_dir"
+chown -R astrotools:astrotools "$next_cache_dir"
 chmod -R u=rwX,g=rX,o=rX "$release_dir"
+chmod 0755 "$next_cache_dir"
 
 old_target=""
 if [[ -L "$CURRENT_LINK" ]]; then
