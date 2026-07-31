@@ -41,3 +41,17 @@ The existing Release 1 calculator remains unchanged as the production baseline.
 The new route has its own feature component, tests, documentation, and
 accessibility/e2e checks. Further calculators require another bounded decision
 and must not be inferred from this package.
+
+## Subsequent bounded decisions
+
+On 2026-07-31, the user approved continuing through the plan in sequence. The
+second package delivered Focal Reducer and Barlow Effects. The next bounded
+package is **Sensor Tilt**, at `/calculators/sensor-tilt`.
+
+Sensor Tilt accepts physical sensor dimensions, signed focus differences across
+the horizontal and vertical axes, and centre-to-adjuster distance. It reports
+the two axis angles, combined plane tilt, corner-to-corner focus difference, and
+the equivalent adjustment magnitude. The calculation is explicitly a plane
+model: it does not attribute all focus variation to mechanical tilt or attempt
+to separate field curvature, optical aberration, sag, seeing, or measurement
+noise.

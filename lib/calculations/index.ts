@@ -21,6 +21,7 @@ export {
   classifyResolutionSampling,
 } from "./resolution";
 export { calculateModifierEffects } from "./modifier-effects";
+export { calculateSensorTilt } from "./sensor-tilt";
 export type {
   CameraSensorInput,
   DerivedFocalLengthInput,
@@ -49,5 +50,6 @@ export type {
   ModifierEffectsResult,
   ModifierEffectsSnapshot,
 } from "./modifier-effects";
+export type { SensorTiltInput, SensorTiltResult } from "./sensor-tilt";
 export { CalculationInputError } from "./validation";
 export { inchesToMillimetres, millimetresToInches } from "./units";

@@ -5,7 +5,11 @@ import styles from "./calculator-navigation.module.css";
 export function CalculatorNavigation({
   active,
 }: {
-  active: "field-of-view" | "resolution-and-sampling" | "modifier-effects";
+  active:
+    | "field-of-view"
+    | "resolution-and-sampling"
+    | "modifier-effects"
+    | "sensor-tilt";
 }) {
   return (
     <nav aria-label="Calculators" className={styles.navigation}>
@@ -32,6 +36,14 @@ export function CalculatorNavigation({
         prefetch={false}
       >
         Resolution &amp; Sampling
+      </Link>
+      <Link
+        aria-current={active === "sensor-tilt" ? "page" : undefined}
+        className={styles.link}
+        href="/calculators/sensor-tilt"
+        prefetch={false}
+      >
+        Sensor Tilt
       </Link>
     </nav>
   );
