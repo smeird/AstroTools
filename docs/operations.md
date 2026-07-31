@@ -40,6 +40,44 @@ To restore the last application release:
 sudo scripts/rollback-release.sh
 ```
 
+## Disk cleanup
+
+Release directories contain a complete standalone application, including its
+production dependencies, so retaining every historical release can consume
+significant disk space. The cleanup utility is report-only by default and
+protects both the `current` and `previous` release symlinks:
+
+```bash
+cd /var/www/AstroTools
+sudo scripts/cleanup-server.sh
+```
+
+Review the candidates, then explicitly apply the cleanup. This keeps the two
+newest unprotected releases and removes staging directories older than seven
+days:
+
+```bash
+sudo scripts/cleanup-server.sh --apply
+```
+
+If the checkout itself contains old build and test caches, they can be removed
+only when the service uses an atomic `current` release symlink. This option does
+not remove `node_modules`:
+
+```bash
+sudo scripts/cleanup-server.sh --clean-checkout-caches
+sudo scripts/cleanup-server.sh --clean-checkout-caches --apply
+```
+
+Keep more releases when rollback capacity requires it:
+
+```bash
+sudo scripts/cleanup-server.sh --keep-releases 4 --apply
+```
+
+The script never removes the active or rollback release and refuses cache
+cleanup when the service may be running directly from the checkout.
+
 Database rollback is separate from application rollback. A schema migration must
 have an explicitly reviewed forward-compatible rollback plan before it is
 deployed.
