@@ -198,6 +198,18 @@ main {
   text-decoration: none;
 }
 
+.secondary-action {
+  display: inline-flex;
+  min-height: 3rem;
+  margin-top: 1rem;
+  padding: 0.85rem 0;
+  gap: 1.5rem;
+  align-items: center;
+  color: var(--signal);
+  font-weight: 700;
+  text-decoration: none;
+}
+
 .field-study {
   position: relative;
   aspect-ratio: 1;

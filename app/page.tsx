@@ -31,6 +31,13 @@ export default function HomePage() {
               Open the field lab
               <span aria-hidden="true">↗</span>
             </Link>
+            <Link
+              className="secondary-action"
+              href="/calculators/resolution-and-sampling"
+            >
+              Explore resolution and sampling
+              <span aria-hidden="true">↗</span>
+            </Link>
           </div>
 
           <div className="field-study" aria-hidden="true">

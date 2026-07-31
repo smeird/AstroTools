@@ -16,6 +16,10 @@ export {
   deriveSensorDimensions,
   resolveSensorDimensions,
 } from "./engine";
+export {
+  calculateResolutionAndSampling,
+  classifyResolutionSampling,
+} from "./resolution";
 export type {
   CameraSensorInput,
   DerivedFocalLengthInput,
@@ -35,5 +39,9 @@ export type {
   SensorDimensionsMm,
   SensorGeometryInput,
 } from "./types";
+export type {
+  ResolutionAndSamplingInput,
+  ResolutionAndSamplingResult,
+} from "./resolution";
 export { CalculationInputError } from "./validation";
 export { inchesToMillimetres, millimetresToInches } from "./units";
