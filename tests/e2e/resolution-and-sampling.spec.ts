@@ -16,6 +16,10 @@ test("resolution and sampling updates live and has no serious accessibility find
   await page.getByRole("spinbutton", { name: "Aperture" }).fill("400");
   await expect(page.getByText("0.346″")).toBeVisible();
   await expect(page.getByText("0.45", { exact: false })).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole("spinbutton", { name: "Aperture" })).toHaveValue(
+    "400",
+  );
 
   const scan = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])

@@ -1,6 +1,12 @@
 "use client";
 
-import { useMemo, useReducer } from "react";
+import {
+  startTransition,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from "react";
 
 import { ResultCard, ResultGrid } from "@/components/design-system";
 import { calculateImagingSystem } from "@/lib/calculations";
@@ -27,6 +33,11 @@ import {
 import type { FieldOfViewCatalogue } from "../services/calculator-catalogue";
 import type { EquipmentConfigurationState } from "../model/equipment-configuration";
 import type { FieldOfViewShareNotice } from "../schemas/shareable-state";
+import {
+  FIELD_OF_VIEW_PERSISTENCE_KEY,
+  parsePersistedFieldOfViewState,
+  serializePersistedFieldOfViewState,
+} from "../model/persistence";
 
 import {
   AccessibleAngularPair,
@@ -43,15 +54,41 @@ export function FieldOfViewLab({
   catalogue,
   initialConfiguration,
   shareNotice,
+  restorePersistedState = false,
 }: {
   catalogue: FieldOfViewCatalogue;
   initialConfiguration?: EquipmentConfigurationState | undefined;
   shareNotice?: FieldOfViewShareNotice | null | undefined;
+  restorePersistedState?: boolean;
 }) {
+  const [persistedStateLoaded, setPersistedStateLoaded] = useState(
+    !restorePersistedState,
+  );
   const [state, dispatch] = useReducer(
     equipmentConfigurationReducer,
     initialConfiguration ?? createEquipmentConfiguration(catalogue),
   );
+  useEffect(() => {
+    const stored = restorePersistedState
+      ? window.localStorage.getItem(FIELD_OF_VIEW_PERSISTENCE_KEY)
+      : null;
+    const restored = stored
+      ? parsePersistedFieldOfViewState(stored, catalogue)
+      : null;
+    startTransition(() => {
+      if (restored) {
+        dispatch({ type: "hydrate", state: restored });
+      }
+      setPersistedStateLoaded(true);
+    });
+  }, [catalogue, restorePersistedState]);
+  useEffect(() => {
+    if (!persistedStateLoaded) return;
+    const serialized = serializePersistedFieldOfViewState(state);
+    if (serialized) {
+      window.localStorage.setItem(FIELD_OF_VIEW_PERSISTENCE_KEY, serialized);
+    }
+  }, [persistedStateLoaded, state]);
   const telescopeInputs = resolveTelescopeInputs(state.telescope);
   const cameraSensor = resolveCameraSensor(state.camera);
   const opticalMultipliers = resolveModifierMultipliers(state.modifiers);

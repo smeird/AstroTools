@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import type { FieldOfViewShareNotice } from "../schemas/shareable-state";
+import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
 
 import styles from "./field-of-view-shell.module.css";
 
@@ -28,6 +29,7 @@ export function FieldOfViewShell({
           <Link className={styles.breadcrumb} href="/" prefetch={false}>
             ← All calculators
           </Link>
+          <CalculatorNavigation active="field-of-view" />
           <p className="eyebrow">Field of View Lab</p>
           <h1 className={styles.title} id="lab-title">
             Frame the sky with confidence.

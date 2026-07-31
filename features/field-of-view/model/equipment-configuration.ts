@@ -98,6 +98,7 @@ export type CameraField =
   | "resolutionHeightPx";
 
 export type EquipmentConfigurationAction =
+  | { type: "hydrate"; state: EquipmentConfigurationState }
   | { type: "telescope-mode"; mode: EquipmentMode }
   | { type: "telescope-preset"; preset: TelescopeDto }
   | { type: "telescope-reset" }
@@ -341,6 +342,8 @@ export function equipmentConfigurationReducer(
   action: EquipmentConfigurationAction,
 ): EquipmentConfigurationState {
   switch (action.type) {
+    case "hydrate":
+      return action.state;
     case "telescope-mode":
       return {
         ...state,

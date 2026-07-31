@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { startTransition, useEffect, useMemo, useState } from "react";
 
+import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
 import { NumericInput } from "@/components/design-system/numeric-input";
 import {
   calculateResolutionAndSampling,
@@ -10,6 +11,11 @@ import {
 } from "@/lib/calculations";
 import type { ResolutionAndSamplingInput } from "@/lib/calculations";
 
+import {
+  parseResolutionAndSamplingState,
+  RESOLUTION_AND_SAMPLING_PERSISTENCE_KEY,
+  serializeResolutionAndSamplingState,
+} from "../model/persistence";
 import styles from "./resolution-and-sampling-calculator.module.css";
 
 const defaults = {
@@ -35,6 +41,25 @@ function format(value: number, digits = 2): string {
 
 export function ResolutionAndSamplingCalculator() {
   const [values, setValues] = useState(defaults);
+  const [persistedStateLoaded, setPersistedStateLoaded] = useState(false);
+  useEffect(() => {
+    const stored = window.localStorage.getItem(
+      RESOLUTION_AND_SAMPLING_PERSISTENCE_KEY,
+    );
+    const restored = stored ? parseResolutionAndSamplingState(stored) : null;
+    startTransition(() => {
+      if (restored) setValues(restored);
+      setPersistedStateLoaded(true);
+    });
+  }, []);
+  useEffect(() => {
+    if (persistedStateLoaded) {
+      window.localStorage.setItem(
+        RESOLUTION_AND_SAMPLING_PERSISTENCE_KEY,
+        serializeResolutionAndSamplingState(values),
+      );
+    }
+  }, [persistedStateLoaded, values]);
   const result = useMemo(() => {
     const input = {
       apertureMm: parse(values.apertureMm),
@@ -61,6 +86,7 @@ export function ResolutionAndSamplingCalculator() {
       <Link className={styles.backLink} href="/">
         ← All calculators
       </Link>
+      <CalculatorNavigation active="resolution-and-sampling" />
       <header className={styles.intro}>
         <p className="eyebrow">Resolution and Sampling</p>
         <h1>Know what the aperture can resolve.</h1>

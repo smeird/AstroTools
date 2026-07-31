@@ -51,10 +51,12 @@ export function FieldOfViewPageView({
   catalogue,
   initialConfiguration,
   shareNotice,
+  restorePersistedState,
 }: {
   catalogue: FieldOfViewCatalogue;
   initialConfiguration?: EquipmentConfigurationState | undefined;
   shareNotice?: FieldOfViewShareNotice | null | undefined;
+  restorePersistedState?: boolean;
 }) {
   return (
     <>
@@ -65,6 +67,7 @@ export function FieldOfViewPageView({
           catalogue={catalogue}
           initialConfiguration={initialConfiguration}
           shareNotice={shareNotice}
+          restorePersistedState={restorePersistedState ?? false}
         />
       </FieldOfViewPageFrame>
       <SiteFooter />
@@ -98,6 +101,7 @@ export default async function FieldOfViewPage({
       catalogue={catalogue}
       initialConfiguration={sharedState.state}
       shareNotice={sharedState.notice}
+      restorePersistedState={normalizedSearchParams.size === 0}
     />
   );
 }
