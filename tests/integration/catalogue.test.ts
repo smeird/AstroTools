@@ -359,9 +359,9 @@ describe("MySQL catalogue integration", () => {
 
     expect(modifierBody.meta.total).toBe(4);
     expect(modifierBody.data.map(({ multiplier }) => multiplier)).toEqual([
-      "0.7",
-      "0.7",
       "0.2",
+      "0.7",
+      "0.7",
       "0.85",
     ]);
     expect(targetBody.data).toEqual([
