@@ -204,7 +204,7 @@ test("catalogue presets and an optical reducer update the imaging result locally
     page,
     "Modifier preset",
     "Celestron reducer",
-    /celestron reducer lens 0\.7x/i,
+    /celestron reducer lens 0\.7x.*edgehd 800/i,
   );
   await page.getByRole("button", { name: "Add selected modifier" }).click();
   await chooseComboboxOption(
@@ -285,7 +285,7 @@ test("a copied versioned URL reproduces the complete configuration in a fresh co
     page,
     "Modifier preset",
     "Celestron reducer",
-    /celestron reducer lens 0\.7x/i,
+    /celestron reducer lens 0\.7x.*edgehd 800/i,
   );
   await page.getByRole("button", { name: "Add selected modifier" }).click();
   await page
