@@ -5,7 +5,7 @@ import styles from "./calculator-navigation.module.css";
 export function CalculatorNavigation({
   active,
 }: {
-  active: "field-of-view" | "resolution-and-sampling";
+  active: "field-of-view" | "resolution-and-sampling" | "modifier-effects";
 }) {
   return (
     <nav aria-label="Calculators" className={styles.navigation}>
@@ -16,6 +16,14 @@ export function CalculatorNavigation({
         prefetch={false}
       >
         Field of View
+      </Link>
+      <Link
+        aria-current={active === "modifier-effects" ? "page" : undefined}
+        className={styles.link}
+        href="/calculators/modifier-effects"
+        prefetch={false}
+      >
+        Reducer &amp; Barlow
       </Link>
       <Link
         aria-current={active === "resolution-and-sampling" ? "page" : undefined}

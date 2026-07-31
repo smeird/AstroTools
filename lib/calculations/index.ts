@@ -20,6 +20,7 @@ export {
   calculateResolutionAndSampling,
   classifyResolutionSampling,
 } from "./resolution";
+export { calculateModifierEffects } from "./modifier-effects";
 export type {
   CameraSensorInput,
   DerivedFocalLengthInput,
@@ -43,5 +44,10 @@ export type {
   ResolutionAndSamplingInput,
   ResolutionAndSamplingResult,
 } from "./resolution";
+export type {
+  ModifierEffectsInput,
+  ModifierEffectsResult,
+  ModifierEffectsSnapshot,
+} from "./modifier-effects";
 export { CalculationInputError } from "./validation";
 export { inchesToMillimetres, millimetresToInches } from "./units";
