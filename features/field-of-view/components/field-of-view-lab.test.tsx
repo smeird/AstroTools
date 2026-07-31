@@ -8,6 +8,10 @@ import { COMPLEX_FIELD_OF_VIEW_SHARE_V1 } from "@/tests/fixtures/field-of-view-s
 import { parseFieldOfViewShareState } from "../schemas/shareable-state";
 import { FieldOfViewLab } from "./field-of-view-lab";
 import { formatSignedAngularMargin } from "./target-framing-simulator";
+import {
+  parseSharedTelescopeSelection,
+  SHARED_TELESCOPE_SELECTION_KEY,
+} from "@/features/shared-equipment/telescope-selection";
 
 function renderLab(catalogue = fieldOfViewCatalogueFixture) {
   return render(<FieldOfViewLab catalogue={catalogue} />);
@@ -31,6 +35,20 @@ describe("formatSignedAngularMargin", () => {
 });
 
 describe("FieldOfViewLab", () => {
+  it("publishes the current telescope for other calculators", () => {
+    window.localStorage.removeItem(SHARED_TELESCOPE_SELECTION_KEY);
+    renderLab();
+
+    const stored = window.localStorage.getItem(SHARED_TELESCOPE_SELECTION_KEY);
+    expect(stored).not.toBeNull();
+    expect(parseSharedTelescopeSelection(stored ?? "")).toMatchObject({
+      slug: "evostar-80edx-apo-refractor",
+      label: expect.stringMatching(/evostar/i),
+      nativeFocalLengthMm: "600",
+      apertureMm: "80",
+    });
+  });
+
   it("renders the required input hierarchy, one restrained live result, and a proportional visual equivalent", () => {
     renderLab();
 

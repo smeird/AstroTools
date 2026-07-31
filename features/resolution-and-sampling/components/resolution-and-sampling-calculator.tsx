@@ -5,6 +5,13 @@ import { startTransition, useEffect, useMemo, useState } from "react";
 
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
 import { NumericInput } from "@/components/design-system/numeric-input";
+import { SharedTelescopeNotice } from "@/components/design-system/shared-telescope-notice";
+import {
+  applySharedTelescopeWhenChanged,
+  parseSharedTelescopeSelection,
+  SHARED_TELESCOPE_SELECTION_KEY,
+  type SharedTelescopeSelection,
+} from "@/features/shared-equipment/telescope-selection";
 import {
   calculateResolutionAndSampling,
   classifyResolutionSampling,
@@ -14,6 +21,7 @@ import type { ResolutionAndSamplingInput } from "@/lib/calculations";
 import {
   parseResolutionAndSamplingState,
   RESOLUTION_AND_SAMPLING_PERSISTENCE_KEY,
+  RESOLUTION_TELESCOPE_APPLIED_KEY,
   serializeResolutionAndSamplingState,
 } from "../model/persistence";
 import styles from "./resolution-and-sampling-calculator.module.css";
@@ -42,15 +50,38 @@ function format(value: number, digits = 2): string {
 export function ResolutionAndSamplingCalculator() {
   const [values, setValues] = useState(defaults);
   const [persistedStateLoaded, setPersistedStateLoaded] = useState(false);
+  const [sharedTelescope, setSharedTelescope] =
+    useState<SharedTelescopeSelection | null>(null);
   useEffect(() => {
     const stored = window.localStorage.getItem(
       RESOLUTION_AND_SAMPLING_PERSISTENCE_KEY,
     );
     const restored = stored ? parseResolutionAndSamplingState(stored) : null;
+    const sharedRaw = window.localStorage.getItem(
+      SHARED_TELESCOPE_SELECTION_KEY,
+    );
+    const shared = sharedRaw ? parseSharedTelescopeSelection(sharedRaw) : null;
+    const applied = applySharedTelescopeWhenChanged(
+      restored ?? defaults,
+      shared,
+      window.localStorage.getItem(RESOLUTION_TELESCOPE_APPLIED_KEY),
+      (current, telescope) => ({
+        ...current,
+        apertureMm: telescope.apertureMm,
+        focalLengthMm: telescope.nativeFocalLengthMm,
+      }),
+    );
     startTransition(() => {
-      if (restored) setValues(restored);
+      setValues(applied.values);
+      setSharedTelescope(shared);
       setPersistedStateLoaded(true);
     });
+    if (applied.changed && applied.appliedSelection) {
+      window.localStorage.setItem(
+        RESOLUTION_TELESCOPE_APPLIED_KEY,
+        applied.appliedSelection,
+      );
+    }
   }, []);
   useEffect(() => {
     if (persistedStateLoaded) {
@@ -96,6 +127,7 @@ export function ResolutionAndSamplingCalculator() {
           immediately.
         </p>
       </header>
+      <SharedTelescopeNotice selection={sharedTelescope} used />
 
       <div className={styles.workspace}>
         <section className={styles.panel} aria-labelledby="inputs-title">

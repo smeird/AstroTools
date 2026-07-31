@@ -1,5 +1,7 @@
 export const MODIFIER_EFFECTS_PERSISTENCE_KEY =
   "astrotools.modifier-effects.settings.v1";
+export const MODIFIER_TELESCOPE_APPLIED_KEY =
+  "astrotools.modifier-effects.applied-telescope.v1";
 
 export interface ModifierEffectsValues {
   nativeFocalLengthMm: string;

@@ -5,6 +5,12 @@ import { startTransition, useEffect, useMemo, useState } from "react";
 
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
 import { NumericInput } from "@/components/design-system/numeric-input";
+import { SharedTelescopeNotice } from "@/components/design-system/shared-telescope-notice";
+import {
+  parseSharedTelescopeSelection,
+  SHARED_TELESCOPE_SELECTION_KEY,
+  type SharedTelescopeSelection,
+} from "@/features/shared-equipment/telescope-selection";
 import { calculateSensorTilt } from "@/lib/calculations";
 
 import {
@@ -37,12 +43,20 @@ const format = (value: number, digits = 3) =>
 export function SensorTiltCalculator() {
   const [values, setValues] = useState(defaults);
   const [loaded, setLoaded] = useState(false);
+  const [sharedTelescope, setSharedTelescope] =
+    useState<SharedTelescopeSelection | null>(null);
 
   useEffect(() => {
     const stored = window.localStorage.getItem(SENSOR_TILT_PERSISTENCE_KEY);
     const restored = stored ? parseSensorTilt(stored) : null;
+    const sharedRaw = window.localStorage.getItem(
+      SHARED_TELESCOPE_SELECTION_KEY,
+    );
     startTransition(() => {
       if (restored) setValues(restored);
+      setSharedTelescope(
+        sharedRaw ? parseSharedTelescopeSelection(sharedRaw) : null,
+      );
       setLoaded(true);
     });
   }, []);
@@ -97,6 +111,7 @@ export function SensorTiltCalculator() {
           the tilt magnitude and the equivalent adjustment at your tilt plate.
         </p>
       </header>
+      <SharedTelescopeNotice selection={sharedTelescope} used={false} />
 
       <div className={styles.workspace}>
         <section className={styles.panel} aria-labelledby="tilt-inputs-title">

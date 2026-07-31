@@ -100,6 +100,21 @@ explains that required labelled fields must be corrected first.
 The URL contains calculator state only. It contains no personal information,
 secret, analytics identifier, or server-side short-link key.
 
+## Remembered equipment across calculators
+
+The current valid telescope is also stored locally as a small, versioned shared
+selection containing its display label, optional catalogue slug, focal length,
+and aperture. Resolution and Sampling and Reducer/Barlow apply a newly changed
+telescope once, while retaining their own camera, seeing, wavelength, modifier,
+and other calculator-specific settings. A manual edit made inside one of those
+calculators is therefore preserved on reload until the user changes the shared
+telescope again in Field of View.
+
+Calculators that do not use telescope geometry may display the remembered
+selection for continuity but do not apply it to unrelated inputs. The shared
+selection remains in browser local storage; it is not sent to the server and is
+not included in analytics or accounts.
+
 ## Compatibility fixtures
 
 Manually authored v1 fixtures live in
