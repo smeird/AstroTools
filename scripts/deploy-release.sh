@@ -10,6 +10,7 @@ CURRENT_LINK="$APP_ROOT/current"
 PREVIOUS_LINK="$APP_ROOT/previous"
 RUNTIME_ENV="${RUNTIME_ENV:-/etc/astrotools/astrotools.env}"
 MIGRATION_ENV="${MIGRATION_ENV:-/etc/astrotools/astrotools-migration.env}"
+BACKUP_ENV="${BACKUP_ENV:-/etc/astrotools/backup.env}"
 SERVICE_NAME="${SERVICE_NAME:-astrotools}"
 NODE_BIN="${NODE_BIN:-/usr/local/bin/node}"
 NPM_BIN="${NPM_BIN:-/usr/local/bin/npm}"
@@ -51,6 +52,10 @@ source "$MIGRATION_ENV"
 set +a
 
 if [[ "$BACKUP_BEFORE_MIGRATION" == 1 ]]; then
+  [[ -f "$BACKUP_ENV" ]] || die "missing backup environment: $BACKUP_ENV"
+  set -a
+  source "$BACKUP_ENV"
+  set +a
   "$staging_dir/ops/mysql/backup.sh"
 fi
 
