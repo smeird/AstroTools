@@ -16,8 +16,10 @@ The application sets a defence-in-depth response-header baseline in Next.js and
 Apache repeats public-edge headers in Work Package 9. It includes `nosniff`,
 same-origin framing, restrictive referrer and permissions policies, and a
 Content Security Policy with no `unsafe-eval`. Inline framework bootstrap/style
-support remains explicitly limited to same-origin pages; a nonce-based CSP is
-deferred until the framework and Apache delivery model are exercised together.
+support remains explicitly limited to same-origin pages; a nonce-based CSP and
+HTTPS-only `upgrade-insecure-requests` policy belong at the Apache TLS boundary,
+not the loopback Node response, and are deferred until that delivery model is
+exercised together.
 
 Route and global error boundaries present safe recovery language without stack
 traces, SQL details, connection strings, or request values. Operational events
