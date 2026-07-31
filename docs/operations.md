@@ -34,6 +34,11 @@ catalogue, builds the standalone Next.js server, switches the symlink, restarts
 systemd, and waits for `/api/health/ready`. It does not put migration
 credentials in the long-running service environment.
 
+The release step installs development dependencies explicitly because Prisma's
+migration CLI and the `tsx` seed runner are build-time tools. It prunes those
+dependencies after the standalone build, so they are not retained in the runtime
+release.
+
 To restore the last application release:
 
 ```bash
