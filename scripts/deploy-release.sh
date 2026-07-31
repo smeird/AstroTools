@@ -54,10 +54,16 @@ if [[ "$BACKUP_BEFORE_MIGRATION" == 1 ]]; then
   "$staging_dir/ops/mysql/backup.sh"
 fi
 
-"$NPM_BIN" ci
+# Prisma migrations, the seed entry point, and the Next.js build use pinned
+# development tools (Prisma CLI and tsx). Install them explicitly even when
+# the invoking shell exports NODE_ENV=production or npm_config_omit=dev.
+"$NPM_BIN" ci --include=dev
 "$NPM_BIN" run db:migrate:deploy
 "$NPM_BIN" run db:seed
 "$NPM_BIN" run build
+# The standalone server has its production dependencies under .next/standalone;
+# do not carry test and build tooling into the immutable runtime release.
+"$NPM_BIN" prune --omit=dev
 unset MIGRATION_DATABASE_URL
 
 install -d -o astrotools -g astrotools -m 0755 "$release_dir"
