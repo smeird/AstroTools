@@ -31,7 +31,7 @@
   --site-header-height: 5.5rem;
   --focus-ring: 3px solid var(--color-accent);
   --shadow-overlay: 0 1.25rem 3rem rgba(0, 0, 0, 0.45);
-  --max-width: 1200px;
+  --max-width: 1500px;
   /* Compatibility aliases retained while the homepage moves onto the tokens. */
   --ink: var(--color-text);
   --muted: var(--color-text-muted);

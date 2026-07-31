@@ -606,6 +606,22 @@ test("frame rotation and sensor orientation stay independent from calculations",
   await expectScaleLabelAligned();
 });
 
+test("wide layouts keep framing controls alongside the live diagram", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await openCalculator(page);
+
+  const slider = page.getByRole("slider", { name: "Display zoom" });
+  const simulator = page.getByTestId("framing-simulator");
+  await expect(slider).toBeVisible();
+  await expect(simulator).toBeVisible();
+  const gridTemplateAreas = await simulator.evaluate(
+    (element) => getComputedStyle(element).gridTemplateAreas,
+  );
+  expect(gridTemplateAreas).toContain("controls figure");
+});
+
 test("semantic equations and physical-unit displays preserve every optical result", async ({
   page,
 }) => {

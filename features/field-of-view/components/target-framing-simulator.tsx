@@ -221,7 +221,11 @@ export function TargetFramingSimulator({
   const targetPositionAngleDeg = Number(target?.defaultRotationDeg);
 
   return (
-    <section className={styles.panel} aria-labelledby="framing-title">
+    <section
+      aria-labelledby="framing-title"
+      className={styles.panel}
+      data-testid="framing-simulator"
+    >
       <div className={styles.sectionHeader}>
         <p className="eyebrow">Proportional sky geometry</p>
         <h2 id="framing-title">Target framing simulator</h2>

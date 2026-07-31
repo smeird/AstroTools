@@ -88,3 +88,8 @@ rotation, fit result, zoom disclaimer, grid, scale, licence, scientific source,
 and verification date. Fit is always stated in text and never conveyed by colour
 alone. Framing controls precede the graphic in DOM order and use native range
 and radio semantics.
+
+On screens at least 1100 CSS pixels wide, the framing controls sit alongside the
+diagram so a slider can be adjusted while its visual effect remains in view. The
+DOM and keyboard order remain controls, fit result, then graphic; the layout
+returns to that vertical order below the desktop breakpoint.

@@ -83,12 +83,12 @@
 
 .workspace {
   display: grid;
-  grid-template-columns: minmax(18rem, 21rem) minmax(0, 1fr);
+  grid-template-columns: minmax(19rem, 23rem) minmax(0, 1fr);
   grid-template-areas:
     "controls summary"
     "controls visualisation"
     "controls results";
-  gap: var(--space-5) clamp(1.5rem, 4vw, 4rem);
+  gap: var(--space-5) clamp(1.5rem, 3vw, 3.5rem);
   align-items: start;
 }
 
@@ -111,7 +111,7 @@
   gap: var(--space-5);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 960px) {
   .intro {
     grid-template-columns: 1fr;
   }
