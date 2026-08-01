@@ -10,9 +10,12 @@ import { MathExpression } from "@/components/equations";
 import {
   applySharedTelescopeWhenChanged,
   applySharedCameraWhenChanged,
+  applySharedImagingTrainWhenChanged,
   parseSharedCameraSelection,
+  parseSharedImagingTrain,
   parseSharedTelescopeSelection,
   SHARED_CAMERA_SELECTION_KEY,
+  SHARED_IMAGING_TRAIN_KEY,
   SHARED_TELESCOPE_SELECTION_KEY,
   type SharedTelescopeSelection,
 } from "@/features/shared-equipment/telescope-selection";
@@ -22,6 +25,7 @@ import {
   MODIFIER_EFFECTS_PERSISTENCE_KEY,
   MODIFIER_CAMERA_APPLIED_KEY,
   MODIFIER_TELESCOPE_APPLIED_KEY,
+  MODIFIER_TRAIN_APPLIED_KEY,
   parseModifierEffects,
   serializeModifierEffects,
   type ModifierEffectsValues,
@@ -88,8 +92,24 @@ export function ModifierEffectsCalculator() {
         pixelSizeUm: camera.pixelSizeUm,
       }),
     );
+    const trainRaw = window.localStorage.getItem(SHARED_IMAGING_TRAIN_KEY);
+    const trainApplied = applySharedImagingTrainWhenChanged(
+      cameraApplied.values,
+      trainRaw ? parseSharedImagingTrain(trainRaw) : null,
+      window.localStorage.getItem(MODIFIER_TRAIN_APPLIED_KEY),
+      (current, train) => ({
+        ...current,
+        nativeFocalLengthMm: train.nativeFocalLengthMm,
+        apertureMm: train.apertureMm,
+        modifierFactor: train.opticalMultiplier,
+        sensorWidthMm: train.sensorWidthMm,
+        sensorHeightMm: train.sensorHeightMm,
+        pixelSizeUm: train.pixelSizeUm,
+        binningFactor: train.binningFactor,
+      }),
+    );
     startTransition(() => {
-      setValues(cameraApplied.values);
+      setValues(trainApplied.values);
       setSharedTelescope(shared);
       setLoaded(true);
     });
@@ -103,6 +123,11 @@ export function ModifierEffectsCalculator() {
       window.localStorage.setItem(
         MODIFIER_CAMERA_APPLIED_KEY,
         cameraApplied.appliedSelection,
+      );
+    if (trainApplied.changed && trainApplied.appliedSelection)
+      window.localStorage.setItem(
+        MODIFIER_TRAIN_APPLIED_KEY,
+        trainApplied.appliedSelection,
       );
   }, []);
   useEffect(() => {

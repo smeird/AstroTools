@@ -1,10 +1,12 @@
 import type {
   CameraConfiguration,
+  EquipmentConfigurationState,
   TelescopeConfiguration,
 } from "@/features/field-of-view/model/equipment-configuration";
 import {
   cameraIsCustomised,
   resolveCameraSensor,
+  resolveModifierMultipliers,
   resolveTelescopeInputs,
   telescopeIsCustomised,
 } from "@/features/field-of-view/model/equipment-configuration";
@@ -14,6 +16,7 @@ export const SHARED_TELESCOPE_SELECTION_KEY =
   "astrotools.shared.telescope-selection.v1";
 export const SHARED_CAMERA_SELECTION_KEY =
   "astrotools.shared.camera-selection.v1";
+export const SHARED_IMAGING_TRAIN_KEY = "astrotools.shared.imaging-train.v1";
 
 export interface SharedTelescopeSelection {
   readonly version: 1;
@@ -30,6 +33,114 @@ export interface SharedCameraSelection {
   readonly sensorWidthMm: string;
   readonly sensorHeightMm: string;
   readonly pixelSizeUm: string;
+}
+
+export interface SharedImagingTrain {
+  readonly version: 1;
+  readonly telescopeLabel: string;
+  readonly cameraLabel: string;
+  readonly nativeFocalLengthMm: string;
+  readonly effectiveFocalLengthMm: string;
+  readonly apertureMm: string;
+  readonly opticalMultiplier: string;
+  readonly pixelSizeUm: string;
+  readonly binningFactor: string;
+  readonly sensorWidthMm: string;
+  readonly sensorHeightMm: string;
+}
+
+export function imagingTrainFromConfiguration(
+  state: EquipmentConfigurationState,
+): SharedImagingTrain | null {
+  const telescope = telescopeSelectionFromConfiguration(state.telescope);
+  const camera = cameraSelectionFromConfiguration(state.camera);
+  const modifiers = resolveModifierMultipliers(state.modifiers);
+  const binning = Number(state.binning);
+  if (
+    !telescope ||
+    !camera ||
+    !modifiers ||
+    !Number.isFinite(binning) ||
+    binning <= 0
+  )
+    return null;
+  const opticalMultiplier = modifiers.reduce(
+    (product, multiplier) => product * multiplier,
+    1,
+  );
+  return {
+    version: 1,
+    telescopeLabel: telescope.label,
+    cameraLabel: camera.label,
+    nativeFocalLengthMm: telescope.nativeFocalLengthMm,
+    effectiveFocalLengthMm: String(
+      Number(telescope.nativeFocalLengthMm) * opticalMultiplier,
+    ),
+    apertureMm: telescope.apertureMm,
+    opticalMultiplier: String(opticalMultiplier),
+    pixelSizeUm: camera.pixelSizeUm,
+    binningFactor: String(binning),
+    sensorWidthMm: camera.sensorWidthMm,
+    sensorHeightMm: camera.sensorHeightMm,
+  };
+}
+
+export function serializeSharedImagingTrain(
+  selection: SharedImagingTrain,
+): string {
+  return JSON.stringify(selection);
+}
+
+export function parseSharedImagingTrain(
+  value: string,
+): SharedImagingTrain | null {
+  try {
+    const parsed: unknown = JSON.parse(value);
+    if (!parsed || typeof parsed !== "object") return null;
+    const candidate = parsed as Record<string, unknown>;
+    const numericFields = [
+      "nativeFocalLengthMm",
+      "effectiveFocalLengthMm",
+      "apertureMm",
+      "opticalMultiplier",
+      "pixelSizeUm",
+      "binningFactor",
+      "sensorWidthMm",
+      "sensorHeightMm",
+    ];
+    if (
+      candidate.version !== 1 ||
+      typeof candidate.telescopeLabel !== "string" ||
+      typeof candidate.cameraLabel !== "string" ||
+      numericFields.some(
+        (field) =>
+          typeof candidate[field] !== "string" ||
+          !Number.isFinite(Number(candidate[field])) ||
+          Number(candidate[field]) <= 0,
+      )
+    )
+      return null;
+    return candidate as unknown as SharedImagingTrain;
+  } catch {
+    return null;
+  }
+}
+
+export function applySharedImagingTrainWhenChanged<T extends object>(
+  values: T,
+  selection: SharedImagingTrain | null,
+  appliedSelection: string | null,
+  map: (current: T, train: SharedImagingTrain) => T,
+): { values: T; appliedSelection: string | null; changed: boolean } {
+  if (!selection) return { values, appliedSelection, changed: false };
+  const serialized = serializeSharedImagingTrain(selection);
+  if (serialized === appliedSelection)
+    return { values, appliedSelection, changed: false };
+  return {
+    values: map(values, selection),
+    appliedSelection: serialized,
+    changed: true,
+  };
 }
 
 export function telescopeSelectionFromConfiguration(

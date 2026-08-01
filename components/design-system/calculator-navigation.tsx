@@ -12,6 +12,7 @@ export function CalculatorNavigation({
     | "sensor-tilt"
     | "backfocus-spacing"
     | "guiding-ratio"
+    | "polar-alignment-drift"
     | "equipment";
 }) {
   return (
@@ -71,6 +72,14 @@ export function CalculatorNavigation({
         prefetch={false}
       >
         Guiding Ratio
+      </Link>
+      <Link
+        aria-current={active === "polar-alignment-drift" ? "page" : undefined}
+        className={styles.link}
+        href="/calculators/polar-alignment-drift"
+        prefetch={false}
+      >
+        Polar Alignment
       </Link>
     </nav>
   );

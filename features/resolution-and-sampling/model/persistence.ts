@@ -6,6 +6,8 @@ export const RESOLUTION_TELESCOPE_APPLIED_KEY =
   "astrotools.resolution-and-sampling.applied-telescope.v1";
 export const RESOLUTION_CAMERA_APPLIED_KEY =
   "astrotools.resolution-and-sampling.applied-camera.v1";
+export const RESOLUTION_TRAIN_APPLIED_KEY =
+  "astrotools.resolution-and-sampling.applied-train.v1";
 
 export interface PersistedResolutionAndSamplingState {
   readonly version: 1;

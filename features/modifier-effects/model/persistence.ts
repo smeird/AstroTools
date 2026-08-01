@@ -4,6 +4,8 @@ export const MODIFIER_TELESCOPE_APPLIED_KEY =
   "astrotools.modifier-effects.applied-telescope.v1";
 export const MODIFIER_CAMERA_APPLIED_KEY =
   "astrotools.modifier-effects.applied-camera.v1";
+export const MODIFIER_TRAIN_APPLIED_KEY =
+  "astrotools.modifier-effects.applied-train.v1";
 
 export interface ModifierEffectsValues {
   nativeFocalLengthMm: string;

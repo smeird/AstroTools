@@ -72,3 +72,10 @@ scales and expresses the guide-camera centroid movement corresponding to half an
 imaging pixel. The ratio is descriptive rather than a universal pass/fail
 threshold because centroid accuracy and guiding performance depend on star
 signal, seeing, exposure, mount response, calibration, flexure, and software.
+
+The next approved package is **Drift and Polar-Alignment Error**, at
+`/calculators/polar-alignment-drift`. It converts signed pixel drift through the
+complete effective imaging train and uses hour angle and observer latitude to
+estimate small-angle azimuth and altitude polar-axis errors. It reports
+low-sensitivity geometries as unavailable and does not present detector sign as
+a mount-adjustment direction without camera-orientation calibration.

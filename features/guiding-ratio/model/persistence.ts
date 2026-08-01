@@ -4,6 +4,8 @@ export const GUIDING_TELESCOPE_APPLIED_KEY =
   "astrotools.guiding-ratio.telescope-applied.v1";
 export const GUIDING_CAMERA_APPLIED_KEY =
   "astrotools.guiding-ratio.camera-applied.v1";
+export const GUIDING_TRAIN_APPLIED_KEY =
+  "astrotools.guiding-ratio.train-applied.v1";
 
 export interface GuidingRatioValues {
   imagingFocalLengthMm: string;

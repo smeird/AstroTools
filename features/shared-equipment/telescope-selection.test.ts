@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import {
   cameraSelectionFromConfiguration,
+  imagingTrainFromConfiguration,
+  parseSharedImagingTrain,
+  serializeSharedImagingTrain,
   parseSharedCameraSelection,
   serializeSharedCameraSelection,
   applySharedTelescopeWhenChanged,
@@ -33,6 +36,36 @@ describe("shared telescope selection", () => {
     expect(
       parseSharedCameraSelection(serializeSharedCameraSelection(camera!)),
     ).toEqual(camera);
+  });
+
+  it("captures the complete effective imaging train", () => {
+    const state = createEquipmentConfiguration(fieldOfViewCatalogueFixture);
+    const train = imagingTrainFromConfiguration({
+      ...state,
+      modifiers: [
+        {
+          instanceId: "test",
+          source: "manual",
+          presetSlug: null,
+          label: "0.7× reducer",
+          modifierType: "Reducer",
+          multiplier: "0.7",
+          baselineMultiplier: null,
+          compatibleNotes: null,
+        },
+      ],
+      binning: "2",
+    });
+    expect(train).toMatchObject({
+      nativeFocalLengthMm: "600",
+      effectiveFocalLengthMm: "420",
+      opticalMultiplier: "0.7",
+      pixelSizeUm: "3.76",
+      binningFactor: "2",
+    });
+    expect(
+      parseSharedImagingTrain(serializeSharedImagingTrain(train!)),
+    ).toEqual(train);
   });
 
   it("round-trips a bounded versioned selection", () => {

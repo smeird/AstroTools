@@ -1257,6 +1257,29 @@ overwriting calculator-specific guide equipment.
 • The page reflows without horizontal overflow and exposes textbook-style maths
 to assistive technology.
 
+Post-release work package 17: Drift and polar-alignment error
+
+Goal
+
+Convert measured detector drift through the user’s complete effective imaging
+train into a qualified estimate of polar-axis alignment error.
+
+Deliverables
+
+• Signed pixel drift, duration, latitude and star hour-angle inputs
+• Full-train image scale including modifiers, camera and binning
+• Azimuth and altitude error estimates with geometry sensitivity safeguards
+• Native MathML equations, assumptions and directional-sign warning
+• Homepage, navigation and equipment-overview entries
+
+Done when
+
+• Meridian and six-hour-angle fixtures agree with the small-angle model.
+• Low-sensitivity geometries do not produce misleading unbounded results.
+• A saved effective imaging train populates focal length, pixel pitch and
+binning across applicable calculators.
+• Cross-browser accessibility and narrow-screen overflow checks pass.
+
 16. Release 1 acceptance criteria
 
 The release is acceptable only when all statements are true:

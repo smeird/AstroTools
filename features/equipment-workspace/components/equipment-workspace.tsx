@@ -26,10 +26,13 @@ import type { FieldOfViewShareNotice } from "@/features/field-of-view/schemas/sh
 import type { FieldOfViewCatalogue } from "@/features/field-of-view/services/calculator-catalogue";
 import {
   cameraSelectionFromConfiguration,
+  imagingTrainFromConfiguration,
   serializeSharedCameraSelection,
   serializeSharedTelescopeSelection,
+  serializeSharedImagingTrain,
   SHARED_CAMERA_SELECTION_KEY,
   SHARED_TELESCOPE_SELECTION_KEY,
+  SHARED_IMAGING_TRAIN_KEY,
   telescopeSelectionFromConfiguration,
 } from "@/features/shared-equipment/telescope-selection";
 import { calculateImagingSystem } from "@/lib/calculations";
@@ -140,6 +143,12 @@ export function EquipmentWorkspace({
         SHARED_CAMERA_SELECTION_KEY,
         serializeSharedCameraSelection(selectedCamera),
       );
+    const imagingTrain = imagingTrainFromConfiguration(state);
+    if (imagingTrain)
+      window.localStorage.setItem(
+        SHARED_IMAGING_TRAIN_KEY,
+        serializeSharedImagingTrain(imagingTrain),
+      );
   }, [persistedStateLoaded, state]);
 
   async function copyBookmark() {
@@ -244,6 +253,25 @@ export function EquipmentWorkspace({
               )}
               <Link href="/calculators/resolution-and-sampling">
                 Open resolution details →
+              </Link>
+            </article>
+            <article className={styles.card}>
+              <p className={styles.kind}>Full train ready</p>
+              <h3>Drift &amp; Polar Alignment</h3>
+              {result ? (
+                <>
+                  <strong>
+                    {format(result.imageScaleArcsecPerPixel, 3)}″ / px
+                  </strong>
+                  <span>
+                    Add a measured signed drift, duration and pointing geometry.
+                  </span>
+                </>
+              ) : (
+                <p>Needs the effective imaging train.</p>
+              )}
+              <Link href="/calculators/polar-alignment-drift">
+                Diagnose measured drift →
               </Link>
             </article>
             <article className={styles.card}>

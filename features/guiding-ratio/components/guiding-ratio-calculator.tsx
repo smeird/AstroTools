@@ -9,10 +9,13 @@ import { SharedTelescopeNotice } from "@/components/design-system/shared-telesco
 import { MathExpression } from "@/components/equations";
 import {
   applySharedCameraWhenChanged,
+  applySharedImagingTrainWhenChanged,
   applySharedTelescopeWhenChanged,
   parseSharedCameraSelection,
+  parseSharedImagingTrain,
   parseSharedTelescopeSelection,
   SHARED_CAMERA_SELECTION_KEY,
+  SHARED_IMAGING_TRAIN_KEY,
   SHARED_TELESCOPE_SELECTION_KEY,
   type SharedTelescopeSelection,
 } from "@/features/shared-equipment/telescope-selection";
@@ -22,6 +25,7 @@ import {
   GUIDING_CAMERA_APPLIED_KEY,
   GUIDING_RATIO_PERSISTENCE_KEY,
   GUIDING_TELESCOPE_APPLIED_KEY,
+  GUIDING_TRAIN_APPLIED_KEY,
   parseGuidingRatio,
   serializeGuidingRatio,
   type GuidingRatioValues,
@@ -82,8 +86,20 @@ export function GuidingRatioCalculator() {
         imagingPixelSizeUm: selected.pixelSizeUm,
       }),
     );
+    const trainRaw = window.localStorage.getItem(SHARED_IMAGING_TRAIN_KEY);
+    const trainApplied = applySharedImagingTrainWhenChanged(
+      cameraApplied.values,
+      trainRaw ? parseSharedImagingTrain(trainRaw) : null,
+      window.localStorage.getItem(GUIDING_TRAIN_APPLIED_KEY),
+      (current, train) => ({
+        ...current,
+        imagingFocalLengthMm: train.effectiveFocalLengthMm,
+        imagingPixelSizeUm: train.pixelSizeUm,
+        imagingBinning: train.binningFactor,
+      }),
+    );
     startTransition(() => {
-      setValues(cameraApplied.values);
+      setValues(trainApplied.values);
       setSharedTelescope(telescope);
       setLoaded(true);
     });
@@ -96,6 +112,11 @@ export function GuidingRatioCalculator() {
       window.localStorage.setItem(
         GUIDING_CAMERA_APPLIED_KEY,
         cameraApplied.appliedSelection,
+      );
+    if (trainApplied.changed && trainApplied.appliedSelection)
+      window.localStorage.setItem(
+        GUIDING_TRAIN_APPLIED_KEY,
+        trainApplied.appliedSelection,
       );
   }, []);
 
@@ -242,7 +263,7 @@ export function GuidingRatioCalculator() {
                   <dt>Guide : imaging ratio</dt>
                   <dd>
                     {format(result.guideToImagingRatio, 2)} : 1
-                      <span>angular scale per pixel</span>
+                    <span>angular scale per pixel</span>
                   </dd>
                 </div>
                 <div className={styles.resultCard}>

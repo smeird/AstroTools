@@ -25,6 +25,9 @@ describe("home page", () => {
     expect(
       screen.getByRole("link", { name: /check guiding ratio/i }),
     ).toHaveAttribute("href", "/calculators/guiding-ratio");
+    expect(
+      screen.getByRole("link", { name: /diagnose polar-alignment drift/i }),
+    ).toHaveAttribute("href", "/calculators/polar-alignment-drift");
     expect(screen.getAllByRole("listitem")).toHaveLength(4);
   });
 });

@@ -10,9 +10,12 @@ import { MathExpression } from "@/components/equations";
 import {
   applySharedTelescopeWhenChanged,
   applySharedCameraWhenChanged,
+  applySharedImagingTrainWhenChanged,
   parseSharedCameraSelection,
+  parseSharedImagingTrain,
   parseSharedTelescopeSelection,
   SHARED_CAMERA_SELECTION_KEY,
+  SHARED_IMAGING_TRAIN_KEY,
   SHARED_TELESCOPE_SELECTION_KEY,
   type SharedTelescopeSelection,
 } from "@/features/shared-equipment/telescope-selection";
@@ -27,6 +30,7 @@ import {
   RESOLUTION_AND_SAMPLING_PERSISTENCE_KEY,
   RESOLUTION_CAMERA_APPLIED_KEY,
   RESOLUTION_TELESCOPE_APPLIED_KEY,
+  RESOLUTION_TRAIN_APPLIED_KEY,
   serializeResolutionAndSamplingState,
 } from "../model/persistence";
 import styles from "./resolution-and-sampling-calculator.module.css";
@@ -88,8 +92,21 @@ export function ResolutionAndSamplingCalculator() {
       window.localStorage.getItem(RESOLUTION_CAMERA_APPLIED_KEY),
       (current, camera) => ({ ...current, pixelSizeUm: camera.pixelSizeUm }),
     );
+    const trainRaw = window.localStorage.getItem(SHARED_IMAGING_TRAIN_KEY);
+    const trainApplied = applySharedImagingTrainWhenChanged(
+      cameraApplied.values,
+      trainRaw ? parseSharedImagingTrain(trainRaw) : null,
+      window.localStorage.getItem(RESOLUTION_TRAIN_APPLIED_KEY),
+      (current, train) => ({
+        ...current,
+        focalLengthMm: train.effectiveFocalLengthMm,
+        apertureMm: train.apertureMm,
+        pixelSizeUm: train.pixelSizeUm,
+        binningFactor: train.binningFactor,
+      }),
+    );
     startTransition(() => {
-      setValues(cameraApplied.values);
+      setValues(trainApplied.values);
       setSharedTelescope(shared);
       setPersistedStateLoaded(true);
     });
@@ -103,6 +120,11 @@ export function ResolutionAndSamplingCalculator() {
       window.localStorage.setItem(
         RESOLUTION_CAMERA_APPLIED_KEY,
         cameraApplied.appliedSelection,
+      );
+    if (trainApplied.changed && trainApplied.appliedSelection)
+      window.localStorage.setItem(
+        RESOLUTION_TRAIN_APPLIED_KEY,
+        trainApplied.appliedSelection,
       );
   }, []);
   useEffect(() => {

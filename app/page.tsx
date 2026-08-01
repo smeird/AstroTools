@@ -49,6 +49,13 @@ export default function HomePage() {
               Check guiding ratio
               <span aria-hidden="true">↗</span>
             </Link>
+            <Link
+              className="secondary-action"
+              href="/calculators/polar-alignment-drift"
+            >
+              Diagnose polar-alignment drift
+              <span aria-hidden="true">↗</span>
+            </Link>
           </div>
 
           <div className="field-study" aria-hidden="true">
