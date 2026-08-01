@@ -25,6 +25,7 @@ export { calculateSensorTilt } from "./sensor-tilt";
 export { calculateBackfocusSpacing } from "./backfocus-spacing";
 export { calculateGuidingRatio } from "./guiding-ratio";
 export { calculatePolarAlignmentDrift } from "./polar-alignment-drift";
+export { calculateExposureSnr } from "./exposure-snr";
 export type {
   CameraSensorInput,
   DerivedFocalLengthInput,
@@ -63,5 +64,6 @@ export type {
   PolarAlignmentDriftInput,
   PolarAlignmentDriftResult,
 } from "./polar-alignment-drift";
+export type { ExposureSnrInput, ExposureSnrResult } from "./exposure-snr";
 export { CalculationInputError } from "./validation";
 export { inchesToMillimetres, millimetresToInches } from "./units";

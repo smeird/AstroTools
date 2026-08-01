@@ -1,0 +1,115 @@
+.page {
+  padding: var(--space-6) 1.5rem;
+}
+.intro {
+  max-width: 70rem;
+  margin-bottom: var(--space-5);
+}
+.intro h1,
+.panel h2,
+.formula h3 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-weight: 400;
+}
+.intro h1 {
+  margin-top: var(--space-2);
+  font-size: clamp(2.75rem, 6vw, 5rem);
+  line-height: 0.98;
+}
+.lede,
+.panelHeader p,
+.formula p,
+.note {
+  color: var(--color-text-soft);
+  line-height: 1.6;
+}
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(28rem, 0.95fr) minmax(0, 1.05fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+.panel {
+  min-width: 0;
+  padding: var(--space-5);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-panel);
+  background: rgba(16, 28, 37, 0.72);
+}
+.panelHeader {
+  margin-bottom: var(--space-4);
+}
+.panelHeader h2 {
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+}
+.inputGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+.results {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+.resultCard {
+  min-width: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-control);
+  background: var(--color-surface-input);
+}
+.resultCard dt {
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-meta);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.resultCard dd {
+  margin: var(--space-2) 0 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.3rem, 2.4vw, 2rem);
+}
+.formula {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-subtle);
+}
+.note {
+  margin: var(--space-4) 0 0;
+  padding: var(--space-3);
+  border-left: 3px solid var(--color-signal);
+  background: rgba(114, 229, 210, 0.08);
+}
+.backLink {
+  display: inline-flex;
+  min-height: var(--control-min-size);
+  align-items: center;
+  color: var(--color-text-soft);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-small);
+}
+@media (max-width: 1050px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 700px) {
+  .inputGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 520px) {
+  .page {
+    padding: var(--space-4) 1rem;
+  }
+  .panel {
+    padding: var(--space-4);
+  }
+  .inputGrid,
+  .results {
+    grid-template-columns: 1fr;
+  }
+}

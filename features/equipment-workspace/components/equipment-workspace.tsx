@@ -332,6 +332,23 @@ export function EquipmentWorkspace({
                 Compare guiding scales →
               </Link>
             </article>
+            <article className={styles.card}>
+              <p className={styles.kind}>Full train ready</p>
+              <h3>Exposure &amp; Signal-to-Noise</h3>
+              {result ? (
+                <>
+                  <strong>
+                    {format(result.imageScaleArcsecPerPixel, 3)}″ / px
+                  </strong>
+                  <span>Add measured source, sky and camera-noise rates.</span>
+                </>
+              ) : (
+                <p>Needs the effective imaging train.</p>
+              )}
+              <Link href="/calculators/exposure-snr">
+                Estimate the exposure stack →
+              </Link>
+            </article>
           </div>
         </section>
       </div>

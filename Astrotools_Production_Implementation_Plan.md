@@ -1280,6 +1280,29 @@ Done when
 binning across applicable calculators.
 • Cross-browser accessibility and narrow-screen overflow checks pass.
 
+Post-release work package 18: Exposure and signal-to-noise estimation
+
+Goal
+
+Estimate ideal stack signal-to-noise from the complete effective imaging train
+and explicit measured or estimated electron rates.
+
+Deliverables
+
+• Full-train binned image scale and pixel sky area
+• Source, sky, dark-current and read-noise stack variance
+• Sub-exposure, frame-count, integration-time and SNR results
+• Native MathML equation, measurement guidance and model limitations
+• Homepage, navigation and equipment-overview entries
+
+Done when
+
+• Golden fixtures preserve the expected square-root stack-depth relationship.
+• Read-noise variance is applied once per frame and shot-noise terms use
+electrons without premature rounding.
+• Saved modifiers, camera and binning populate the calculator.
+• Cross-browser accessibility and responsive overflow checks pass.
+
 16. Release 1 acceptance criteria
 
 The release is acceptable only when all statements are true:

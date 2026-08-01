@@ -79,3 +79,9 @@ complete effective imaging train and uses hour angle and observer latitude to
 estimate small-angle azimuth and altitude polar-axis errors. It reports
 low-sensitivity geometries as unavailable and does not present detector sign as
 a mount-adjustment direction without camera-orientation calibration.
+
+The next approved package is **Exposure and Signal-to-Noise Estimation**, at
+`/calculators/exposure-snr`. It uses the complete effective imaging train to
+derive binned-pixel sky area and combines user-supplied source, sky, dark and
+read-noise measurements across a stack. Rates are explicitly post-throughput
+electron rates rather than an invented catalogue brightness.

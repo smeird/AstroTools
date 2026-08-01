@@ -13,6 +13,7 @@ export function CalculatorNavigation({
     | "backfocus-spacing"
     | "guiding-ratio"
     | "polar-alignment-drift"
+    | "exposure-snr"
     | "equipment";
 }) {
   return (
@@ -80,6 +81,14 @@ export function CalculatorNavigation({
         prefetch={false}
       >
         Polar Alignment
+      </Link>
+      <Link
+        aria-current={active === "exposure-snr" ? "page" : undefined}
+        className={styles.link}
+        href="/calculators/exposure-snr"
+        prefetch={false}
+      >
+        Exposure &amp; SNR
       </Link>
     </nav>
   );

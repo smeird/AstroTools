@@ -28,6 +28,9 @@ describe("home page", () => {
     expect(
       screen.getByRole("link", { name: /diagnose polar-alignment drift/i }),
     ).toHaveAttribute("href", "/calculators/polar-alignment-drift");
+    expect(
+      screen.getByRole("link", { name: /estimate exposure and snr/i }),
+    ).toHaveAttribute("href", "/calculators/exposure-snr");
     expect(screen.getAllByRole("listitem")).toHaveLength(4);
   });
 });
