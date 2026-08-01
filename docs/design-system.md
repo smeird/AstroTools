@@ -126,3 +126,19 @@ semantic description list exposes the same target extent, position angle, field,
 frame rotation, fit status, scale, source, and credit without requiring the
 graphic. A concise target-and-fit message shares the existing polite result
 status, while display-only zoom leaves that message unchanged.
+
+## Presentation and Academic typography
+
+Presentation view retains the editorial Georgia heading face and broad Arial
+body text. Academic view switches the complete interface to a locally available
+narrow sans-serif stack (`Arial Narrow`, `Aptos Narrow`,
+`Liberation Sans Narrow`, then Arial) and requests condensed font stretching
+where the installed face supports it. No webfont request, tracking service or
+layout-blocking download is introduced. Headings gain a firmer technical weight
+while controls, tables and ordinary text inherit the narrower measure.
+
+The current homepage reflects the equipment-first product architecture. Its two
+primary routes are the named equipment workspace and consolidated calculation
+dossier. The rig-flow figure explains shared context, the workflow explains
+bookmark-to-PDF use, and a semantic three-group index links all eleven
+specialist calculators without reverting to a tall unstructured action list.

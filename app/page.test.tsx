@@ -4,45 +4,35 @@ import { describe, expect, it } from "vitest";
 import HomePage from "./page";
 
 describe("home page", () => {
-  it("introduces the first calculator with semantic navigation", () => {
+  it("introduces the complete equipment-first planning suite", () => {
     render(<HomePage />);
 
     expect(screen.getByRole("banner")).toBeInTheDocument();
     expect(screen.getByRole("main")).toHaveAttribute("id", "main-content");
     expect(screen.getByRole("contentinfo")).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: /skip to main content/i }),
-    ).toHaveAttribute("href", "#main-content");
-    expect(
       screen.getByRole("heading", {
         level: 1,
-        name: /plan the frame before the sky gets dark/i,
+        name: /know your rig before you lose the night/i,
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: /open the field lab/i }),
-    ).toHaveAttribute("href", "/calculators/field-of-view");
+      screen.getByRole("link", { name: /build or open my rig/i }),
+    ).toHaveAttribute("href", "/equipment");
     expect(
-      screen.getByRole("link", { name: /view all calculations/i }),
+      screen.getByRole("link", { name: /open the calculation dossier/i }),
     ).toHaveAttribute("href", "/calculations");
-    expect(
-      screen.getByRole("link", { name: /check guiding ratio/i }),
-    ).toHaveAttribute("href", "/calculators/guiding-ratio");
-    expect(
-      screen.getByRole("link", { name: /diagnose polar-alignment drift/i }),
-    ).toHaveAttribute("href", "/calculators/polar-alignment-drift");
-    expect(
-      screen.getByRole("link", { name: /estimate exposure and snr/i }),
-    ).toHaveAttribute("href", "/calculators/exposure-snr");
-    expect(
-      screen.getByRole("link", { name: /plan a mosaic/i }),
-    ).toHaveAttribute("href", "/calculators/mosaic-planning");
-    expect(
-      screen.getByRole("link", { name: /plan dew control/i }),
-    ).toHaveAttribute("href", "/calculators/dew-heater");
-    expect(
-      screen.getByRole("link", { name: /estimate storage needs/i }),
-    ).toHaveAttribute("href", "/calculators/storage-volume");
-    expect(screen.getAllByRole("listitem")).toHaveLength(4);
+    for (const [name, href] of [
+      [/^field of view/i, "/calculators/field-of-view"],
+      [/^guiding ratio/i, "/calculators/guiding-ratio"],
+      [/^polar alignment/i, "/calculators/polar-alignment-drift"],
+      [/^exposure & snr/i, "/calculators/exposure-snr"],
+      [/^mosaic planning/i, "/calculators/mosaic-planning"],
+      [/^dew & heater/i, "/calculators/dew-heater"],
+      [/^storage/i, "/calculators/storage-volume"],
+    ] as const) {
+      expect(screen.getByRole("link", { name })).toHaveAttribute("href", href);
+    }
+    expect(screen.getAllByRole("listitem")).toHaveLength(18);
   });
 });

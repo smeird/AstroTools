@@ -1488,6 +1488,37 @@ page through the document title or print header.
 • Unit, cross-browser, keyboard, accessibility, mobile-overflow, print and
 production-build checks pass.
 
+Post-release work package 24: Mature landing page and academic typography
+
+Goal
+
+Present Astrotools as the complete equipment-first planning suite it has become,
+and make Academic mode read like a compact technical reference rather than the
+same typography with reduced spacing.
+
+Deliverables
+
+• A rebuilt homepage whose primary journey is name/configure a complete rig,
+review all calculations, then open specialist calculators or export the dossier.
+• A concise, grouped map of every implemented calculator instead of a tall
+undifferentiated action list inherited from the initial Field of View release.
+• An equipment-to-results visual that explains shared train state without
+inventing stored data or duplicating calculator logic.
+• A narrow system-font stack for Academic mode across headings, body copy,
+controls, navigation, tables and mathematical result metadata, with readable
+fallbacks and no third-party font request.
+
+Done when
+
+• The homepage names the equipment workspace, consolidated calculations,
+Academic view, named bookmarks and PDF export as first-class capabilities.
+• Every calculator remains reachable through a semantic grouped link, keyboard
+navigation and mobile layouts without horizontal overflow.
+• Presentation mode retains the established editorial identity; Academic mode
+is visibly narrower and exposes more text per line without reducing legibility.
+• View-mode switching cannot change page meaning, URL state or calculation
+output, and both modes pass accessibility and cross-browser checks.
+
 16. Release 1 acceptance criteria
 
 The release is acceptable only when all statements are true:

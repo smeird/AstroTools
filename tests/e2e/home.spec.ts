@@ -1,29 +1,25 @@
 import { expect, test } from "@playwright/test";
 
-test("a visitor can reach the Field of View Lab from the homepage", async ({
+test("a visitor can start the equipment-first journey from the homepage", async ({
   page,
 }) => {
   const response = await page.goto("/");
-
   expect(response?.headers()["x-powered-by"]).toBeUndefined();
-
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    "Plan the frame before the sky gets dark.",
+    "Know your rig before you lose the night.",
   );
-  await page.getByRole("link", { name: "Open the field lab" }).click();
-
-  await expect(page).toHaveURL(/\/calculators\/field-of-view$/);
+  await expect(page.getByText("11", { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /^Field of View/ }),
+  ).toHaveAttribute("href", "/calculators/field-of-view");
+  await page.getByRole("link", { name: "Build or open my rig" }).click();
+  await expect(page).toHaveURL(/\/equipment$/);
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "Frame the sky with confidence.",
+      name: "One setup. Complete equipment context.",
     }),
   ).toBeVisible();
-
-  const returnHomeBox = await page
-    .getByRole("link", { name: "All calculators" })
-    .boundingBox();
-  expect(returnHomeBox?.height).toBeGreaterThanOrEqual(44);
 });
 
 test("the primary journey is keyboard operable", async ({
@@ -32,35 +28,49 @@ test("the primary journey is keyboard operable", async ({
 }) => {
   await page.goto("/");
   const focusNext = browserName === "webkit" ? "Alt+Tab" : "Tab";
-
   await page.keyboard.press(focusNext);
   await expect(
     page.getByRole("link", { name: "Skip to main content" }),
   ).toBeFocused();
-
   await page.keyboard.press("Enter");
   await expect(page.getByRole("main")).toBeFocused();
-
   await page.keyboard.press(focusNext);
   await expect(
-    page.getByRole("link", { name: "Open the field lab" }),
+    page.getByRole("link", { name: "Build or open my rig" }),
   ).toBeFocused();
-
   await page.keyboard.press("Enter");
-  await expect(page).toHaveURL(/\/calculators\/field-of-view$/);
+  await expect(page).toHaveURL(/\/equipment$/);
 });
 
 test("primary links meet the minimum pointer target height", async ({
   page,
 }) => {
   await page.goto("/");
-
   for (const name of [
     "Skip to main content",
     "Astrotools home",
-    "Open the field lab",
+    "Build or open my rig",
   ]) {
     const box = await page.getByRole("link", { name }).boundingBox();
     expect(box?.height).toBeGreaterThanOrEqual(44);
   }
+});
+
+test("academic view uses condensed typography without changing content", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const heading = page.getByRole("heading", { level: 1 });
+  const before = await heading.textContent();
+  await page
+    .getByRole("button", { name: "Use academic information-dense view" })
+    .click();
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-view-mode",
+    "academic",
+  );
+  expect(
+    await heading.evaluate((element) => getComputedStyle(element).fontFamily),
+  ).toContain("Arial Narrow");
+  await expect(heading).toHaveText(before ?? "");
 });

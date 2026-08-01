@@ -4,110 +4,227 @@ import { SiteFooter } from "@/components/design-system/site-footer";
 import { SiteHeader } from "@/components/design-system/site-header";
 import { SkipLink } from "@/components/design-system/skip-link";
 
-const questions = [
-  "How much sky will my equipment capture?",
-  "Will the target fit within the frame?",
-  "What image scale will the combination produce?",
-  "How does the sampling compare with my seeing?",
+const calculatorGroups = [
+  {
+    id: "optics-image",
+    label: "Optics & image",
+    calculators: [
+      [
+        "Field of View",
+        "/calculators/field-of-view",
+        "Frame, scale and target fit",
+      ],
+      [
+        "Reducer & Barlow",
+        "/calculators/modifier-effects",
+        "Effective focal train",
+      ],
+      [
+        "Resolution & Sampling",
+        "/calculators/resolution-and-sampling",
+        "Diffraction, seeing and pixels",
+      ],
+      ["Sensor Tilt", "/calculators/sensor-tilt", "Focus-plane diagnosis"],
+      [
+        "Back-focus",
+        "/calculators/backfocus-spacing",
+        "Mechanical spacing stack",
+      ],
+    ],
+  },
+  {
+    id: "acquisition-alignment",
+    label: "Acquisition & alignment",
+    calculators: [
+      [
+        "Guiding Ratio",
+        "/calculators/guiding-ratio",
+        "Guide and imaging scales",
+      ],
+      [
+        "Polar Alignment",
+        "/calculators/polar-alignment-drift",
+        "Measured drift diagnosis",
+      ],
+      [
+        "Exposure & SNR",
+        "/calculators/exposure-snr",
+        "Calibrated stack estimate",
+      ],
+      [
+        "Mosaic Planning",
+        "/calculators/mosaic-planning",
+        "Panel grid and integration",
+      ],
+    ],
+  },
+  {
+    id: "session-operations",
+    label: "Session operations",
+    calculators: [
+      ["Dew & Heater", "/calculators/dew-heater", "Dew point and heater load"],
+      ["Storage", "/calculators/storage-volume", "Capture data budget"],
+    ],
+  },
 ] as const;
 
 export default function HomePage() {
   return (
     <>
       <SkipLink />
-      <SiteHeader />
+      <SiteHeader releaseLabel="Astrophotography Planning Suite" />
 
       <main id="main-content" tabIndex={-1}>
-        <section className="hero" aria-labelledby="hero-title">
-          <div className="hero-copy">
-            <p className="eyebrow">Field of View Lab</p>
-            <h1 id="hero-title">Plan the frame before the sky gets dark.</h1>
+        <section className="home-hero" aria-labelledby="hero-title">
+          <div className="home-hero-copy">
+            <p className="eyebrow">One imaging train · every planning result</p>
+            <h1 id="hero-title">Know your rig before you lose the night.</h1>
             <p className="lede">
-              Explore how a telescope, optical modifier, and camera shape the
-              sky you capture—with exact geometry and qualified sampling
-              guidance.
+              Name your telescope, modifiers and camera once. Astrotools carries
+              that complete train through exact geometry, sampling, guiding,
+              alignment, exposure, mosaics, environment and storage planning.
             </p>
-            <Link className="primary-action" href="/calculators/field-of-view">
-              Open the field lab
-              <span aria-hidden="true">↗</span>
-            </Link>
-            <Link className="secondary-action" href="/equipment">
-              Save my equipment setup
-              <span aria-hidden="true">↗</span>
-            </Link>
-            <Link className="secondary-action" href="/calculations">
-              View all calculations
-              <span aria-hidden="true">↗</span>
-            </Link>
-            <Link
-              className="secondary-action"
-              href="/calculators/resolution-and-sampling"
-            >
-              Explore resolution and sampling
-              <span aria-hidden="true">↗</span>
-            </Link>
-            <Link
-              className="secondary-action"
-              href="/calculators/guiding-ratio"
-            >
-              Check guiding ratio
-              <span aria-hidden="true">↗</span>
-            </Link>
-            <Link
-              className="secondary-action"
-              href="/calculators/polar-alignment-drift"
-            >
-              Diagnose polar-alignment drift
-              <span aria-hidden="true">↗</span>
-            </Link>
-            <Link className="secondary-action" href="/calculators/exposure-snr">
-              Estimate exposure and SNR
-              <span aria-hidden="true">↗</span>
-            </Link>
-            <Link
-              className="secondary-action"
-              href="/calculators/mosaic-planning"
-            >
-              Plan a mosaic<span aria-hidden="true">↗</span>
-            </Link>
-            <Link className="secondary-action" href="/calculators/dew-heater">
-              Plan dew control<span aria-hidden="true">↗</span>
-            </Link>
-            <Link
-              className="secondary-action"
-              href="/calculators/storage-volume"
-            >
-              Estimate storage needs<span aria-hidden="true">↗</span>
-            </Link>
+            <div className="home-actions" aria-label="Start planning">
+              <Link className="primary-action" href="/equipment">
+                Build or open my rig <span aria-hidden="true">→</span>
+              </Link>
+              <Link className="secondary-action" href="/calculations">
+                Open the calculation dossier <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+            <ul className="home-proofs" aria-label="Workspace capabilities">
+              <li>
+                <strong>11</strong>
+                <span>connected calculators</span>
+              </li>
+              <li>
+                <strong>1 URL</strong>
+                <span>named rig bookmark</span>
+              </li>
+              <li>
+                <strong>PDF</strong>
+                <span>print-ready dossier</span>
+              </li>
+            </ul>
           </div>
 
-          <div className="field-study" aria-hidden="true">
-            <div className="orbit orbit-wide" />
-            <div className="orbit orbit-tight" />
-            <div className="sensor-frame">
-              <span className="sensor-crosshair" />
-              <span className="target-core" />
+          <div
+            className="rig-flow"
+            aria-label="Equipment flows into every calculation"
+          >
+            <div className="rig-flow-heading">
+              <p className="eyebrow">Shared calculation context</p>
+              <span>Local · account-free</span>
             </div>
-            <span className="coordinate coordinate-one">00h 42m</span>
-            <span className="coordinate coordinate-two">+41° 16′</span>
+            <div className="rig-flow-train" aria-hidden="true">
+              <div className="rig-part rig-scope">
+                <span>Telescope</span>
+                <b>600 mm</b>
+              </div>
+              <i>+</i>
+              <div className="rig-part rig-modifier">
+                <span>Reducer</span>
+                <b>0.7×</b>
+              </div>
+              <i>+</i>
+              <div className="rig-part rig-camera">
+                <span>Camera</span>
+                <b>3.76 µm</b>
+              </div>
+            </div>
+            <div className="rig-flow-result">
+              <span>Effective train</span>
+              <strong>420 mm · f/5.3 · 1.85″/px</strong>
+            </div>
+            <div className="rig-flow-branches" aria-hidden="true">
+              <span>Geometry</span>
+              <span>Resolution</span>
+              <span>Guiding</span>
+              <span>Exposure</span>
+              <span>Mosaic</span>
+              <span>Operations</span>
+            </div>
           </div>
         </section>
 
-        <section className="questions" aria-labelledby="questions-title">
+        <section className="home-workflow" aria-labelledby="workflow-title">
           <div>
-            <p className="eyebrow">Built for a decision</p>
-            <h2 id="questions-title">
-              Four questions. One reproducible setup.
-            </h2>
+            <p className="eyebrow">A reusable planning workflow</p>
+            <h2 id="workflow-title">Specify once. Inspect everything.</h2>
           </div>
           <ol>
-            {questions.map((question, index) => (
-              <li key={question}>
-                <span aria-hidden="true">0{index + 1}</span>
-                {question}
-              </li>
-            ))}
+            <li>
+              <span>01</span>
+              <div>
+                <strong>Name the rig</strong>
+                <p>
+                  Save the complete optical train in a transparent bookmark URL.
+                </p>
+              </div>
+            </li>
+            <li>
+              <span>02</span>
+              <div>
+                <strong>Review the dossier</strong>
+                <p>
+                  See every derivable result together in Presentation or
+                  Academic view.
+                </p>
+              </div>
+            </li>
+            <li>
+              <span>03</span>
+              <div>
+                <strong>Refine the measurement</strong>
+                <p>
+                  Open a specialist calculator only when it needs
+                  session-specific inputs.
+                </p>
+              </div>
+            </li>
+            <li>
+              <span>04</span>
+              <div>
+                <strong>Take it outside</strong>
+                <p>
+                  Export a dense A4 PDF for the observatory, field or equipment
+                  case.
+                </p>
+              </div>
+            </li>
           </ol>
+        </section>
+
+        <section
+          className="calculator-index"
+          aria-labelledby="calculator-index-title"
+        >
+          <div className="calculator-index-heading">
+            <p className="eyebrow">Complete calculator index</p>
+            <h2 id="calculator-index-title">From photons to disk space.</h2>
+            <p>
+              Exact results, empirical estimates and first-order models stay
+              visibly distinguished.
+            </p>
+          </div>
+          <div className="calculator-groups">
+            {calculatorGroups.map((group) => (
+              <section key={group.id} aria-labelledby={`group-${group.id}`}>
+                <h3 id={`group-${group.id}`}>{group.label}</h3>
+                <ul>
+                  {group.calculators.map(([name, href, description]) => (
+                    <li key={href}>
+                      <Link href={href}>
+                        <strong>{name}</strong>
+                        <span>{description}</span>
+                        <i aria-hidden="true">↗</i>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
         </section>
       </main>
 
