@@ -1303,6 +1303,29 @@ electrons without premature rounding.
 • Saved modifiers, camera and binning populate the calculator.
 • Cross-browser accessibility and responsive overflow checks pass.
 
+Post-release work package 19: Mosaic planning
+
+Goal
+
+Turn the complete imaging train, target extent and overlap requirement into a
+reproducible panel grid and integration budget.
+
+Deliverables
+
+• Exact single-panel field from effective focal length and sensor dimensions
+• Minimum rows and columns with configurable adjacent-panel overlap
+• Achieved coverage, margins, overlap angles and total integration
+• Native MathML equation and explicit rotation/cropping limitations
+• Homepage, navigation and equipment-overview entries
+
+Done when
+
+• The calculated grid covers both target axes and cannot be reduced on either
+axis without losing coverage.
+• A target fitting in one panel returns a one-panel plan.
+• Saved modifiers and camera dimensions populate the calculator.
+• Cross-browser accessibility and narrow-screen overflow checks pass.
+
 16. Release 1 acceptance criteria
 
 The release is acceptable only when all statements are true:

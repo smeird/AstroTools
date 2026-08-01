@@ -275,6 +275,24 @@ export function EquipmentWorkspace({
               </Link>
             </article>
             <article className={styles.card}>
+              <p className={styles.kind}>Exact field ready</p>
+              <h3>Mosaic Planning</h3>
+              {result ? (
+                <>
+                  <strong>
+                    {format(result.fieldOfViewDeg.horizontalDeg)}° ×{" "}
+                    {format(result.fieldOfViewDeg.verticalDeg)}°
+                  </strong>
+                  <span>Add target extent, overlap and time per panel.</span>
+                </>
+              ) : (
+                <p>Needs focal length and sensor dimensions.</p>
+              )}
+              <Link href="/calculators/mosaic-planning">
+                Build a panel grid →
+              </Link>
+            </article>
+            <article className={styles.card}>
               <p className={styles.kind}>Optical train</p>
               <h3>Reducer &amp; Barlow</h3>
               {result ? (

@@ -31,6 +31,9 @@ describe("home page", () => {
     expect(
       screen.getByRole("link", { name: /estimate exposure and snr/i }),
     ).toHaveAttribute("href", "/calculators/exposure-snr");
+    expect(
+      screen.getByRole("link", { name: /plan a mosaic/i }),
+    ).toHaveAttribute("href", "/calculators/mosaic-planning");
     expect(screen.getAllByRole("listitem")).toHaveLength(4);
   });
 });

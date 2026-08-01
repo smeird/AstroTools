@@ -14,6 +14,7 @@ export function CalculatorNavigation({
     | "guiding-ratio"
     | "polar-alignment-drift"
     | "exposure-snr"
+    | "mosaic-planning"
     | "equipment";
 }) {
   return (
@@ -89,6 +90,14 @@ export function CalculatorNavigation({
         prefetch={false}
       >
         Exposure &amp; SNR
+      </Link>
+      <Link
+        aria-current={active === "mosaic-planning" ? "page" : undefined}
+        className={styles.link}
+        href="/calculators/mosaic-planning"
+        prefetch={false}
+      >
+        Mosaic Planning
       </Link>
     </nav>
   );

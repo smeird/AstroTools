@@ -60,6 +60,12 @@ export default function HomePage() {
               Estimate exposure and SNR
               <span aria-hidden="true">↗</span>
             </Link>
+            <Link
+              className="secondary-action"
+              href="/calculators/mosaic-planning"
+            >
+              Plan a mosaic<span aria-hidden="true">↗</span>
+            </Link>
           </div>
 
           <div className="field-study" aria-hidden="true">

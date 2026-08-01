@@ -85,3 +85,9 @@ The next approved package is **Exposure and Signal-to-Noise Estimation**, at
 derive binned-pixel sky area and combines user-supplied source, sky, dark and
 read-noise measurements across a stack. Rates are explicitly post-throughput
 electron rates rather than an invented catalogue brightness.
+
+The next approved package is **Mosaic Planning**, at
+`/calculators/mosaic-planning`. It derives exact panel field from the complete
+optical train and finds the minimum aligned grid that covers a target extent at
+the requested overlap. Rotation and operational cropping remain explicit
+limitations rather than hidden margins.
