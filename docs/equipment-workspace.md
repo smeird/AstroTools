@@ -33,6 +33,13 @@ configuration used by the calculations. Its accessible description lists those
 parts in optical order, and a horizontally constrained viewport protects narrow
 screens when a train contains many modifiers.
 
+Catalogue optical-design text selects a refractor, reflector or catadioptric
+silhouette. Manual scopes remain generic because shape is never inferred from
+focal ratio alone. The schematic and adjacent fact table progressively expose
+aperture, native and effective focal properties, modifier types and factors,
+sensor dimensions, resolution, pixel pitch, binning, exact field and image scale
+only when each value is valid.
+
 Other than the optional user-authored rig label, the equipment URL contains no
 personal data, analytics identifier, secret, or opaque lookup key. Clearing
 browser storage does not affect a bookmarked URL.

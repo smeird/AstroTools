@@ -27,6 +27,7 @@ export type ManualModifierType =
 interface TelescopePresetSnapshot {
   readonly slug: string;
   readonly label: string;
+  readonly opticalDesign: string;
   readonly nativeFocalLengthMm: string;
   readonly apertureMm: string;
 }
@@ -176,6 +177,7 @@ function telescopeSnapshot(preset: TelescopeDto): TelescopePresetSnapshot {
   return {
     slug: preset.slug,
     label: presetLabel(preset.manufacturer.name, preset.model, preset.active),
+    opticalDesign: preset.opticalDesign,
     nativeFocalLengthMm: editableNumber(preset.nativeFocalLengthMm),
     apertureMm: editableNumber(preset.apertureMm),
   };

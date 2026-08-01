@@ -71,6 +71,6 @@ test("academic view uses condensed typography without changing content", async (
   );
   expect(
     await heading.evaluate((element) => getComputedStyle(element).fontFamily),
-  ).toContain("Arial Narrow");
+  ).toContain("Aptos");
   await expect(heading).toHaveText(before ?? "");
 });

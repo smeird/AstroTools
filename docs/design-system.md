@@ -130,12 +130,12 @@ status, while display-only zoom leaves that message unchanged.
 ## Presentation and Academic typography
 
 Presentation view retains the editorial Georgia heading face and broad Arial
-body text. Academic view switches the complete interface to a locally available
-narrow sans-serif stack (`Arial Narrow`, `Aptos Narrow`,
-`Liberation Sans Narrow`, then Arial) and requests condensed font stretching
-where the installed face supports it. No webfont request, tracking service or
-layout-blocking download is introduced. Headings gain a firmer technical weight
-while controls, tables and ordinary text inherit the narrower measure.
+body text. Academic view switches the complete interface to a locally available,
+normally proportioned technical sans-serif stack (`Aptos`, `Segoe UI`, then
+Arial). Density comes from layout, sizing and spacing rather than a distorted or
+overly narrow face. No webfont request, tracking service or layout-blocking
+download is introduced. Headings gain a firmer technical weight while controls,
+tables and ordinary text use the same readable family.
 
 The current homepage reflects the equipment-first product architecture. Its two
 primary routes are the named equipment workspace and consolidated calculation

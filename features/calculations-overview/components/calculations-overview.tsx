@@ -624,7 +624,7 @@ export function CalculationsOverview() {
         ← Astrotools home
       </Link>
       <CalculatorNavigation active="calculations" />
-      <header className={styles.intro}>
+      <header className={`${styles.intro} ${styles.screenOnly}`}>
         <div>
           <p className="eyebrow">Consolidated calculations</p>
           <h1>{train?.rigName || "One train. Every result."}</h1>
@@ -639,12 +639,12 @@ export function CalculationsOverview() {
             onClick={() => window.print()}
             type="button"
           >
-            Export PDF
+            Export ordered PDF
           </button>
         ) : null}
       </header>
       {!train ? (
-        <section className={styles.empty}>
+        <section className={`${styles.empty} ${styles.screenOnly}`}>
           <h2>No equipment train is available</h2>
           <p>
             Configure and save the imaging train first. No calculation defaults
@@ -655,7 +655,7 @@ export function CalculationsOverview() {
       ) : (
         <>
           <section
-            className={styles.train}
+            className={`${styles.train} ${styles.screenOnly}`}
             aria-labelledby="calculation-context"
           >
             <h2 id="calculation-context">Calculation context</h2>
@@ -690,7 +690,7 @@ export function CalculationsOverview() {
             </dl>
             <Link href="/equipment">Change equipment →</Link>
           </section>
-          <div className={styles.sheet}>
+          <div className={`${styles.sheet} ${styles.screenOnly}`}>
             {sections.map((section) => (
               <section
                 className={styles.section}
@@ -745,6 +745,121 @@ export function CalculationsOverview() {
           </div>
         </>
       )}
+      {train ? (
+        <article
+          className={styles.report}
+          aria-label="Ordered calculation report"
+        >
+          <header className={styles.reportCover}>
+            <p>Astrotools · Calculation report</p>
+            <h1>{train.rigName || "Unnamed imaging rig"}</h1>
+            <p>
+              Ordered technical dossier for the selected optical train. Values
+              retain full calculation precision until presentation formatting.
+            </p>
+          </header>
+          <section className={styles.reportEquipment}>
+            <h2>1. Equipment specification</h2>
+            <table>
+              <tbody>
+                <tr>
+                  <th scope="row">Telescope</th>
+                  <td>{train.telescopeLabel}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Camera</th>
+                  <td>{train.cameraLabel}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Native focal length</th>
+                  <td>{train.nativeFocalLengthMm} mm</td>
+                </tr>
+                <tr>
+                  <th scope="row">Effective focal length</th>
+                  <td>{train.effectiveFocalLengthMm} mm</td>
+                </tr>
+                <tr>
+                  <th scope="row">Aperture</th>
+                  <td>{train.apertureMm} mm</td>
+                </tr>
+                <tr>
+                  <th scope="row">Optical multiplier</th>
+                  <td>{train.opticalMultiplier}×</td>
+                </tr>
+                <tr>
+                  <th scope="row">Sensor</th>
+                  <td>
+                    {format(Number(train.sensorWidthMm), 3)} ×{" "}
+                    {format(Number(train.sensorHeightMm), 3)} mm
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Pixel pitch / binning</th>
+                  <td>
+                    {train.pixelSizeUm} µm / {train.binningFactor}×
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+          <section className={styles.reportCalculations}>
+            <h2>2. Ordered calculations</h2>
+            {sections.map((section, index) => (
+              <section
+                className={styles.reportSection}
+                key={`report-${section.id}`}
+              >
+                <header>
+                  <p>{section.model}</p>
+                  <h3>
+                    2.{index + 1} {section.title}
+                  </h3>
+                </header>
+                {section.rows.length ? (
+                  <table>
+                    <thead>
+                      <tr>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Symbol</th>
+                        <th scope="col">Value</th>
+                        <th scope="col">Unit</th>
+                        <th scope="col">Model / class</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {section.rows.map((row) => (
+                        <tr key={`report-${section.id}-${row.label}`}>
+                          <th scope="row">{row.label}</th>
+                          <td>{row.symbol ?? "—"}</td>
+                          <td>{row.value}</td>
+                          <td>{row.unit ?? "—"}</td>
+                          <td>{row.kind ?? section.model}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : null}
+                {section.missing ? (
+                  <p className={styles.reportMissing}>
+                    <strong>Additional measurement required.</strong>{" "}
+                    {section.missing}
+                  </p>
+                ) : null}
+              </section>
+            ))}
+          </section>
+          <section className={styles.reportMethod}>
+            <h2>3. Method and interpretation</h2>
+            <p>
+              Exact geometry, diffraction estimates, empirical relationships and
+              first-order engineering models are labelled separately. Missing
+              measurements are not replaced with invented defaults. Use each
+              linked calculator in the interactive workspace for its complete
+              equation, assumptions and interpretation.
+            </p>
+          </section>
+        </article>
+      ) : null}
     </main>
   );
 }

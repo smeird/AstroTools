@@ -1519,6 +1519,41 @@ is visibly narrower and exposes more text per line without reducing legibility.
 • View-mode switching cannot change page meaning, URL state or calculation
 output, and both modes pass accessibility and cross-browser checks.
 
+Post-release work package 25: Data-rich optical diagram and calculation report
+
+Goal
+
+Turn the rig visual into a progressively detailed technical schematic, soften
+Academic typography, and make PDF export a purpose-built ordered report rather
+than a printed facsimile of the interactive calculations workspace.
+
+Deliverables
+
+• Catalogue telescope optical-design metadata is retained in client equipment
+state and mapped to truthful refractor, reflector or catadioptric silhouettes;
+manual equipment remains visibly generic unless a design is explicitly known.
+• The schematic exposes every valid available rig fact, including aperture,
+native/effective focal length and ratio, modifier types/factors, sensor size,
+resolution, pixel pitch, binning, field and image scale, while omitting unknown
+facts instead of inventing them.
+• Academic mode uses a compact normally proportioned technical sans-serif stack,
+without narrow-face distortion or negative tracking.
+• PDF mode renders a separate semantic report: titled rig identity and scope,
+ordered equipment specification, ordered calculation chapters, model class,
+symbols, values, units, missing-input notes and a concise methodology statement.
+Interactive navigation, screen cards and controls are absent from the report.
+
+Done when
+
+• Refractor and Schmidt-Cassegrain catalogue fixtures produce visibly distinct
+schematics and matching non-visual descriptions.
+• Adding equipment facts or valid dimensions increases the schematic's facts;
+removing them never leaves stale or fabricated values.
+• Academic content remains measurably denser through layout while its computed
+font family is normally proportioned and readable.
+• A generated A4 PDF is visually inspected as an ordered report with clean page
+breaks, readable tables and no screen-navigation artefacts.
+
 16. Release 1 acceptance criteria
 
 The release is acceptable only when all statements are true:

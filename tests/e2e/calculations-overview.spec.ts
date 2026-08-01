@@ -45,11 +45,25 @@ test("PDF export opens the browser print workflow", async ({ page }) => {
   });
   await page.goto(equipment);
   await page.getByRole("link", { name: "View all calculations →" }).click();
-  await page.getByRole("button", { name: "Export PDF" }).click();
+  await page.getByRole("button", { name: "Export ordered PDF" }).click();
   await expect(page.locator("html")).toHaveAttribute(
     "data-print-called",
     "true",
   );
+  await page.emulateMedia({ media: "print" });
+  await expect(
+    page.getByRole("article", { name: "Ordered calculation report" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "1. Equipment specification" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "2.1 Optical geometry" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "3. Method and interpretation" }),
+  ).toBeVisible();
+  await expect(page.getByRole("navigation")).toBeHidden();
 });
 
 test("consolidated calculations expose every calculator or missing input", async ({
@@ -64,6 +78,7 @@ test("consolidated calculations expose every calculator or missing input", async
   await expect(
     page.getByText(
       "Add guide-scope focal length and guide-camera pixel pitch.",
+      { exact: true },
     ),
   ).toBeVisible();
   const scan = await new AxeBuilder({ page }).analyze();

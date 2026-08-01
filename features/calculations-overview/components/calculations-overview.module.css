@@ -57,6 +57,9 @@
 .printRigName {
   display: none;
 }
+.report {
+  display: none;
+}
 .train,
 .empty {
   margin-bottom: var(--space-5);
@@ -261,6 +264,116 @@
   }
   .page {
     padding: 0;
+  }
+  .screenOnly {
+    display: none !important;
+  }
+  .report {
+    display: block;
+    color: #111;
+    font-family: Arial, sans-serif;
+    font-size: 8.5pt;
+    line-height: 1.35;
+  }
+  .reportCover {
+    padding: 0 0 6mm;
+    border-bottom: 2pt solid #111;
+  }
+  .reportCover > p:first-child,
+  .reportSection header p {
+    margin: 0 0 1mm;
+    color: #444;
+    font-family: "Courier New", monospace;
+    font-size: 7pt;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .reportCover h1 {
+    margin: 0 0 2mm;
+    font-family: Georgia, serif;
+    font-size: 24pt;
+    font-weight: 400;
+  }
+  .reportCover p:last-child {
+    max-width: 180mm;
+    margin: 0;
+    color: #333;
+  }
+  .report h2 {
+    margin: 5mm 0 2mm;
+    padding-bottom: 1mm;
+    border-bottom: 1pt solid #555;
+    font-family: Georgia, serif;
+    font-size: 14pt;
+    font-weight: 400;
+  }
+  .reportEquipment table {
+    width: 100%;
+    border-collapse: collapse;
+    columns: 2;
+  }
+  .reportEquipment th,
+  .reportEquipment td {
+    width: 25%;
+    padding: 1.2mm 2mm;
+    border-bottom: 0.5pt solid #ccc;
+    text-align: left;
+  }
+  .reportEquipment th {
+    color: #444;
+    font-weight: 600;
+  }
+  .reportSection {
+    break-inside: avoid;
+    margin: 0 0 4mm;
+  }
+  .reportSection header {
+    display: block;
+    margin: 0 0 1mm;
+  }
+  .reportSection h3 {
+    margin: 0;
+    font-family: Georgia, serif;
+    font-size: 11pt;
+    font-weight: 400;
+  }
+  .reportSection table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7.5pt;
+  }
+  .reportSection th,
+  .reportSection td {
+    padding: 1mm 1.5mm;
+    border-bottom: 0.5pt solid #bbb;
+    text-align: left;
+    vertical-align: top;
+  }
+  .reportSection thead th {
+    border-top: 1pt solid #555;
+    border-bottom: 1pt solid #555;
+    color: #333;
+    font-size: 6.5pt;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .reportSection td:nth-child(2),
+  .reportSection td:nth-child(3),
+  .reportSection td:nth-child(4) {
+    font-family: "Courier New", monospace;
+    white-space: nowrap;
+  }
+  .reportMissing {
+    margin: 1mm 0 0;
+    padding: 1.5mm 2mm;
+    border-left: 2pt solid #555;
+    background: #f2f2f2;
+  }
+  .reportMethod {
+    break-inside: avoid;
+  }
+  .reportMethod p {
+    max-width: 210mm;
   }
   .backLink,
   .exportButton {

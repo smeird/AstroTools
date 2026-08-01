@@ -798,10 +798,8 @@ main {
 }
 
 html[data-view-mode="academic"] {
-  --font-body:
-    "Arial Narrow", "Aptos Narrow", "Liberation Sans Narrow", Arial, sans-serif;
-  --font-heading:
-    "Arial Narrow", "Aptos Narrow", "Liberation Sans Narrow", Arial, sans-serif;
+  --font-body: Aptos, "Segoe UI", Arial, sans-serif;
+  --font-heading: Aptos, "Segoe UI", Arial, sans-serif;
   --font-mono:
     "Roboto Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   --space-2: 0.35rem;
@@ -815,12 +813,12 @@ html[data-view-mode="academic"] {
 }
 
 html[data-view-mode="academic"] body {
-  font-stretch: condensed;
-  letter-spacing: -0.006em;
+  font-stretch: normal;
+  letter-spacing: normal;
 }
 
 html[data-view-mode="academic"] :where(h1, h2, h3, h4) {
-  font-stretch: condensed;
+  font-stretch: normal;
   font-weight: 600;
   letter-spacing: -0.025em;
 }

@@ -23,15 +23,23 @@ test("a bookmarked manual setup reproduces equipment and opens consolidated calc
   await expect(page).toHaveTitle("Garden Rig · Equipment · Astrotools");
   await expect(
     page.getByRole("img", {
-      name: /Custom telescope then Custom camera; 1× binning/,
+      name: /Custom telescope.*then Custom camera; 1× binning/,
     }),
   ).toBeVisible();
+  await expect(page.locator('[data-optical-family="generic"]')).toBeVisible();
   await expect(
     page.getByRole("spinbutton", { name: "Sensor width" }),
   ).toHaveValue("23.5");
   await expect(
     page.getByRole("heading", { name: "Setup check" }),
   ).toBeVisible();
+  await expect
+    .poll(() =>
+      page.evaluate(() =>
+        window.localStorage.getItem("astrotools.shared.imaging-train.v1"),
+      ),
+    )
+    .not.toBeNull();
   await page.getByRole("link", { name: "View all calculations →" }).click();
   await expect(page.getByRole("heading", { name: "Garden Rig" })).toBeVisible();
   await expect(
