@@ -1347,6 +1347,112 @@ axis without losing coverage.
 • Saved modifiers and camera dimensions populate the calculator.
 • Cross-browser accessibility and narrow-screen overflow checks pass.
 
+Post-release work package 22: Separate equipment and calculations workspaces
+with academic view
+
+Goal
+
+Separate equipment configuration from calculation review, and provide a
+site-wide presentation choice between the existing spacious visual experience
+and a highly information-dense academic experience. A user should be able to
+configure the complete imaging train on one page, then move to a dedicated page
+that exposes virtually every applicable result, equation and interpretation
+across Astrotools without repeatedly opening individual calculators.
+
+Information architecture
+
+• `/equipment` is the authoritative equipment-only workspace. It contains the
+complete telescope, modifier, camera and binning configuration, equipment URL
+and a concise effective-train summary needed to verify the setup. It does not
+also act as the all-calculations dashboard.
+• `/calculations` is the consolidated calculation workspace. It consumes the
+saved or URL-restored equipment train and presents all currently derivable
+results from every implemented calculator.
+• Calculator detail pages remain available for changing calculator-specific
+measurements, assumptions and scenarios. The consolidated page links to those
+details without duplicating incompatible state-management rules.
+• Both workspaces provide clear navigation to each other. Changing equipment
+updates every affected consolidated result without requiring an ordinary
+interaction network request.
+
+View modes
+
+• A persistent site-wide switch offers **Presentation view** and **Academic
+view**. This is a density and information-architecture preference, not a light
+and dark colour-theme switch.
+• Presentation view preserves the current visual identity, generous hierarchy,
+cards, explanatory copy and approachable spacing.
+• Academic view uses compact typography, reduced spacing, restrained decoration,
+tight table-like alignment, concise labels and a substantially higher ratio of
+information to viewport area.
+• The preference is remembered locally and applies consistently to the homepage,
+equipment workspace, consolidated calculations and individual calculator pages.
+It is not personal data and is not encoded into an equipment bookmark.
+• The control has an unambiguous accessible name and selected state. Both modes
+retain visible focus, readable contrast, semantic structure, reduced-motion
+support and usable touch targets.
+
+Consolidated calculations page
+
+• The page shows a compact equipment identity and effective-train summary before
+the results so the calculation context is never ambiguous.
+• Results are grouped into stable academic sections such as optical geometry,
+sampling and resolution, guiding and alignment, image quality and exposure,
+mosaic planning, environmental control, and storage planning.
+• Every calculation that can be derived from available state is shown. This
+includes primary results, important intermediate values, units, classification
+or status, symbolic equation and substituted value where those exist.
+• Results needing calculator-specific measurements show a precise missing-input
+state and a direct link to supply those values; they do not receive invented
+defaults merely to fill the table.
+• Exact results, empirical estimates, first-order models and configurable
+judgements are visibly distinguished.
+• Academic view prioritises dense tables or definition-table structures with
+aligned symbols, values and units. It avoids tall card stacks and excessive
+empty space, especially on wide desktop monitors.
+• Repeated values use one shared calculation source rather than separately
+implemented summary maths. Consolidated and detail values must agree before
+presentation rounding.
+• Mathematical notation continues to use semantic MathML and locally bounded
+overflow. A wide table may scroll inside its own labelled region, but the page
+must not acquire horizontal overflow.
+• The page supports a clean print layout suitable for saving as a compact
+academic reference sheet.
+
+Constraints
+
+• The mode switch changes presentation density only; it cannot alter inputs,
+canonical units, calculations, URL state or rounding rules.
+• Academic view must remain understandable rather than becoming an unlabeled
+wall of numbers. Symbols, units, assumptions and provenance remain available.
+• Compact presentation does not waive WCAG 2.2 AA requirements. Interactive
+targets remain usable even when non-interactive rows and typography become much
+denser.
+• Equipment bookmarks remain backwards compatible. Existing `/equipment` URLs
+continue to restore the same train after the calculation overview moves to its
+own route.
+• No registration, server-side profile, analytics or third-party preference
+service is introduced.
+
+Done when
+
+• `/equipment` is focused on equipment specification and no longer contains the
+long all-calculator card grid.
+• `/calculations` lists every implemented calculator in a stable section and
+shows all derivable results or an explicit missing-input reason.
+• A bookmarked equipment URL can be opened in a fresh browser, followed by the
+calculations page, with the same equipment-dependent results reproduced.
+• Switching between presentation and academic view updates the entire site
+without changing any numerical result and survives navigation and reload.
+• On a wide desktop, academic calculations expose materially more results above
+the fold and leave very little avoidable empty space.
+• At 200% zoom and mobile widths, content remains operable and page-level
+horizontal scrolling is absent.
+• Keyboard, screen-reader, reduced-motion, print, cross-browser and accessibility
+tests pass with no serious or critical findings.
+• Automated tests compare consolidated results with their corresponding pure
+calculation and detail-page results before display rounding.
+
 16. Release 1 acceptance criteria
 
 The release is acceptable only when all statements are true:
