@@ -12,7 +12,9 @@ test("sensor tilt updates locally and remains keyboard operable", async ({
       name: "Turn focus differences into a correction.",
     }),
   ).toBeVisible();
-  const combinedTilt = page.getByText("Combined plane tilt").locator("..");
+  const combinedTilt = page
+    .locator("dl")
+    .filter({ hasText: "Combined plane tilt" });
   await expect(combinedTilt).toContainText("0.0398°");
 
   const horizontal = page.getByLabel("Left-to-right focus difference");

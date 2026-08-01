@@ -156,5 +156,5 @@ tables and ordinary text use the same readable family.
 The current homepage reflects the equipment-first product architecture. Its two
 primary routes are the named equipment workspace and consolidated calculation
 dossier. The rig-flow figure explains shared context, the workflow explains
-bookmark-to-PDF use, and a semantic three-group index links all eleven
+bookmark-to-PDF use, and a semantic grouped index links all twenty-three
 specialist calculators without reverting to a tall unstructured action list.

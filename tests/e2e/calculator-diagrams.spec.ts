@@ -12,6 +12,18 @@ const calculators = [
   ["mosaic-planning", "Mosaic overlap grid"],
   ["dew-heater", "Dew-control geometry"],
   ["storage-volume", "Capture data flow"],
+  ["optimal-sub-exposure", "Exposure envelope"],
+  ["integration-planner", "Integration accumulation"],
+  ["filter-exposure-planner", "Channel time allocation"],
+  ["star-saturation", "Pixel-well filling"],
+  ["guiding-exposure", "Guide cadence envelope"],
+  ["plate-solving-scale", "Solver search geometry"],
+  ["imaging-window", "Altitude and darkness window"],
+  ["atmospheric-extinction", "Atmospheric light path"],
+  ["calibration-frames", "Master-frame combination"],
+  ["drizzle-planner", "Dithered sampling grid"],
+  ["field-rotation", "Rotating field edge"],
+  ["autofocus-planning", "Focus-curve sampling"],
 ] as const;
 
 test("every calculator has one relevant technical figure", async ({ page }) => {

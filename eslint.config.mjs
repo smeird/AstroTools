@@ -69,6 +69,7 @@ export default defineConfig([
   prettier,
   globalIgnores([
     ".next/**",
+    ".next-verification/**",
     "coverage/**",
     "lib/db/generated/**",
     "playwright-report/**",

@@ -17,6 +17,18 @@ const kinds: CalculatorDiagramKind[] = [
   "mosaic-planning",
   "dew-heater",
   "storage-volume",
+  "optimal-sub-exposure",
+  "integration-planner",
+  "filter-exposure-planner",
+  "star-saturation",
+  "guiding-exposure",
+  "plate-solving-scale",
+  "imaging-window",
+  "atmospheric-extinction",
+  "calibration-frames",
+  "drizzle-planner",
+  "field-rotation",
+  "autofocus-planning",
 ];
 
 describe("calculator line diagrams", () => {

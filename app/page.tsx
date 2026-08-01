@@ -52,9 +52,61 @@ const calculatorGroups = [
         "Calibrated stack estimate",
       ],
       [
+        "Optimal Sub-exposure",
+        "/calculators/optimal-sub-exposure",
+        "Background and saturation limits",
+      ],
+      [
+        "Integration Planner",
+        "/calculators/integration-planner",
+        "Frames, rejection and depth",
+      ],
+      [
+        "Filter Allocation",
+        "/calculators/filter-exposure-planner",
+        "Channel time and throughput",
+      ],
+      ["Star Saturation", "/calculators/star-saturation", "Highlight headroom"],
+      [
+        "Guiding Exposure",
+        "/calculators/guiding-exposure",
+        "Centroid SNR and cadence",
+      ],
+      [
         "Mosaic Planning",
         "/calculators/mosaic-planning",
         "Panel grid and integration",
+      ],
+    ],
+  },
+  {
+    id: "sky-focus",
+    label: "Sky, solving & focus",
+    calculators: [
+      [
+        "Plate-solving Scale",
+        "/calculators/plate-solving-scale",
+        "Solver scale and field hints",
+      ],
+      [
+        "Imaging Window",
+        "/calculators/imaging-window",
+        "Altitude and darkness overlap",
+      ],
+      [
+        "Atmospheric Extinction",
+        "/calculators/atmospheric-extinction",
+        "Airmass and transmission",
+      ],
+      [
+        "Field Rotation",
+        "/calculators/field-rotation",
+        "Alt-az exposure ceiling",
+      ],
+      [
+        "Autofocus Planning",
+        "/calculators/autofocus-planning",
+        "Critical focus zone and sweep",
       ],
     ],
   },
@@ -63,6 +115,16 @@ const calculatorGroups = [
     label: "Session operations",
     calculators: [
       ["Dew & Heater", "/calculators/dew-heater", "Dew point and heater load"],
+      [
+        "Calibration Frames",
+        "/calculators/calibration-frames",
+        "Master noise and frame counts",
+      ],
+      [
+        "Drizzle Planner",
+        "/calculators/drizzle-planner",
+        "Sampling, output and memory",
+      ],
       ["Storage", "/calculators/storage-volume", "Capture data budget"],
     ],
   },
@@ -94,7 +156,7 @@ export default function HomePage() {
             </div>
             <ul className="home-proofs" aria-label="Workspace capabilities">
               <li>
-                <strong>11</strong>
+                <strong>23</strong>
                 <span>connected calculators</span>
               </li>
               <li>

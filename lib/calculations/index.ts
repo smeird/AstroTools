@@ -29,6 +29,20 @@ export { calculateExposureSnr } from "./exposure-snr";
 export { calculateMosaicPlanning } from "./mosaic-planning";
 export { calculateDewHeater } from "./dew-heater";
 export { calculateStorageVolume } from "./storage-volume";
+export {
+  calculateAtmosphericExtinction,
+  calculateAutofocusPlan,
+  calculateCalibrationFrames,
+  calculateDrizzlePlan,
+  calculateFieldRotation,
+  calculateFilterAllocation,
+  calculateGuidingExposure,
+  calculateImagingWindow,
+  calculateIntegrationPlan,
+  calculateOptimalSubExposure,
+  calculatePlateSolvingScale,
+  calculateStarSaturation,
+} from "./advanced-planning";
 export type {
   CameraSensorInput,
   DerivedFocalLengthInput,

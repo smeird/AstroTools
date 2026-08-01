@@ -1657,6 +1657,39 @@ overflow.
 • Component, accessibility, browser, type, lint and production-build checks
 pass.
 
+Post-release work package 30: Advanced acquisition and session calculators
+
+Goal
+
+Extend the shared-rig workflow from equipment geometry into exposure choice,
+observing-window planning, calibration and capture operations without implying
+false precision from inputs that are estimates.
+
+Deliverables
+
+• Optimal sub-exposure, total-integration, filter-allocation, star-saturation,
+guide-exposure, plate-solving-scale, imaging-window, atmospheric-extinction,
+calibration-frame, drizzle, field-rotation and autofocus calculators.
+• Pure, unit-tested calculation functions with canonical units and explicit
+first-order assumptions.
+• Dense responsive pages with native MathML formulae, calculator-specific line
+diagrams, local persistence and relevant values inherited from the shared
+imaging train.
+• Entries in calculator navigation, the landing-page index and consolidated
+calculations workspace.
+
+Done when
+
+• All twelve routes calculate locally and distinguish measured inputs,
+recommendations and physical limits.
+• Saved camera, focal length, aperture, pixel size, resolution and site context
+populate every applicable calculator without overwriting specialist inputs on
+ordinary navigation.
+• Each page exposes its governing formula in book-style mathematics and a
+labelled non-visual equivalent of its technical figure.
+• Formula, boundary, persistence, accessibility, browser and production-build
+checks pass.
+
 16. Release 1 acceptance criteria
 
 The release is acceptable only when all statements are true:

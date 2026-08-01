@@ -452,10 +452,13 @@ test("invalid shared parameters fall back safely and are omitted from the next l
     "/calculators/field-of-view?v=1&f=not-a-number&zoom=999&future=ok&token=secret&target=m42-orion-nebula",
   );
 
-  await expect(page.getByRole("note")).toContainText(
+  const sharedLinkNotice = page.getByRole("note", {
+    name: "Shared-link adjustment",
+  });
+  await expect(sharedLinkNotice).toContainText(
     "Safe defaults were restored for: native focal length, display zoom",
   );
-  await expect(page.getByRole("note")).not.toContainText("not-a-number");
+  await expect(sharedLinkNotice).not.toContainText("not-a-number");
   await expect(
     page.getByRole("spinbutton", { name: "Native focal length" }),
   ).toHaveValue("600");

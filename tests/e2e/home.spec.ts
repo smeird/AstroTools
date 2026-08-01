@@ -8,7 +8,7 @@ test("a visitor can start the equipment-first journey from the homepage", async 
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
     "Know your rig before you lose the night.",
   );
-  await expect(page.getByText("11", { exact: true })).toBeVisible();
+  await expect(page.getByText("23", { exact: true })).toBeVisible();
   await expect(
     page.getByRole("link", { name: /^Field of View/ }),
   ).toHaveAttribute("href", "/calculators/field-of-view");

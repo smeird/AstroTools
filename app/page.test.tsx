@@ -30,9 +30,11 @@ describe("home page", () => {
       [/^mosaic planning/i, "/calculators/mosaic-planning"],
       [/^dew & heater/i, "/calculators/dew-heater"],
       [/^storage/i, "/calculators/storage-volume"],
+      [/^optimal sub-exposure/i, "/calculators/optimal-sub-exposure"],
+      [/^autofocus planning/i, "/calculators/autofocus-planning"],
     ] as const) {
       expect(screen.getByRole("link", { name })).toHaveAttribute("href", href);
     }
-    expect(screen.getAllByRole("listitem")).toHaveLength(18);
+    expect(screen.getAllByRole("listitem")).toHaveLength(30);
   });
 });

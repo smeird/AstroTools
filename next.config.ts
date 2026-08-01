@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  distDir: process.env.ASTROTOOLS_NEXT_DIST_DIR ?? ".next",
   output: "standalone",
   poweredByHeader: false,
   async headers() {

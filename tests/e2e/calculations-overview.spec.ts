@@ -35,7 +35,7 @@ test("academic view persists and never changes consolidated results", async ({
     "data-view-mode",
     "academic",
   );
-  await expect(page.locator("section[id]")).toHaveCount(11);
+  await expect(page.locator("section[id]")).toHaveCount(23);
 });
 
 test("PDF export opens the browser print workflow", async ({ page }) => {
@@ -82,7 +82,7 @@ test("consolidated calculations expose every calculator or missing input", async
     page.getByRole("heading", { name: "Setup check" }),
   ).toBeVisible();
   await page.goto("/calculations");
-  await expect(page.locator("section[id]")).toHaveCount(11);
+  await expect(page.locator("section[id]")).toHaveCount(23);
   await expect(
     page.getByText(
       "Add guide-scope focal length and guide-camera pixel pitch.",

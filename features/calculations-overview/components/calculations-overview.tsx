@@ -4,6 +4,7 @@ import Link from "next/link";
 import { startTransition, useEffect, useState } from "react";
 
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
+import { advancedCalculatorDefinitions } from "@/features/advanced-planning/advanced-calculator-definitions";
 import {
   parseBackfocusSpacing,
   BACKFOCUS_SPACING_PERSISTENCE_KEY,
@@ -599,6 +600,46 @@ function buildSections(train: SharedImagingTrain): ResultSection[] {
       ? undefined
       : "Add capture format, exposure cadence and session duration.",
   });
+  for (const definition of Object.values(advancedCalculatorDefinitions)) {
+    const values = storedValues(`astrotools.${definition.kind}.settings.v1`);
+    const results = values
+      ? safe(() =>
+          definition.calculate(
+            Object.fromEntries(
+              Object.entries(values).map(([key, value]) => [
+                key,
+                Number(value),
+              ]),
+            ),
+          ),
+        )
+      : null;
+    sections.push({
+      id: definition.kind,
+      title: definition.eyebrow,
+      calculator: definition.eyebrow,
+      href: `/calculators/${definition.kind}`,
+      model: "Planning estimate",
+      rows: results
+        ? results.map((result) => ({
+            label: result.label,
+            value:
+              typeof result.value === "number"
+                ? format(result.value, result.digits ?? 2)
+                : typeof result.value === "boolean"
+                  ? result.value
+                    ? "Yes"
+                    : "No"
+                  : result.value,
+            ...(result.unit ? { unit: result.unit } : {}),
+            kind: "estimate",
+          }))
+        : [],
+      missing: results
+        ? undefined
+        : `Open ${definition.eyebrow} to add its session-specific measurements.`,
+    });
+  }
   return sections;
 }
 

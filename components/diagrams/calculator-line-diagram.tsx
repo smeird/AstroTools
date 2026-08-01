@@ -11,7 +11,19 @@ export type CalculatorDiagramKind =
   | "exposure-snr"
   | "mosaic-planning"
   | "dew-heater"
-  | "storage-volume";
+  | "storage-volume"
+  | "optimal-sub-exposure"
+  | "integration-planner"
+  | "filter-exposure-planner"
+  | "star-saturation"
+  | "guiding-exposure"
+  | "plate-solving-scale"
+  | "imaging-window"
+  | "atmospheric-extinction"
+  | "calibration-frames"
+  | "drizzle-planner"
+  | "field-rotation"
+  | "autofocus-planning";
 
 const copy: Record<
   CalculatorDiagramKind,
@@ -71,6 +83,66 @@ const copy: Record<
     title: "Capture data flow",
     description:
       "Pixel dimensions and bit depth determine each frame before frames accumulate into a session total.",
+  },
+  "optimal-sub-exposure": {
+    title: "Exposure envelope",
+    description:
+      "The useful exposure lies after the background-noise threshold and before the saturation ceiling.",
+  },
+  "integration-planner": {
+    title: "Integration accumulation",
+    description:
+      "Accepted sub-exposures accumulate into total integration while a rejection allowance increases capture time.",
+  },
+  "filter-exposure-planner": {
+    title: "Channel time allocation",
+    description:
+      "A fixed integration budget is divided among channels according to priority and relative transmission.",
+  },
+  "star-saturation": {
+    title: "Pixel-well filling",
+    description:
+      "A bright-star peak fills the finite pixel well until the reserved highlight headroom is reached.",
+  },
+  "guiding-exposure": {
+    title: "Guide cadence envelope",
+    description:
+      "Guide-star signal must become measurable before uncorrected mount motion exceeds the allowed distance.",
+  },
+  "plate-solving-scale": {
+    title: "Solver search geometry",
+    description:
+      "Pixel pitch and focal length set image scale, field dimensions and a bounded scale search interval.",
+  },
+  "imaging-window": {
+    title: "Altitude and darkness window",
+    description:
+      "The usable imaging interval is the overlap between target altitude and astronomical darkness.",
+  },
+  "atmospheric-extinction": {
+    title: "Atmospheric light path",
+    description:
+      "Lower target altitude lengthens the atmospheric path and reduces received transmission.",
+  },
+  "calibration-frames": {
+    title: "Master-frame combination",
+    description:
+      "Independent calibration frames combine into lower-noise master dark, flat and bias references.",
+  },
+  "drizzle-planner": {
+    title: "Dithered sampling grid",
+    description:
+      "Sub-pixel dithers distribute measurements across a finer drizzle output grid.",
+  },
+  "field-rotation": {
+    title: "Rotating field edge",
+    description:
+      "Field rotation moves stars farther at the frame edge and imposes an exposure-time ceiling.",
+  },
+  "autofocus-planning": {
+    title: "Focus-curve sampling",
+    description:
+      "A sequence of focuser positions samples both sides of best focus across the critical focus zone.",
   },
 };
 
@@ -304,6 +376,228 @@ function Diagram({ kind }: { kind: CalculatorDiagramKind }) {
           </text>
           <text x="438" y="80">
             session GiB
+          </text>
+        </>
+      );
+    case "optimal-sub-exposure":
+      return (
+        <>
+          <line x1="45" y1="105" x2="585" y2="105" />
+          <path d="M85 105 C150 104 180 62 245 55 C330 45 420 48 545 48" />
+          <line x1="235" y1="25" x2="235" y2="120" />
+          <line x1="500" y1="25" x2="500" y2="120" />
+          <text x="185" y="140">
+            noise floor
+          </text>
+          <text x="455" y="140">
+            saturation
+          </text>
+        </>
+      );
+    case "integration-planner":
+      return (
+        <>
+          <g>
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <rect key={i} x={40 + i * 65} y="45" width="48" height="58" />
+            ))}
+          </g>
+          <path d="M440 74 H495" />
+          <rect x="495" y="28" width="105" height="92" />
+          <text x="52" y="132">
+            accepted sub-exposures
+          </text>
+          <text x="510" y="78">
+            total T
+          </text>
+        </>
+      );
+    case "filter-exposure-planner":
+      return (
+        <>
+          <rect x="40" y="55" width="500" height="40" />
+          <path d="M210 55 V95 M390 55 V95" />
+          <path d="M40 42 V108 M540 42 V108" />
+          <text x="95" y="80">
+            channel 1
+          </text>
+          <text x="250" y="80">
+            channel 2
+          </text>
+          <text x="430" y="80">
+            channel 3
+          </text>
+          <text x="230" y="132">
+            fixed time budget
+          </text>
+        </>
+      );
+    case "star-saturation":
+      return (
+        <>
+          <rect x="75" y="24" width="145" height="104" />
+          <path d="M75 92 H220 M75 48 H220" />
+          <path d="M310 110 C350 95 350 45 390 30 C430 15 455 60 490 73 C520 84 540 70 570 55" />
+          <text x="92" y="145">
+            pixel well
+          </text>
+          <text x="335" y="145">
+            peak electron rate
+          </text>
+        </>
+      );
+    case "guiding-exposure":
+      return (
+        <>
+          <path d="M40 105 H590 M85 105 V42 M85 42 L280 75 L470 38" />
+          <circle cx="280" cy="75" r="12" />
+          <path d="M330 115 L330 30 M440 115 L440 30" />
+          <text x="300" y="140">
+            SNR limit
+          </text>
+          <text x="420" y="140">
+            motion limit
+          </text>
+        </>
+      );
+    case "plate-solving-scale":
+      return (
+        <>
+          <rect x="55" y="28" width="250" height="94" />
+          <g>
+            {[0, 1, 2, 3].map((i) => (
+              <line
+                key={i}
+                x1={105 + i * 50}
+                y1="28"
+                x2={105 + i * 50}
+                y2="122"
+              />
+            ))}
+          </g>
+          <path d="M335 75 H570 M400 58 V92 M520 58 V92" />
+          <text x="95" y="145">
+            sensor field
+          </text>
+          <text x="385" y="140">
+            scale search interval
+          </text>
+        </>
+      );
+    case "imaging-window":
+      return (
+        <>
+          <path d="M45 105 C145 25 245 25 345 105" />
+          <line x1="45" y1="78" x2="345" y2="78" />
+          <path d="M250 118 H590 M330 118 V42 M520 118 V42" />
+          <text x="85" y="140">
+            altitude arc
+          </text>
+          <text x="350" y="140">
+            dark overlap
+          </text>
+        </>
+      );
+    case "atmospheric-extinction":
+      return (
+        <>
+          <path d="M40 112 H600 M65 90 H575 M95 68 H545 M130 46 H510" />
+          <circle cx="485" cy="22" r="11" />
+          <path d="M485 33 L300 112 M485 33 L455 112" />
+          <text x="100" y="140">
+            long low-altitude path
+          </text>
+          <text x="440" y="140">
+            short path
+          </text>
+        </>
+      );
+    case "calibration-frames":
+      return (
+        <>
+          <g>
+            {[0, 1, 2, 3].map((i) => (
+              <rect
+                key={i}
+                x={45 + i * 48}
+                y={40 + i * 6}
+                width="64"
+                height="70"
+              />
+            ))}
+          </g>
+          <path d="M285 75 H390" />
+          <rect x="390" y="30" width="145" height="90" />
+          <path d="M410 92 L440 70 L465 82 L500 52" />
+          <text x="55" y="140">
+            N source frames
+          </text>
+          <text x="410" y="140">
+            low-noise master
+          </text>
+        </>
+      );
+    case "drizzle-planner":
+      return (
+        <>
+          <g>
+            {[0, 1, 2, 3].map((i) => (
+              <rect
+                key={i}
+                x={55 + i * 10}
+                y={35 + i * 9}
+                width="145"
+                height="82"
+              />
+            ))}
+          </g>
+          <path d="M270 75 H340" />
+          <rect x="340" y="20" width="210" height="110" />
+          <path d="M392 20 V130 M444 20 V130 M496 20 V130 M340 57 H550 M340 94 H550" />
+          <text x="65" y="145">
+            dither offsets
+          </text>
+          <text x="395" y="145">
+            finer grid
+          </text>
+        </>
+      );
+    case "field-rotation":
+      return (
+        <>
+          <circle cx="270" cy="75" r="58" />
+          <line x1="270" y1="75" x2="328" y2="75" />
+          <line x1="270" y1="75" x2="318" y2="42" />
+          <path d="M328 75 Q332 56 318 42" />
+          <circle cx="328" cy="75" r="7" />
+          <circle cx="318" cy="42" r="7" />
+          <path d="M380 75 H570" />
+          <text x="205" y="145">
+            rotating field edge
+          </text>
+          <text x="415" y="145">
+            trail ceiling
+          </text>
+        </>
+      );
+    case "autofocus-planning":
+      return (
+        <>
+          <path d="M55 32 C170 35 190 118 300 118 C410 118 430 35 575 32" />
+          <line x1="315" y1="20" x2="315" y2="130" />
+          <g>
+            {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+              <circle
+                key={i}
+                cx={105 + i * 70}
+                cy={48 + Math.abs(3 - i) * 17}
+                r="6"
+              />
+            ))}
+          </g>
+          <path d="M270 132 H360" />
+          <text x="230" y="145">
+            critical focus zone
           </text>
         </>
       );

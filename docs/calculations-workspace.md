@@ -5,8 +5,8 @@
 
 The calculations workspace reads the versioned full imaging train published by
 the equipment page. It uses the same pure calculation functions as detail pages
-and groups all eleven calculators into dense, semantic result tables. Values
-that need calculator-specific measurements remain unavailable until those
+and groups all twenty-three calculators into dense, semantic result tables.
+Values that need calculator-specific measurements remain unavailable until those
 measurements have been saved; the overview does not invent inputs.
 
 The site header provides a persistent Presentation/Academic switch. Presentation
