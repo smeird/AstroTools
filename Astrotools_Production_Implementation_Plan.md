@@ -3,6 +3,7 @@ Astrotools Production Implementation Plan
 Status: Implementation baseline
 Prepared for: Codex
 Date: 29 July 2026
+Last updated: 1 August 2026
 Initial production release: Field of View and Image Sampling
 
 1. Purpose
@@ -23,6 +24,13 @@ oversampled for the stated seeing conditions?
 
 The application must be deployable behind Apache HTTP Server 2.4 and use MySQL
 for durable catalogue and configuration data.
+
+The longer-term primary journey is equipment-first: a user enters their normal
+telescope, camera and optical train once, bookmarks a stable Astrotools URL, and
+can later reopen that URL to restore the same equipment without an account. The
+restored setup leads to a compact calculation overview showing every result that
+can be derived from that equipment, with clear links into each detailed
+calculator.
 
 2. Codex operating instruction
 
@@ -91,6 +99,7 @@ registry and shared design system. Likely later modules include:
 • Mosaic planning
 • Dew-point and heater-power estimation
 • Storage and data-volume estimation
+• A bookmarkable equipment workspace and consolidated calculation overview
 
 These later calculators are not Release 1 deliverables.
 
@@ -126,6 +135,10 @@ its URL without an account.
 remediation activity.
 7. Extensible without abstraction theatre: create shared calculator
 primitives only after they are required by the first real calculator.
+8. Equipment-first continuity: entering the same telescope, camera and optical
+train separately in each calculator is a product failure. A bookmarked
+equipment URL must restore the setup and make all applicable calculations easy
+to scan before the user chooses a detailed tool.
 
 5. Recommended production architecture
 
@@ -1146,6 +1159,76 @@ Done when
 • No open severity-one or severity-two defect remains.
 • Deferred defects have owners and explicit acceptance.
 • Production rollback has been rehearsed.
+
+Post-release work package 15: Bookmarkable equipment workspace and calculation
+overview
+
+Goal
+
+Make Astrotools equipment-first rather than calculator-first. A user configures
+their equipment once, bookmarks the resulting URL, and returns directly to a
+useful overview of everything Astrotools can calculate for that setup.
+
+Deliverables
+
+• A canonical, versioned equipment URL containing the selected telescope,
+camera, optical modifiers and other genuinely shared equipment fields
+• Manual-equipment values encoded alongside catalogue identifiers so a bookmark
+remains reproducible without an account
+• A clear “Save/bookmark this equipment” interaction that produces the canonical
+URL and explains that the browser bookmark contains the setup
+• A dedicated equipment overview page with the restored equipment named and
+summarised at the top
+• A compact, information-dense grid of all calculator summaries applicable to
+the equipment, using consistent units and properly typeset mathematical results
+• A clear unavailable or “needs one more input” state where a calculation cannot
+yet be produced; missing data must not silently acquire invented defaults
+• A detail link on every calculation summary that opens the corresponding full
+calculator with the shared equipment already applied
+• Calculator navigation that provides a reliable return path to the equipment
+overview
+• Local browser persistence as a convenience, while the bookmarked URL remains
+the portable and authoritative reproduction mechanism
+• Versioned parsing, canonical serialisation, backwards-compatibility fixtures,
+accessibility coverage and end-to-end reproduction tests
+• Documentation distinguishing the equipment URL from a calculator-specific
+share URL
+
+Constraints
+
+• No registration is required and no server-side personal equipment profile is
+created.
+• The URL contains equipment configuration only: no personal data, analytics
+identifier, secret or opaque server-side lookup key.
+• Catalogue records may supply provenance and labels, but canonical numeric
+values must keep old bookmarks useful if a catalogue item changes or retires.
+• Summary values and detailed calculator values must come from the same pure
+calculation functions and must agree exactly before presentation rounding.
+• The overview must remain useful on wide desktop screens without becoming a
+single long column, and must reflow without page-level horizontal scrolling on
+mobile.
+• Each summary distinguishes exact calculation, approximation, configurable
+judgement and unavailable result.
+• Adding a future calculator requires registering its summary, required shared
+inputs and detail route; it must not require redesigning the overview.
+
+Done when
+
+• A user can select catalogue equipment, copy the equipment URL, open it in a
+fresh browser context and see the same equipment and overview results.
+• The same reproduction test passes for fully manual equipment values.
+• The overview lists every implemented calculator in a stable, understandable
+layout and shows a calculated value or an explicit reason it is unavailable.
+• Activating each detail link opens the correct calculator with compatible
+equipment values already populated.
+• Changing a shared equipment item updates the canonical URL and all affected
+summary calculations without a network request for ordinary interaction.
+• Browser local storage can restore the last setup, but clearing storage does
+not prevent a bookmarked equipment URL from reproducing it.
+• Keyboard, screen-reader, reduced-motion, mobile-width and cross-browser tests
+pass with no serious or critical accessibility findings.
+• The overview has no page-level horizontal overflow and its production build
+remains within the agreed performance budget.
 
 16. Release 1 acceptance criteria
 
