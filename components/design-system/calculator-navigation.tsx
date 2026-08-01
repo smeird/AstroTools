@@ -11,6 +11,7 @@ export function CalculatorNavigation({
     | "modifier-effects"
     | "sensor-tilt"
     | "backfocus-spacing"
+    | "guiding-ratio"
     | "equipment";
 }) {
   return (
@@ -62,6 +63,14 @@ export function CalculatorNavigation({
         prefetch={false}
       >
         Back-focus
+      </Link>
+      <Link
+        aria-current={active === "guiding-ratio" ? "page" : undefined}
+        className={styles.link}
+        href="/calculators/guiding-ratio"
+        prefetch={false}
+      >
+        Guiding Ratio
       </Link>
     </nav>
   );

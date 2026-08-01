@@ -65,3 +65,10 @@ manufacturer-specific reference shoulders, tolerances, or empirical star tests.
 The same package standardises the post-Release-1 calculators on native MathML
 for textbook-style fractions, subscripts, roots, and symbolic expressions. The
 original Field of View calculator already uses this equation system.
+
+On 2026-08-01, the next approved calculator in the plan sequence is **Guiding
+Ratio**, at `/calculators/guiding-ratio`. It compares the main and guide image
+scales and expresses the guide-camera centroid movement corresponding to half an
+imaging pixel. The ratio is descriptive rather than a universal pass/fail
+threshold because centroid accuracy and guiding performance depend on star
+signal, seeing, exposure, mount response, calibration, flexure, and software.

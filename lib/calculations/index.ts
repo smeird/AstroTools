@@ -23,6 +23,7 @@ export {
 export { calculateModifierEffects } from "./modifier-effects";
 export { calculateSensorTilt } from "./sensor-tilt";
 export { calculateBackfocusSpacing } from "./backfocus-spacing";
+export { calculateGuidingRatio } from "./guiding-ratio";
 export type {
   CameraSensorInput,
   DerivedFocalLengthInput,
@@ -56,5 +57,6 @@ export type {
   BackfocusSpacingInput,
   BackfocusSpacingResult,
 } from "./backfocus-spacing";
+export type { GuidingRatioInput, GuidingRatioResult } from "./guiding-ratio";
 export { CalculationInputError } from "./validation";
 export { inchesToMillimetres, millimetresToInches } from "./units";

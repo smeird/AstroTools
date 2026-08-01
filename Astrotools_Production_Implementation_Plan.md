@@ -1230,6 +1230,33 @@ pass with no serious or critical accessibility findings.
 • The overview has no page-level horizontal overflow and its production build
 remains within the agreed performance budget.
 
+Post-release work package 16: Guiding ratio
+
+Goal
+
+Compare the main imaging and guide optical paths so the user can understand the
+angular scale ratio and the centroid precision demanded of the guider.
+
+Deliverables
+
+• Main and guide image scales from focal length, pixel pitch and binning
+• Guide-to-imaging scale ratio and half-imaging-pixel centroid demand
+• Saved main equipment applied automatically and guide settings remembered
+locally
+• Native MathML equations, qualified interpretation and practical limitations
+• Calculator navigation, homepage entry and equipment-overview summary
+• Pure calculation tests plus accessible cross-browser interaction coverage
+
+Done when
+
+• Results agree with independent image-scale fixtures without premature
+rounding.
+• Changing any input updates all values locally and invalid inputs fail safely.
+• Saved telescope and camera values populate the main imaging path without
+overwriting calculator-specific guide equipment.
+• The page reflows without horizontal overflow and exposes textbook-style maths
+to assistive technology.
+
 16. Release 1 acceptance criteria
 
 The release is acceptable only when all statements are true:

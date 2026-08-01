@@ -81,5 +81,5 @@ test("equipment overview remains information-dense without mobile overflow", asy
   }));
   expect(dimensions.scrollWidth).toBe(dimensions.clientWidth);
   expect(dimensions.contentWidth).toBe(dimensions.clientWidth);
-  await expect(page.locator("article")).toHaveCount(5);
+  await expect(page.locator("article")).toHaveCount(6);
 });

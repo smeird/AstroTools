@@ -285,6 +285,25 @@ export function EquipmentWorkspace({
                 Build the spacing stack →
               </Link>
             </article>
+            <article className={styles.card}>
+              <p className={styles.kind}>Main train ready</p>
+              <h3>Guiding Ratio</h3>
+              {result ? (
+                <>
+                  <strong>
+                    {format(result.imageScaleArcsecPerPixel, 3)}″ / px
+                  </strong>
+                  <span>
+                    Add the guide scope and camera in the detail calculator.
+                  </span>
+                </>
+              ) : (
+                <p>Needs imaging focal length and pixel pitch.</p>
+              )}
+              <Link href="/calculators/guiding-ratio">
+                Compare guiding scales →
+              </Link>
+            </article>
           </div>
         </section>
       </div>

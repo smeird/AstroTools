@@ -42,6 +42,13 @@ export default function HomePage() {
               Explore resolution and sampling
               <span aria-hidden="true">↗</span>
             </Link>
+            <Link
+              className="secondary-action"
+              href="/calculators/guiding-ratio"
+            >
+              Check guiding ratio
+              <span aria-hidden="true">↗</span>
+            </Link>
           </div>
 
           <div className="field-study" aria-hidden="true">
