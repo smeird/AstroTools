@@ -84,6 +84,22 @@ Package 5 adds an angularly proportional target footprint and sensor frame,
 while its caption and text equivalent make clear that the artwork is not a
 calibrated sky survey.
 
+## Calculator technical figures
+
+Every calculator starts with one compact explanatory figure from
+`components/diagrams`. These are flat, unfilled two-dimensional schematics: cyan
+identifies physical structure, chartreuse identifies a transformed path or
+relationship, and visible labels carry the meaning independently of colour. They
+explain the calculator's geometry or data flow and are not calibrated output
+plots.
+
+Each figure is a semantic `figure` with a visible heading and plain-language
+caption. Its SVG is exposed as an image with the same calculator-specific title
+and description, rather than as a collection of unnamed drawing primitives. The
+shared component keeps this contract consistent across all calculator routes.
+Academic view reduces the surrounding space without removing the caption; narrow
+layouts place the caption above the drawing to avoid horizontal overflow.
+
 ## Equipment configuration
 
 Work Package 4 applies the control primitives to the production input hierarchy:

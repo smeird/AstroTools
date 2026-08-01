@@ -1626,6 +1626,37 @@ Done when
 • Type checking, unit/integration checks, production build and API behaviour
 pass without a schema migration.
 
+Post-release work package 29: Calculator technical line diagrams
+
+Goal
+
+Give every calculator a compact visual explanation of the physical geometry or
+data flow behind its result, using the same clear two-dimensional line language
+as the equipment schematic.
+
+Deliverables
+
+• One calculator-specific figure for field of view, modifier effects,
+resolution and sampling, sensor tilt, back-focus spacing, guiding ratio, polar
+alignment drift, exposure SNR, mosaic planning, dew heating and storage volume.
+• A shared flat, unfilled linework system with restrained signal and accent
+colours, short captions and calculator-specific non-visual descriptions.
+• Responsive and Academic-view treatments that keep the figures compact and do
+not push the calculator controls or live results unnecessarily down the page.
+• Schematics that explain relationships without presenting decorative or
+uncalibrated marks as measured output.
+
+Done when
+
+• Every calculator route exposes exactly one relevant, labelled technical
+figure before its working controls and results.
+• Every SVG has an accessible title and description and remains understandable
+without colour or animation.
+• Narrow screens and 200% text enlargement do not create page-level horizontal
+overflow.
+• Component, accessibility, browser, type, lint and production-build checks
+pass.
+
 16. Release 1 acceptance criteria
 
 The release is acceptable only when all statements are true:

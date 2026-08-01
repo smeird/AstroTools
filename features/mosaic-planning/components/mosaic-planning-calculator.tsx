@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { startTransition, useEffect, useMemo, useState } from "react";
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
+import { CalculatorLineDiagram } from "@/components/diagrams/calculator-line-diagram";
 import { NumericInput } from "@/components/design-system/numeric-input";
 import { MathExpression } from "@/components/equations";
 import {
@@ -88,6 +89,7 @@ export function MosaicPlanningCalculator() {
           size into an overlapping panel grid and integration budget.
         </p>
       </header>
+      <CalculatorLineDiagram kind="mosaic-planning" />
       <div className={styles.workspace}>
         <section className={styles.panel} aria-labelledby="mosaic-inputs">
           <div className={styles.panelHeader}>

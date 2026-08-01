@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { startTransition, useEffect, useMemo, useState } from "react";
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
+import { CalculatorLineDiagram } from "@/components/diagrams/calculator-line-diagram";
 import { NumericInput } from "@/components/design-system/numeric-input";
 import { MathExpression } from "@/components/equations";
 import { calculateDewHeater } from "@/lib/calculations";
@@ -81,6 +82,7 @@ export function DewHeaterCalculator() {
           local conditions and heater-band geometry.
         </p>
       </header>
+      <CalculatorLineDiagram kind="dew-heater" />
       <div className={styles.workspace}>
         <section className={styles.panel} aria-labelledby="dew-inputs">
           <div className={styles.panelHeader}>

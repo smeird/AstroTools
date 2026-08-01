@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import type { FieldOfViewShareNotice } from "../schemas/shareable-state";
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
+import { CalculatorLineDiagram } from "@/components/diagrams/calculator-line-diagram";
 
 import styles from "./field-of-view-shell.module.css";
 
@@ -46,6 +47,8 @@ export function FieldOfViewShell({
           visual guides rather than calibrated sky-survey imagery.
         </p>
       </section>
+
+      <CalculatorLineDiagram kind="field-of-view" />
 
       {notice ? (
         <aside

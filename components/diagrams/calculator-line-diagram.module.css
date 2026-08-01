@@ -1,0 +1,58 @@
+.figure {
+  display: grid;
+  margin: 0 0 var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  grid-template-columns: minmax(13rem, 0.42fr) minmax(20rem, 1fr);
+  align-items: center;
+  gap: var(--space-4);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-panel);
+  background: rgba(8, 16, 25, 0.68);
+}
+.figure figcaption p {
+  margin: 0;
+  color: var(--color-text-soft);
+  line-height: 1.45;
+}
+.figure figcaption h2 {
+  margin: 0.2rem 0 0.35rem;
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  font-weight: 400;
+}
+.figure svg {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-height: 10rem;
+}
+.figure svg :is(path, circle, rect, line, ellipse) {
+  fill: none;
+  stroke: var(--color-signal);
+  stroke-width: 1.6;
+  vector-effect: non-scaling-stroke;
+}
+.figure svg path {
+  stroke: var(--color-accent);
+}
+.figure svg text {
+  fill: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+:global(html[data-view-mode="academic"]) .figure {
+  margin-bottom: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  gap: var(--space-2);
+}
+:global(html[data-view-mode="academic"]) .figure figcaption h2 {
+  font-size: 1.15rem;
+}
+@media (max-width: 760px) {
+  .figure {
+    grid-template-columns: 1fr;
+  }
+  .figure svg {
+    overflow: visible;
+  }
+}

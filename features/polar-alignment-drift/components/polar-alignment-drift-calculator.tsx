@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { startTransition, useEffect, useMemo, useState } from "react";
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
+import { CalculatorLineDiagram } from "@/components/diagrams/calculator-line-diagram";
 import { NumericInput } from "@/components/design-system/numeric-input";
 import { MathExpression } from "@/components/equations";
 import {
@@ -105,6 +106,7 @@ export function PolarAlignmentDriftCalculator() {
           full imaging train converts detector pixels into sky angle.
         </p>
       </header>
+      <CalculatorLineDiagram kind="polar-alignment" />
       <div className={styles.workspace}>
         <section className={styles.panel} aria-labelledby="drift-inputs">
           <div className={styles.panelHeader}>

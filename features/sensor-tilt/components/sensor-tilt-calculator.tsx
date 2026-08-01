@@ -4,6 +4,7 @@ import Link from "next/link";
 import { startTransition, useEffect, useMemo, useState } from "react";
 
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
+import { CalculatorLineDiagram } from "@/components/diagrams/calculator-line-diagram";
 import { NumericInput } from "@/components/design-system/numeric-input";
 import { SharedTelescopeNotice } from "@/components/design-system/shared-telescope-notice";
 import { MathExpression } from "@/components/equations";
@@ -137,6 +138,7 @@ export function SensorTiltCalculator() {
           the tilt magnitude and the equivalent adjustment at your tilt plate.
         </p>
       </header>
+      <CalculatorLineDiagram kind="sensor-tilt" />
       <SharedTelescopeNotice selection={sharedTelescope} used={false} />
 
       <div className={styles.workspace}>

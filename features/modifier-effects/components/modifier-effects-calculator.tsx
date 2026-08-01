@@ -4,6 +4,7 @@ import Link from "next/link";
 import { startTransition, useEffect, useMemo, useState } from "react";
 
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
+import { CalculatorLineDiagram } from "@/components/diagrams/calculator-line-diagram";
 import { NumericInput } from "@/components/design-system/numeric-input";
 import { SharedTelescopeNotice } from "@/components/design-system/shared-telescope-notice";
 import { MathExpression } from "@/components/equations";
@@ -160,6 +161,7 @@ export function ModifierEffectsCalculator() {
           Barlow factor. Every result updates locally as you change the factor.
         </p>
       </header>
+      <CalculatorLineDiagram kind="modifier-effects" />
       <SharedTelescopeNotice selection={sharedTelescope} used />
       <div className={styles.workspace}>
         <section
