@@ -26,3 +26,7 @@ is a separate ordered report with a rig heading, equipment specification,
 numbered calculation chapters, model classes, values and units, explicit missing
 measurements, and a final method note. Interactive navigation and screen cards
 are excluded. No PDF or equipment data is uploaded to a third party.
+
+When supplied on the equipment page, the calculation context and ordered PDF
+equipment specification include the observing site's Bortle class and SQM
+reading. These are contextual measurements rather than derived results.

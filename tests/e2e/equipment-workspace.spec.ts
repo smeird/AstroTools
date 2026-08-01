@@ -4,7 +4,7 @@ import { expect, test } from "@playwright/test";
 const manualEquipment =
   "/equipment?v=1&n=Garden%20Rig&t=_manual&tm=manual&fm=direct&f=600&a=80&fr=7.5" +
   "&c=_manual&cm=manual&cg=physical-dimensions&sw=23.5&sh=15.7" +
-  "&px=3.76&rw=6250&rh=4176&b=1";
+  "&px=3.76&rw=6250&rh=4176&b=1&bo=4&sqm=20.85";
 
 test("a bookmarked manual setup reproduces equipment and opens consolidated calculations", async ({
   page,
@@ -20,6 +20,8 @@ test("a bookmarked manual setup reproduces equipment and opens consolidated calc
     page.getByRole("spinbutton", { name: "Native focal length" }),
   ).toHaveValue("600");
   await expect(page.getByLabel("Rig name")).toHaveValue("Garden Rig");
+  await expect(page.getByLabel("Bortle class")).toHaveValue("4");
+  await expect(page.getByLabel("Sky quality (SQM)")).toHaveValue("20.85");
   await expect(page).toHaveTitle("Garden Rig · Equipment · Astrotools");
   await expect(
     page.getByRole("img", {
@@ -78,6 +80,8 @@ test("equipment URL copy is canonical and the overview is accessible", async ({
   expect(canonical.pathname).toBe("/equipment");
   expect(canonical.searchParams.get("f")).toBe("600");
   expect(canonical.searchParams.get("n")).toBe("Garden Rig");
+  expect(canonical.searchParams.get("bo")).toBe("4");
+  expect(canonical.searchParams.get("sqm")).toBe("20.85");
   expect(canonical.searchParams.has("target")).toBe(false);
   expect(canonical.searchParams.has("unknown")).toBe(false);
 

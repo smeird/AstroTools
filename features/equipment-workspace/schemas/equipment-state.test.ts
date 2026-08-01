@@ -41,16 +41,24 @@ describe("equipment workspace URL state", () => {
 
   it("builds a canonical bookmarkable URL", () => {
     const state = createEquipmentConfiguration(fieldOfViewCatalogueFixture);
-    const url = equipmentUrl("https://astrotools.test", state, "Garden Rig");
+    const url = equipmentUrl("https://astrotools.test", state, "Garden Rig", {
+      bortleClass: "4",
+      skyQualityMagArcsec2: "20.85",
+    });
     expect(url?.pathname).toBe("/equipment");
     expect(url?.searchParams.get("c")).toBe("asi2600mc-pro");
     expect(url?.searchParams.get("n")).toBe("Garden Rig");
-    expect(
-      parseEquipmentState(
-        url?.searchParams ?? new URLSearchParams(),
-        fieldOfViewCatalogueFixture,
-      ).rigName,
-    ).toBe("Garden Rig");
+    expect(url?.searchParams.get("bo")).toBe("4");
+    expect(url?.searchParams.get("sqm")).toBe("20.85");
+    const parsed = parseEquipmentState(
+      url?.searchParams ?? new URLSearchParams(),
+      fieldOfViewCatalogueFixture,
+    );
+    expect(parsed.rigName).toBe("Garden Rig");
+    expect(parsed.site).toEqual({
+      bortleClass: "4",
+      skyQualityMagArcsec2: "20.85",
+    });
   });
 
   it("normalises and bounds bookmark names", () => {
@@ -61,5 +69,16 @@ describe("equipment workspace URL state", () => {
     );
     expect(params?.get("n")).toHaveLength(80);
     expect(params?.get("n")).toMatch(/^Observatory x+$/);
+  });
+
+  it("drops invalid observing-site measurements without defaults", () => {
+    const parsed = parseEquipmentState(
+      new URLSearchParams("v=1&bo=10&sqm=30"),
+      fieldOfViewCatalogueFixture,
+    );
+    expect(parsed.site).toEqual({
+      bortleClass: "",
+      skyQualityMagArcsec2: "",
+    });
   });
 });

@@ -58,6 +58,7 @@ describe("shared telescope selection", () => {
         binning: "2",
       },
       "Garden Rig",
+      { bortleClass: "4", skyQualityMagArcsec2: "20.85" },
     );
     expect(train).toMatchObject({
       rigName: "Garden Rig",
@@ -66,6 +67,8 @@ describe("shared telescope selection", () => {
       opticalMultiplier: "0.7",
       pixelSizeUm: "3.76",
       binningFactor: "2",
+      bortleClass: "4",
+      skyQualityMagArcsec2: "20.85",
     });
     expect(
       parseSharedImagingTrain(serializeSharedImagingTrain(train!)),
@@ -73,6 +76,11 @@ describe("shared telescope selection", () => {
     expect(
       parseSharedImagingTrain(
         JSON.stringify({ ...train, rigName: "x".repeat(81) }),
+      ),
+    ).toBeNull();
+    expect(
+      parseSharedImagingTrain(
+        JSON.stringify({ ...train, skyQualityMagArcsec2: "30" }),
       ),
     ).toBeNull();
   });

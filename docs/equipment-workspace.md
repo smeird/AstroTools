@@ -27,6 +27,11 @@ plain-text characters. It becomes the equipment and calculations document title
 so a browser bookmark is recognisable. It is also copied into the local shared
 train; Astrotools does not send it to a profile or analytics service.
 
+Optional observing-site context is canonical URL state too: Bortle class (`bo=`)
+and an SQM reading in mag/arcsec² (`sqm=`). Both values travel with the shared
+imaging train but remain independent observations; a Bortle category is not
+presented as an exact conversion of an SQM measurement.
+
 The Setup check includes a generated SVG train diagram. It renders the resolved
 telescope, ordered modifier instances, camera and binning directly from the same
 configuration used by the calculations. Its accessible description lists those
@@ -40,6 +45,6 @@ aperture, native and effective focal properties, modifier types and factors,
 sensor dimensions, resolution, pixel pitch, binning, exact field and image scale
 only when each value is valid.
 
-Other than the optional user-authored rig label, the equipment URL contains no
-personal data, analytics identifier, secret, or opaque lookup key. Clearing
-browser storage does not affect a bookmarked URL.
+Other than the optional user-authored rig label and observing-site measurements,
+the equipment URL contains no personal data, analytics identifier, secret, or
+opaque lookup key. Clearing browser storage does not affect a bookmarked URL.

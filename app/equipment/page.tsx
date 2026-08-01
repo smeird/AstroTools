@@ -51,6 +51,7 @@ export default async function EquipmentPage({
         catalogue={catalogue}
         initialConfiguration={parsed.state}
         initialRigName={parsed.rigName}
+        initialSite={parsed.site}
         restorePersistedState={normalized.size === 0}
         shareNotice={parsed.notice}
       />

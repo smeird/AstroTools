@@ -1554,6 +1554,28 @@ font family is normally proportioned and readable.
 • A generated A4 PDF is visually inspected as an ordered report with clean page
 breaks, readable tables and no screen-navigation artefacts.
 
+Post-release work package 26: Saved observing-site context
+
+Goal
+
+Carry meaningful sky-quality context with a bookmarked rig and its consolidated
+calculation report.
+
+Deliverables
+
+• Optional Bortle class and SQM inputs on the equipment workspace.
+• Bounded, independently stored site measurements in the canonical equipment
+URL and local shared imaging train, without an invented conversion.
+• Site context in the consolidated calculations view and ordered PDF equipment
+specification.
+
+Done when
+
+• Bortle 1-9 and SQM 10-25 mag/arcsec² round-trip through bookmarks.
+• Invalid or omitted values create no misleading defaults.
+• The calculations view and PDF show only the supplied site measurements.
+• Unit, URL, shared-state, browser and production-build checks pass.
+
 16. Release 1 acceptance criteria
 
 The release is acceptable only when all statements are true:

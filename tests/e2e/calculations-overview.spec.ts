@@ -2,7 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 const equipment =
-  "/equipment?v=1&n=Garden%20Rig&t=_manual&tm=manual&fm=direct&f=600&a=80&fr=7.5&c=_manual&cm=manual&cg=pixel-resolution&sw=23.5&sh=15.7&px=3.76&rw=6250&rh=4176&m=manual%3Amanual%3Areducer%3A0.7&b=2";
+  "/equipment?v=1&n=Garden%20Rig&t=_manual&tm=manual&fm=direct&f=600&a=80&fr=7.5&c=_manual&cm=manual&cg=pixel-resolution&sw=23.5&sh=15.7&px=3.76&rw=6250&rh=4176&m=manual%3Amanual%3Areducer%3A0.7&b=2&bo=4&sqm=20.85";
 
 test("academic view persists and never changes consolidated results", async ({
   page,
@@ -64,6 +64,14 @@ test("PDF export opens the browser print workflow", async ({ page }) => {
     page.getByRole("heading", { name: "3. Method and interpretation" }),
   ).toBeVisible();
   await expect(page.getByRole("navigation")).toBeHidden();
+  await expect(
+    page.getByRole("row", { name: "Observing-site Bortle class 4" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("row", {
+      name: "Observed sky quality 20.85 mag/arcsec²",
+    }),
+  ).toBeVisible();
 });
 
 test("consolidated calculations expose every calculator or missing input", async ({

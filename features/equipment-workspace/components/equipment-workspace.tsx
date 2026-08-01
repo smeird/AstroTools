@@ -42,6 +42,7 @@ import {
   equipmentUrl,
   parseEquipmentState,
   serializeEquipmentState,
+  type ObservingSiteConditions,
 } from "../schemas/equipment-state";
 import styles from "./equipment-workspace.module.css";
 import { ImagingTrainDiagram } from "./imaging-train-diagram";
@@ -65,12 +66,14 @@ export function EquipmentWorkspace({
   shareNotice,
   restorePersistedState,
   initialRigName = "",
+  initialSite = { bortleClass: "", skyQualityMagArcsec2: "" },
 }: {
   catalogue: FieldOfViewCatalogue;
   initialConfiguration: EquipmentConfigurationState;
   shareNotice: FieldOfViewShareNotice | null;
   restorePersistedState: boolean;
   initialRigName?: string;
+  initialSite?: ObservingSiteConditions;
 }) {
   const [state, dispatch] = useReducer(
     equipmentConfigurationReducer,
@@ -78,6 +81,7 @@ export function EquipmentWorkspace({
   );
   const [copyStatus, setCopyStatus] = useState("");
   const [rigName, setRigName] = useState(initialRigName);
+  const [site, setSite] = useState(initialSite);
   const [persistedStateLoaded, setPersistedStateLoaded] = useState(
     !restorePersistedState,
   );
@@ -102,7 +106,7 @@ export function EquipmentWorkspace({
     });
   }, [camera, modifiers, state.binning, state.seeingFwhmArcsec, telescope]);
 
-  const equipmentParams = serializeEquipmentState(state, rigName);
+  const equipmentParams = serializeEquipmentState(state, rigName, site);
   const fieldOfViewHref = equipmentParams
     ? `/calculators/field-of-view?${equipmentParams.toString()}`
     : "/calculators/field-of-view";
@@ -118,6 +122,7 @@ export function EquipmentWorkspace({
       if (parsedStored) {
         dispatch({ type: "hydrate", state: parsedStored.state });
         setRigName(parsedStored.rigName);
+        setSite(parsedStored.site);
       }
       setPersistedStateLoaded(true);
     });
@@ -125,12 +130,12 @@ export function EquipmentWorkspace({
 
   useEffect(() => {
     if (!persistedStateLoaded) return;
-    const url = equipmentUrl(window.location.origin, state, rigName);
+    const url = equipmentUrl(window.location.origin, state, rigName, site);
     if (url) window.history.replaceState(null, "", url);
     document.title = rigName
       ? `${rigName} · Equipment · Astrotools`
       : "Your Equipment Workspace · Astrotools";
-    const equipment = serializeEquipmentState(state, rigName);
+    const equipment = serializeEquipmentState(state, rigName, site);
     if (equipment)
       window.localStorage.setItem(
         EQUIPMENT_PERSISTENCE_KEY,
@@ -153,16 +158,16 @@ export function EquipmentWorkspace({
         SHARED_CAMERA_SELECTION_KEY,
         serializeSharedCameraSelection(selectedCamera),
       );
-    const imagingTrain = imagingTrainFromConfiguration(state, rigName);
+    const imagingTrain = imagingTrainFromConfiguration(state, rigName, site);
     if (imagingTrain)
       window.localStorage.setItem(
         SHARED_IMAGING_TRAIN_KEY,
         serializeSharedImagingTrain(imagingTrain),
       );
-  }, [persistedStateLoaded, rigName, state]);
+  }, [persistedStateLoaded, rigName, site, state]);
 
   async function copyBookmark() {
-    const url = equipmentUrl(window.location.origin, state, rigName);
+    const url = equipmentUrl(window.location.origin, state, rigName, site);
     if (!url) {
       setCopyStatus("Complete the labelled equipment fields before copying.");
       return;
@@ -205,6 +210,55 @@ export function EquipmentWorkspace({
             Included in this page address and browser bookmark title.
           </small>
         </label>
+        <fieldset className={styles.siteFields}>
+          <legend>Observing site (optional)</legend>
+          <label>
+            <span>Bortle class</span>
+            <select
+              value={site.bortleClass}
+              onChange={(event) =>
+                setSite((current) => ({
+                  ...current,
+                  bortleClass: event.target.value,
+                }))
+              }
+            >
+              <option value="">Not specified</option>
+              {Array.from({ length: 9 }, (_, index) => index + 1).map(
+                (bortle) => (
+                  <option value={bortle} key={bortle}>
+                    Bortle {bortle}
+                  </option>
+                ),
+              )}
+            </select>
+          </label>
+          <label>
+            <span>Sky quality (SQM)</span>
+            <span className={styles.inputWithUnit}>
+              <input
+                inputMode="decimal"
+                min="10"
+                max="25"
+                step="0.01"
+                type="number"
+                value={site.skyQualityMagArcsec2}
+                onChange={(event) =>
+                  setSite((current) => ({
+                    ...current,
+                    skyQualityMagArcsec2: event.target.value,
+                  }))
+                }
+              />
+              <span>mag/arcsec²</span>
+            </span>
+          </label>
+          <small>
+            Record either or both measurements. Bortle and SQM are kept as
+            separate observations; Astrotools does not invent an exact
+            conversion between them.
+          </small>
+        </fieldset>
         <button
           className={styles.copyButton}
           onClick={copyBookmark}

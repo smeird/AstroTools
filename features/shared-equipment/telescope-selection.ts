@@ -50,11 +50,14 @@ export interface SharedImagingTrain {
   readonly sensorHeightMm: string;
   readonly resolutionWidthPx?: string;
   readonly resolutionHeightPx?: string;
+  readonly bortleClass?: string;
+  readonly skyQualityMagArcsec2?: string;
 }
 
 export function imagingTrainFromConfiguration(
   state: EquipmentConfigurationState,
   rigName = "",
+  site?: { bortleClass: string; skyQualityMagArcsec2: string },
 ): SharedImagingTrain | null {
   const telescope = telescopeSelectionFromConfiguration(state.telescope);
   const camera = cameraSelectionFromConfiguration(state.camera);
@@ -89,6 +92,10 @@ export function imagingTrainFromConfiguration(
     sensorHeightMm: camera.sensorHeightMm,
     resolutionWidthPx: state.camera.resolutionWidthPx,
     resolutionHeightPx: state.camera.resolutionHeightPx,
+    ...(site?.bortleClass ? { bortleClass: site.bortleClass } : {}),
+    ...(site?.skyQualityMagArcsec2
+      ? { skyQualityMagArcsec2: site.skyQualityMagArcsec2 }
+      : {}),
   };
 }
 
@@ -117,6 +124,14 @@ export function parseSharedImagingTrain(
     ];
     if (
       candidate.version !== 1 ||
+      (candidate.bortleClass !== undefined &&
+        (typeof candidate.bortleClass !== "string" ||
+          !/^[1-9]$/.test(candidate.bortleClass))) ||
+      (candidate.skyQualityMagArcsec2 !== undefined &&
+        (typeof candidate.skyQualityMagArcsec2 !== "string" ||
+          !Number.isFinite(Number(candidate.skyQualityMagArcsec2)) ||
+          Number(candidate.skyQualityMagArcsec2) < 10 ||
+          Number(candidate.skyQualityMagArcsec2) > 25)) ||
       (candidate.rigName !== undefined &&
         (typeof candidate.rigName !== "string" ||
           candidate.rigName.length > 80 ||

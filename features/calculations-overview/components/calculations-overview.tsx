@@ -687,6 +687,18 @@ export function CalculationsOverview() {
                 <dt>Binning</dt>
                 <dd>{train.binningFactor}×</dd>
               </div>
+              {train.bortleClass ? (
+                <div>
+                  <dt>Bortle class</dt>
+                  <dd>{train.bortleClass}</dd>
+                </div>
+              ) : null}
+              {train.skyQualityMagArcsec2 ? (
+                <div>
+                  <dt>Sky quality</dt>
+                  <dd>{train.skyQualityMagArcsec2} mag/arcsec²</dd>
+                </div>
+              ) : null}
             </dl>
             <Link href="/equipment">Change equipment →</Link>
           </section>
@@ -799,6 +811,18 @@ export function CalculationsOverview() {
                     {train.pixelSizeUm} µm / {train.binningFactor}×
                   </td>
                 </tr>
+                {train.bortleClass ? (
+                  <tr>
+                    <th scope="row">Observing-site Bortle class</th>
+                    <td>{train.bortleClass}</td>
+                  </tr>
+                ) : null}
+                {train.skyQualityMagArcsec2 ? (
+                  <tr>
+                    <th scope="row">Observed sky quality</th>
+                    <td>{train.skyQualityMagArcsec2} mag/arcsec²</td>
+                  </tr>
+                ) : null}
               </tbody>
             </table>
           </section>

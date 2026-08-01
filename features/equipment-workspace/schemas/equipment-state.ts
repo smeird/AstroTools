@@ -31,15 +31,35 @@ const EQUIPMENT_KEYS = new Set([
   "rh",
   "m",
   "b",
+  "bo",
+  "sqm",
 ]);
+
+export interface ObservingSiteConditions {
+  readonly bortleClass: string;
+  readonly skyQualityMagArcsec2: string;
+}
 
 export interface ParsedEquipmentState {
   readonly state: EquipmentConfigurationState;
   readonly rigName: string;
+  readonly site: ObservingSiteConditions;
   readonly notice: FieldOfViewShareNotice | null;
 }
 
 export const MAX_RIG_NAME_LENGTH = 80;
+
+function normaliseBortle(value: string | null): string {
+  return /^[1-9]$/.test(value ?? "") ? (value ?? "") : "";
+}
+
+function normaliseSqm(value: string | null): string {
+  if (!value) return "";
+  const numeric = Number(value);
+  return Number.isFinite(numeric) && numeric >= 10 && numeric <= 25
+    ? String(numeric)
+    : "";
+}
 
 export function normaliseRigName(value: string | null | undefined): string {
   return (value ?? "")
@@ -58,6 +78,10 @@ export function normaliseEquipmentPageSearchParams(
     const rigName = normaliseRigName(rawName);
     if (rigName) normalized.set("n", rigName);
   }
+  const rawBortle = Array.isArray(raw.bo) ? raw.bo[0] : raw.bo;
+  const rawSqm = Array.isArray(raw.sqm) ? raw.sqm[0] : raw.sqm;
+  if (typeof rawBortle === "string") normalized.set("bo", rawBortle);
+  if (typeof rawSqm === "string") normalized.set("sqm", rawSqm);
   for (const key of [...normalized.keys()]) {
     if (!EQUIPMENT_KEYS.has(key)) normalized.delete(key);
   }
@@ -70,13 +94,19 @@ export function parseEquipmentState(
 ): ParsedEquipmentState {
   const parsed = parseFieldOfViewShareState(searchParams, catalogue);
   const rigName = normaliseRigName(searchParams.get("n"));
-  if (parsed.notice?.kind !== "invalid-settings") return { ...parsed, rigName };
+  const site = {
+    bortleClass: normaliseBortle(searchParams.get("bo")),
+    skyQualityMagArcsec2: normaliseSqm(searchParams.get("sqm")),
+  };
+  if (parsed.notice?.kind !== "invalid-settings")
+    return { ...parsed, rigName, site };
   const settings = parsed.notice.settings.filter(
     (setting) => setting !== "astronomical target",
   );
   return {
     state: parsed.state,
     rigName,
+    site,
     notice: settings.length > 0 ? { kind: "invalid-settings", settings } : null,
   };
 }
@@ -84,6 +114,10 @@ export function parseEquipmentState(
 export function serializeEquipmentState(
   state: EquipmentConfigurationState,
   rigName = "",
+  site: ObservingSiteConditions = {
+    bortleClass: "",
+    skyQualityMagArcsec2: "",
+  },
 ): URLSearchParams | null {
   // The established serializer validates the whole Field of View state. Supply
   // a private valid target placeholder because target/seeing/framing are not
@@ -99,6 +133,10 @@ export function serializeEquipmentState(
   }
   const normalizedName = normaliseRigName(rigName);
   if (normalizedName) complete.set("n", normalizedName);
+  const bortle = normaliseBortle(site.bortleClass);
+  const sqm = normaliseSqm(site.skyQualityMagArcsec2);
+  if (bortle) complete.set("bo", bortle);
+  if (sqm) complete.set("sqm", sqm);
   return complete;
 }
 
@@ -112,8 +150,9 @@ export function equipmentUrl(
   origin: string,
   state: EquipmentConfigurationState,
   rigName = "",
+  site?: ObservingSiteConditions,
 ): URL | null {
-  const params = serializeEquipmentState(state, rigName);
+  const params = serializeEquipmentState(state, rigName, site);
   if (!params) return null;
   const url = new URL(EQUIPMENT_WORKSPACE_PATH, origin);
   url.search = params.toString();
