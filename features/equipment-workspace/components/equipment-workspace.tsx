@@ -44,6 +44,7 @@ import {
   serializeEquipmentState,
 } from "../schemas/equipment-state";
 import styles from "./equipment-workspace.module.css";
+import { ImagingTrainDiagram } from "./imaging-train-diagram";
 
 const format = (value: number, digits = 2) =>
   value.toLocaleString("en-GB", {
@@ -63,17 +64,20 @@ export function EquipmentWorkspace({
   initialConfiguration,
   shareNotice,
   restorePersistedState,
+  initialRigName = "",
 }: {
   catalogue: FieldOfViewCatalogue;
   initialConfiguration: EquipmentConfigurationState;
   shareNotice: FieldOfViewShareNotice | null;
   restorePersistedState: boolean;
+  initialRigName?: string;
 }) {
   const [state, dispatch] = useReducer(
     equipmentConfigurationReducer,
     initialConfiguration,
   );
   const [copyStatus, setCopyStatus] = useState("");
+  const [rigName, setRigName] = useState(initialRigName);
   const [persistedStateLoaded, setPersistedStateLoaded] = useState(
     !restorePersistedState,
   );
@@ -98,7 +102,7 @@ export function EquipmentWorkspace({
     });
   }, [camera, modifiers, state.binning, state.seeingFwhmArcsec, telescope]);
 
-  const equipmentParams = serializeEquipmentState(state);
+  const equipmentParams = serializeEquipmentState(state, rigName);
   const fieldOfViewHref = equipmentParams
     ? `/calculators/field-of-view?${equipmentParams.toString()}`
     : "/calculators/field-of-view";
@@ -107,20 +111,26 @@ export function EquipmentWorkspace({
     const stored = restorePersistedState
       ? window.localStorage.getItem(EQUIPMENT_PERSISTENCE_KEY)
       : null;
-    const restored = stored
-      ? parseEquipmentState(new URLSearchParams(stored), catalogue).state
+    const parsedStored = stored
+      ? parseEquipmentState(new URLSearchParams(stored), catalogue)
       : null;
     startTransition(() => {
-      if (restored) dispatch({ type: "hydrate", state: restored });
+      if (parsedStored) {
+        dispatch({ type: "hydrate", state: parsedStored.state });
+        setRigName(parsedStored.rigName);
+      }
       setPersistedStateLoaded(true);
     });
   }, [catalogue, restorePersistedState]);
 
   useEffect(() => {
     if (!persistedStateLoaded) return;
-    const url = equipmentUrl(window.location.origin, state);
+    const url = equipmentUrl(window.location.origin, state, rigName);
     if (url) window.history.replaceState(null, "", url);
-    const equipment = serializeEquipmentState(state);
+    document.title = rigName
+      ? `${rigName} · Equipment · Astrotools`
+      : "Your Equipment Workspace · Astrotools";
+    const equipment = serializeEquipmentState(state, rigName);
     if (equipment)
       window.localStorage.setItem(
         EQUIPMENT_PERSISTENCE_KEY,
@@ -143,16 +153,16 @@ export function EquipmentWorkspace({
         SHARED_CAMERA_SELECTION_KEY,
         serializeSharedCameraSelection(selectedCamera),
       );
-    const imagingTrain = imagingTrainFromConfiguration(state);
+    const imagingTrain = imagingTrainFromConfiguration(state, rigName);
     if (imagingTrain)
       window.localStorage.setItem(
         SHARED_IMAGING_TRAIN_KEY,
         serializeSharedImagingTrain(imagingTrain),
       );
-  }, [persistedStateLoaded, state]);
+  }, [persistedStateLoaded, rigName, state]);
 
   async function copyBookmark() {
-    const url = equipmentUrl(window.location.origin, state);
+    const url = equipmentUrl(window.location.origin, state, rigName);
     if (!url) {
       setCopyStatus("Complete the labelled equipment fields before copying.");
       return;
@@ -182,6 +192,19 @@ export function EquipmentWorkspace({
           setup in its URL; the separate calculations sheet consumes the same
           train without an account.
         </p>
+        <label className={styles.rigNameField}>
+          <span>Rig name</span>
+          <input
+            maxLength={80}
+            onChange={(event) => setRigName(event.target.value)}
+            placeholder="e.g. Garden wide-field rig"
+            type="text"
+            value={rigName}
+          />
+          <small>
+            Included in this page address and browser bookmark title.
+          </small>
+        </label>
         <button
           className={styles.copyButton}
           onClick={copyBookmark}
@@ -239,6 +262,7 @@ export function EquipmentWorkspace({
           ) : (
             <p>Complete the equipment fields to verify the effective train.</p>
           )}
+          <ImagingTrainDiagram state={state} />
           <Link className={styles.calculationsLink} href="/calculations">
             View all calculations →
           </Link>

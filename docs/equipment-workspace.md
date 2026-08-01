@@ -22,5 +22,17 @@ and explicit missing measurement. Both routes consume the same locally published
 full imaging train. A bare `/equipment` route may restore the last locally
 remembered setup as a convenience; the URL remains the portable source of truth.
 
-The equipment URL contains no personal data, analytics identifier, secret, or
-opaque lookup key. Clearing browser storage does not affect a bookmarked URL.
+The optional rig name is canonical URL state (`n=`), limited to 80 normalised
+plain-text characters. It becomes the equipment and calculations document title
+so a browser bookmark is recognisable. It is also copied into the local shared
+train; Astrotools does not send it to a profile or analytics service.
+
+The Setup check includes a generated SVG train diagram. It renders the resolved
+telescope, ordered modifier instances, camera and binning directly from the same
+configuration used by the calculations. Its accessible description lists those
+parts in optical order, and a horizontally constrained viewport protects narrow
+screens when a train contains many modifiers.
+
+Other than the optional user-authored rig label, the equipment URL contains no
+personal data, analytics identifier, secret, or opaque lookup key. Clearing
+browser storage does not affect a bookmarked URL.

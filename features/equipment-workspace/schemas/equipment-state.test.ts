@@ -41,8 +41,25 @@ describe("equipment workspace URL state", () => {
 
   it("builds a canonical bookmarkable URL", () => {
     const state = createEquipmentConfiguration(fieldOfViewCatalogueFixture);
-    const url = equipmentUrl("https://astrotools.test", state);
+    const url = equipmentUrl("https://astrotools.test", state, "Garden Rig");
     expect(url?.pathname).toBe("/equipment");
     expect(url?.searchParams.get("c")).toBe("asi2600mc-pro");
+    expect(url?.searchParams.get("n")).toBe("Garden Rig");
+    expect(
+      parseEquipmentState(
+        url?.searchParams ?? new URLSearchParams(),
+        fieldOfViewCatalogueFixture,
+      ).rigName,
+    ).toBe("Garden Rig");
+  });
+
+  it("normalises and bounds bookmark names", () => {
+    const state = createEquipmentConfiguration(fieldOfViewCatalogueFixture);
+    const params = serializeEquipmentState(
+      state,
+      `  Observatory\n${"x".repeat(100)}  `,
+    );
+    expect(params?.get("n")).toHaveLength(80);
+    expect(params?.get("n")).toMatch(/^Observatory x+$/);
   });
 });

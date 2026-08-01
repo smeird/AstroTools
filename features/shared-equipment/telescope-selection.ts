@@ -37,6 +37,7 @@ export interface SharedCameraSelection {
 
 export interface SharedImagingTrain {
   readonly version: 1;
+  readonly rigName?: string;
   readonly telescopeLabel: string;
   readonly cameraLabel: string;
   readonly nativeFocalLengthMm: string;
@@ -53,6 +54,7 @@ export interface SharedImagingTrain {
 
 export function imagingTrainFromConfiguration(
   state: EquipmentConfigurationState,
+  rigName = "",
 ): SharedImagingTrain | null {
   const telescope = telescopeSelectionFromConfiguration(state.telescope);
   const camera = cameraSelectionFromConfiguration(state.camera);
@@ -72,6 +74,7 @@ export function imagingTrainFromConfiguration(
   );
   return {
     version: 1,
+    ...(rigName ? { rigName } : {}),
     telescopeLabel: telescope.label,
     cameraLabel: camera.label,
     nativeFocalLengthMm: telescope.nativeFocalLengthMm,
@@ -114,6 +117,10 @@ export function parseSharedImagingTrain(
     ];
     if (
       candidate.version !== 1 ||
+      (candidate.rigName !== undefined &&
+        (typeof candidate.rigName !== "string" ||
+          candidate.rigName.length > 80 ||
+          /[\u0000-\u001f\u007f]/.test(candidate.rigName))) ||
       typeof candidate.telescopeLabel !== "string" ||
       typeof candidate.cameraLabel !== "string" ||
       numericFields.some(

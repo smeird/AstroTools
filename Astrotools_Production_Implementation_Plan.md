@@ -1453,6 +1453,41 @@ tests pass with no serious or critical findings.
 • Automated tests compare consolidated results with their corresponding pure
 calculation and detail-page results before display rounding.
 
+Post-release work package 23: Named rig dossier and PDF export
+
+Goal
+
+Make a saved equipment bookmark immediately recognisable and useful as a
+portable rig dossier. The equipment page should visually confirm the ordered
+imaging train, the bookmark should carry a user-supplied rig name, and the
+consolidated calculations should produce a clean printable PDF.
+
+Deliverables
+
+• An accessible, responsive, code-rendered equipment-train diagram showing the
+selected telescope, every optical modifier in order, the camera and binning.
+• A bounded plain-text rig name stored in the canonical equipment URL and shared
+imaging-train state, with no account or server-side personal-data storage.
+• A rig-specific equipment document title so browser bookmarks use the chosen
+name, with the standard Astrotools title when the name is absent.
+• An explicit Export PDF control on `/calculations` that opens the browser's
+native print/save-to-PDF workflow and an A4-oriented print stylesheet with rig
+identity, equipment context, calculation tables and page-safe breaks.
+
+Done when
+
+• Changing telescope, modifier order, camera or binning updates the diagram
+locally and its non-visual description names the same ordered components.
+• A copied equipment URL restores the rig name, full train and bookmark title;
+legacy equipment URLs without a name continue to work unchanged.
+• The consolidated page shows the restored rig name and its PDF control invokes
+the print workflow without changing calculations or exposing local state.
+• PDF/print output omits interactive navigation, preserves readable black-on-
+white tables, avoids clipping and identifies the named rig on every printed
+page through the document title or print header.
+• Unit, cross-browser, keyboard, accessibility, mobile-overflow, print and
+production-build checks pass.
+
 16. Release 1 acceptance criteria
 
 The release is acceptable only when all statements are true:

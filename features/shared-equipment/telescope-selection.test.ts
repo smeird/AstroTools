@@ -40,23 +40,27 @@ describe("shared telescope selection", () => {
 
   it("captures the complete effective imaging train", () => {
     const state = createEquipmentConfiguration(fieldOfViewCatalogueFixture);
-    const train = imagingTrainFromConfiguration({
-      ...state,
-      modifiers: [
-        {
-          instanceId: "test",
-          source: "manual",
-          presetSlug: null,
-          label: "0.7× reducer",
-          modifierType: "Reducer",
-          multiplier: "0.7",
-          baselineMultiplier: null,
-          compatibleNotes: null,
-        },
-      ],
-      binning: "2",
-    });
+    const train = imagingTrainFromConfiguration(
+      {
+        ...state,
+        modifiers: [
+          {
+            instanceId: "test",
+            source: "manual",
+            presetSlug: null,
+            label: "0.7× reducer",
+            modifierType: "Reducer",
+            multiplier: "0.7",
+            baselineMultiplier: null,
+            compatibleNotes: null,
+          },
+        ],
+        binning: "2",
+      },
+      "Garden Rig",
+    );
     expect(train).toMatchObject({
+      rigName: "Garden Rig",
       nativeFocalLengthMm: "600",
       effectiveFocalLengthMm: "420",
       opticalMultiplier: "0.7",
@@ -66,6 +70,11 @@ describe("shared telescope selection", () => {
     expect(
       parseSharedImagingTrain(serializeSharedImagingTrain(train!)),
     ).toEqual(train);
+    expect(
+      parseSharedImagingTrain(
+        JSON.stringify({ ...train, rigName: "x".repeat(81) }),
+      ),
+    ).toBeNull();
   });
 
   it("round-trips a bounded versioned selection", () => {

@@ -1,0 +1,90 @@
+.figure {
+  margin: var(--space-4) 0 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-subtle);
+}
+.figure h3 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  font-weight: 400;
+}
+.description {
+  margin: 0.35rem 0 var(--space-3);
+  color: var(--color-text-soft);
+  font-size: var(--font-size-small);
+  line-height: 1.45;
+}
+.viewport {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-control);
+  background:
+    radial-gradient(
+      circle at 35% 45%,
+      rgba(114, 229, 210, 0.08),
+      transparent 48%
+    ),
+    #081019;
+}
+.viewport svg {
+  display: block;
+  width: 100%;
+  min-height: 11rem;
+}
+.viewport text {
+  fill: var(--color-text-soft);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.axis {
+  stroke: rgba(201, 222, 226, 0.28);
+  stroke-dasharray: 5 8;
+}
+.scope {
+  fill: url(#tube);
+  stroke: var(--color-text-muted);
+  stroke-width: 2;
+}
+.ring,
+.connector {
+  fill: #273b49;
+  stroke: #67808d;
+}
+.modifier {
+  fill: #192c38;
+  stroke: var(--color-accent);
+  stroke-width: 2;
+}
+.camera {
+  fill: #192630;
+  stroke: #8199a4;
+  stroke-width: 2;
+}
+.glass {
+  fill: rgba(114, 229, 210, 0.2);
+  stroke: var(--color-signal);
+  stroke-width: 2;
+}
+.sensor {
+  fill: rgba(198, 235, 102, 0.17);
+  stroke: var(--color-accent);
+  stroke-width: 2;
+}
+.binning {
+  fill: var(--color-accent) !important;
+  font-weight: 700;
+}
+:global(html[data-view-mode="academic"]) .figure {
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+}
+:global(html[data-view-mode="academic"]) .description {
+  margin-bottom: var(--space-2);
+}
+@media (max-width: 700px) {
+  .viewport svg {
+    width: 620px;
+  }
+}

@@ -613,6 +613,11 @@ export function CalculationsOverview() {
       setSections(restored ? buildSections(restored) : []);
     });
   }, []);
+  useEffect(() => {
+    document.title = train?.rigName
+      ? `${train.rigName} · Calculations · Astrotools`
+      : "All Calculations · Astrotools";
+  }, [train]);
   return (
     <main id="main-content" className={styles.page} tabIndex={-1}>
       <Link className={styles.backLink} href="/">
@@ -620,12 +625,23 @@ export function CalculationsOverview() {
       </Link>
       <CalculatorNavigation active="calculations" />
       <header className={styles.intro}>
-        <p className="eyebrow">Consolidated calculations</p>
-        <h1>One train. Every result.</h1>
-        <p>
-          Presentation view explains the result set; Academic view compresses it
-          into a reference sheet. The numbers are identical in both.
-        </p>
+        <div>
+          <p className="eyebrow">Consolidated calculations</p>
+          <h1>{train?.rigName || "One train. Every result."}</h1>
+          <p>
+            Presentation view explains the result set; Academic view compresses
+            it into a reference sheet. The numbers are identical in both.
+          </p>
+        </div>
+        {train ? (
+          <button
+            className={styles.exportButton}
+            onClick={() => window.print()}
+            type="button"
+          >
+            Export PDF
+          </button>
+        ) : null}
       </header>
       {!train ? (
         <section className={styles.empty}>
@@ -643,6 +659,9 @@ export function CalculationsOverview() {
             aria-labelledby="calculation-context"
           >
             <h2 id="calculation-context">Calculation context</h2>
+            {train.rigName ? (
+              <p className={styles.printRigName}>Rig: {train.rigName}</p>
+            ) : null}
             <dl>
               <div>
                 <dt>Telescope</dt>

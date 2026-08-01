@@ -121,6 +121,11 @@ binning state. The equipment overview restores this URL, lists all implemented
 calculators, and carries compatible inputs into each detail route. See
 `docs/equipment-workspace.md` for the contract and scope boundary.
 
+It may also contain `n`, an optional normalised rig name of at most 80
+characters. The name affects labels and document titles only; it never affects
+canonical measurements or calculation results. Existing URLs without `n` remain
+valid.
+
 The site-wide Presentation/Academic density preference is stored separately in
 the browser. It is deliberately absent from both equipment and calculator URLs,
 because it changes presentation only and never calculation state.

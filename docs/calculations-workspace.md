@@ -18,3 +18,11 @@ cannot alter inputs or numerical output.
 Tables have labelled, locally scrollable regions and the document never relies
 on page-level horizontal scrolling. Print styles remove navigation and render a
 compact two-column reference sheet where the page width permits it.
+
+When the shared train has a rig name, the page heading and document title use
+it. The **Export PDF** control calls the browser's native print workflow: users
+choose Save as PDF (or a physical printer) using their browser and
+operating-system dialog. The dedicated A4 landscape stylesheet removes
+interactive navigation, uses black-on-white tables, preserves the rig and train
+context, and avoids splitting individual result sections where the browser can
+honour it. No PDF or equipment data is uploaded to a third party.

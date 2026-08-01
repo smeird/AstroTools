@@ -2,7 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 const manualEquipment =
-  "/equipment?v=1&t=_manual&tm=manual&fm=direct&f=600&a=80&fr=7.5" +
+  "/equipment?v=1&n=Garden%20Rig&t=_manual&tm=manual&fm=direct&f=600&a=80&fr=7.5" +
   "&c=_manual&cm=manual&cg=physical-dimensions&sw=23.5&sh=15.7" +
   "&px=3.76&rw=6250&rh=4176&b=1";
 
@@ -19,6 +19,13 @@ test("a bookmarked manual setup reproduces equipment and opens consolidated calc
   await expect(
     page.getByRole("spinbutton", { name: "Native focal length" }),
   ).toHaveValue("600");
+  await expect(page.getByLabel("Rig name")).toHaveValue("Garden Rig");
+  await expect(page).toHaveTitle("Garden Rig · Equipment · Astrotools");
+  await expect(
+    page.getByRole("img", {
+      name: /Custom telescope then Custom camera; 1× binning/,
+    }),
+  ).toBeVisible();
   await expect(
     page.getByRole("spinbutton", { name: "Sensor width" }),
   ).toHaveValue("23.5");
@@ -26,9 +33,7 @@ test("a bookmarked manual setup reproduces equipment and opens consolidated calc
     page.getByRole("heading", { name: "Setup check" }),
   ).toBeVisible();
   await page.getByRole("link", { name: "View all calculations →" }).click();
-  await expect(
-    page.getByRole("heading", { name: "One train. Every result." }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Garden Rig" })).toBeVisible();
   await expect(
     page.getByRole("region", { name: "Optical geometry result table" }),
   ).toContainText("2.244");
@@ -64,6 +69,7 @@ test("equipment URL copy is canonical and the overview is accessible", async ({
   const canonical = new URL(page.url());
   expect(canonical.pathname).toBe("/equipment");
   expect(canonical.searchParams.get("f")).toBe("600");
+  expect(canonical.searchParams.get("n")).toBe("Garden Rig");
   expect(canonical.searchParams.has("target")).toBe(false);
   expect(canonical.searchParams.has("unknown")).toBe(false);
 

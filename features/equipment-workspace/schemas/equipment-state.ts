@@ -13,6 +13,7 @@ import type { FieldOfViewCatalogue } from "@/features/field-of-view/services/cal
 export const EQUIPMENT_WORKSPACE_PATH = "/equipment";
 export const EQUIPMENT_PERSISTENCE_KEY = "astrotools.equipment-workspace.v1";
 const EQUIPMENT_KEYS = new Set([
+  "n",
   "v",
   "t",
   "tm",
@@ -34,13 +35,29 @@ const EQUIPMENT_KEYS = new Set([
 
 export interface ParsedEquipmentState {
   readonly state: EquipmentConfigurationState;
+  readonly rigName: string;
   readonly notice: FieldOfViewShareNotice | null;
+}
+
+export const MAX_RIG_NAME_LENGTH = 80;
+
+export function normaliseRigName(value: string | null | undefined): string {
+  return (value ?? "")
+    .replace(/[\u0000-\u001f\u007f]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, MAX_RIG_NAME_LENGTH);
 }
 
 export function normaliseEquipmentPageSearchParams(
   raw: FieldOfViewPageSearchParams,
 ): URLSearchParams {
   const normalized = normaliseFieldOfViewPageSearchParams(raw);
+  const rawName = Array.isArray(raw.n) ? raw.n[0] : raw.n;
+  if (typeof rawName === "string") {
+    const rigName = normaliseRigName(rawName);
+    if (rigName) normalized.set("n", rigName);
+  }
   for (const key of [...normalized.keys()]) {
     if (!EQUIPMENT_KEYS.has(key)) normalized.delete(key);
   }
@@ -52,18 +69,21 @@ export function parseEquipmentState(
   catalogue: FieldOfViewCatalogue,
 ): ParsedEquipmentState {
   const parsed = parseFieldOfViewShareState(searchParams, catalogue);
-  if (parsed.notice?.kind !== "invalid-settings") return parsed;
+  const rigName = normaliseRigName(searchParams.get("n"));
+  if (parsed.notice?.kind !== "invalid-settings") return { ...parsed, rigName };
   const settings = parsed.notice.settings.filter(
     (setting) => setting !== "astronomical target",
   );
   return {
     state: parsed.state,
+    rigName,
     notice: settings.length > 0 ? { kind: "invalid-settings", settings } : null,
   };
 }
 
 export function serializeEquipmentState(
   state: EquipmentConfigurationState,
+  rigName = "",
 ): URLSearchParams | null {
   // The established serializer validates the whole Field of View state. Supply
   // a private valid target placeholder because target/seeing/framing are not
@@ -77,6 +97,8 @@ export function serializeEquipmentState(
   for (const key of [...complete.keys()]) {
     if (!EQUIPMENT_KEYS.has(key)) complete.delete(key);
   }
+  const normalizedName = normaliseRigName(rigName);
+  if (normalizedName) complete.set("n", normalizedName);
   return complete;
 }
 
@@ -89,8 +111,9 @@ export function extractEquipmentReferences(
 export function equipmentUrl(
   origin: string,
   state: EquipmentConfigurationState,
+  rigName = "",
 ): URL | null {
-  const params = serializeEquipmentState(state);
+  const params = serializeEquipmentState(state, rigName);
   if (!params) return null;
   const url = new URL(EQUIPMENT_WORKSPACE_PATH, origin);
   url.search = params.toString();

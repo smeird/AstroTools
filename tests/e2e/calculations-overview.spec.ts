@@ -2,13 +2,17 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 const equipment =
-  "/equipment?v=1&t=_manual&tm=manual&fm=direct&f=600&a=80&fr=7.5&c=_manual&cm=manual&cg=pixel-resolution&sw=23.5&sh=15.7&px=3.76&rw=6250&rh=4176&m=manual%3Amanual%3Areducer%3A0.7&b=2";
+  "/equipment?v=1&n=Garden%20Rig&t=_manual&tm=manual&fm=direct&f=600&a=80&fr=7.5&c=_manual&cm=manual&cg=pixel-resolution&sw=23.5&sh=15.7&px=3.76&rw=6250&rh=4176&m=manual%3Amanual%3Areducer%3A0.7&b=2";
 
 test("academic view persists and never changes consolidated results", async ({
   page,
 }) => {
   await page.goto(equipment);
   await page.getByRole("link", { name: "View all calculations →" }).click();
+  await expect(page).toHaveTitle("Garden Rig · Calculations · Astrotools");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+    "Garden Rig",
+  );
   const imageScaleCell = page
     .getByRole("region", { name: "Optical geometry result table" })
     .getByRole("row", { name: /Image scale/ })
@@ -32,6 +36,20 @@ test("academic view persists and never changes consolidated results", async ({
     "academic",
   );
   await expect(page.locator("section[id]")).toHaveCount(11);
+});
+
+test("PDF export opens the browser print workflow", async ({ page }) => {
+  await page.addInitScript(() => {
+    window.print = () =>
+      document.documentElement.setAttribute("data-print-called", "true");
+  });
+  await page.goto(equipment);
+  await page.getByRole("link", { name: "View all calculations →" }).click();
+  await page.getByRole("button", { name: "Export PDF" }).click();
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-print-called",
+    "true",
+  );
 });
 
 test("consolidated calculations expose every calculator or missing input", async ({

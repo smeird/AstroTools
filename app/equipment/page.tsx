@@ -14,7 +14,17 @@ import {
 import type { FieldOfViewPageSearchParams } from "@/features/field-of-view/schemas/shareable-state";
 import { supplementFieldOfViewCatalogue } from "@/features/field-of-view/services/calculator-catalogue";
 
-export const metadata: Metadata = { title: "Your Equipment Workspace" };
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<FieldOfViewPageSearchParams>;
+}): Promise<Metadata> {
+  const normalized = normaliseEquipmentPageSearchParams(await searchParams);
+  const rigName = normalized.get("n");
+  return {
+    title: rigName ? `${rigName} · Equipment` : "Your Equipment Workspace",
+  };
+}
 
 export default async function EquipmentPage({
   searchParams,
@@ -40,6 +50,7 @@ export default async function EquipmentPage({
       <EquipmentWorkspace
         catalogue={catalogue}
         initialConfiguration={parsed.state}
+        initialRigName={parsed.rigName}
         restorePersistedState={normalized.size === 0}
         shareNotice={parsed.notice}
       />

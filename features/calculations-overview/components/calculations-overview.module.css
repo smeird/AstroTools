@@ -10,8 +10,12 @@
   font-size: var(--font-size-small);
 }
 .intro {
+  display: flex;
   max-width: 72rem;
   margin-bottom: var(--space-5);
+  gap: var(--space-4);
+  align-items: end;
+  justify-content: space-between;
 }
 .intro h1,
 .train h2,
@@ -33,6 +37,25 @@
 .empty p {
   color: var(--color-text-soft);
   line-height: 1.5;
+}
+.exportButton {
+  min-height: var(--control-min-size);
+  padding: 0.7rem 1rem;
+  flex: 0 0 auto;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-control);
+  background: var(--color-accent);
+  color: var(--color-surface);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.exportButton:focus-visible {
+  outline: 3px solid var(--color-text);
+  outline-offset: 3px;
+}
+.printRigName {
+  display: none;
 }
 .train,
 .empty {
@@ -226,10 +249,27 @@
   .section {
     padding: var(--space-3);
   }
+  .intro {
+    align-items: start;
+    flex-direction: column;
+  }
 }
 @media print {
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+  .page {
+    padding: 0;
+  }
+  .backLink,
+  .exportButton {
+    display: none;
+  }
   .intro {
+    display: block;
     margin-bottom: 0.5rem;
+    border-bottom: 1px solid #555;
   }
   .intro h1 {
     font-size: 20pt;
@@ -239,13 +279,35 @@
     border: 1px solid #777;
     background: none;
   }
+  .printRigName {
+    display: block;
+    margin: 0 0 1mm;
+    color: #000;
+    font-weight: 700;
+  }
+  .train dl {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 2mm;
+  }
+  .train dl div {
+    display: block;
+    min-width: 0;
+  }
+  .train dt,
+  .train dd {
+    font-size: 7.5pt;
+    line-height: 1.25;
+  }
+  .train dd {
+    overflow-wrap: anywhere;
+  }
   .sheet {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 4mm;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2mm;
   }
   .section {
     break-inside: avoid;
-    padding: 2mm;
+    padding: 1.5mm;
     border: 1px solid #999;
     background: none;
     color: #000;
@@ -254,15 +316,23 @@
     font-size: 11pt;
   }
   .section table {
-    font-size: 7pt;
+    font-size: 6.25pt;
   }
   .section th,
   .section td {
     padding: 1mm;
     border-color: #bbb;
   }
-  .section a,
-  .missing {
+  .train a,
+  .section a {
     display: none;
+  }
+  .missing {
+    margin: 1mm 0 0;
+    padding: 1mm;
+    border-left: 1.5pt solid #555;
+    color: #222;
+    font-size: 6.5pt;
+    line-height: 1.25;
   }
 }
