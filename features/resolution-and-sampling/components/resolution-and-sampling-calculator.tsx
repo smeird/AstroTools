@@ -6,6 +6,7 @@ import { startTransition, useEffect, useMemo, useState } from "react";
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
 import { NumericInput } from "@/components/design-system/numeric-input";
 import { SharedTelescopeNotice } from "@/components/design-system/shared-telescope-notice";
+import { MathExpression } from "@/components/equations";
 import {
   applySharedTelescopeWhenChanged,
   parseSharedTelescopeSelection,
@@ -275,16 +276,43 @@ export function ResolutionAndSamplingCalculator() {
                 </div>
               </dl>
               <div className={styles.formula}>
-                <h3>How to read this</h3>
+                <h3>Equations</h3>
+                <MathExpression label="Rayleigh diffraction limit">
+                  <mrow>
+                    <msub>
+                      <mi>θ</mi>
+                      <mi>R</mi>
+                    </msub>
+                    <mo>=</mo>
+                    <mn>1.22</mn>
+                    <mo>⁢</mo>
+                    <mfrac>
+                      <mi>λ</mi>
+                      <mi>D</mi>
+                    </mfrac>
+                  </mrow>
+                </MathExpression>
+                <MathExpression label="Image scale">
+                  <mrow>
+                    <mi>s</mi>
+                    <mo>=</mo>
+                    <mn>206.265</mn>
+                    <mo>⁢</mo>
+                    <mfrac>
+                      <msub>
+                        <mi>p</mi>
+                        <mi>eff</mi>
+                      </msub>
+                      <mi>f</mi>
+                    </mfrac>
+                  </mrow>
+                </MathExpression>
                 <p>
                   The Rayleigh limit is the ideal diffraction separation. The
                   detector samples that scale with the image scale; two pixels
                   per Rayleigh limit is the minimum target used here, while
                   seeing usually becomes the practical limit from the ground.
                 </p>
-                <code>
-                  θᵣ = 1.22 λ / D · 206264.806″ image scale = 206.265 p / f
-                </code>
               </div>
               <p className={styles.note}>
                 Atmospheric turbulence, focus, obstruction, tracking, contrast,

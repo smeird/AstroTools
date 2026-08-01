@@ -55,3 +55,13 @@ the equivalent adjustment magnitude. The calculation is explicitly a plane
 model: it does not attribute all focus variation to mechanical tilt or attempt
 to separate field curvature, optical aberration, sag, seeing, or measurement
 noise.
+
+On 2026-08-01, the next bounded package was approved as **Back-focus Spacing**
+at `/calculators/backfocus-spacing`. It totals the mechanical imaging train,
+applies the first-order plane-parallel filter focus allowance, and reports the
+required spacer and signed error. It is a planning model, not a substitute for
+manufacturer-specific reference shoulders, tolerances, or empirical star tests.
+
+The same package standardises the post-Release-1 calculators on native MathML
+for textbook-style fractions, subscripts, roots, and symbolic expressions. The
+original Field of View calculator already uses this equation system.

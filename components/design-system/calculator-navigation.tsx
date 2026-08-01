@@ -9,7 +9,8 @@ export function CalculatorNavigation({
     | "field-of-view"
     | "resolution-and-sampling"
     | "modifier-effects"
-    | "sensor-tilt";
+    | "sensor-tilt"
+    | "backfocus-spacing";
 }) {
   return (
     <nav aria-label="Calculators" className={styles.navigation}>
@@ -44,6 +45,14 @@ export function CalculatorNavigation({
         prefetch={false}
       >
         Sensor Tilt
+      </Link>
+      <Link
+        aria-current={active === "backfocus-spacing" ? "page" : undefined}
+        className={styles.link}
+        href="/calculators/backfocus-spacing"
+        prefetch={false}
+      >
+        Back-focus
       </Link>
     </nav>
   );

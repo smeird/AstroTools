@@ -6,6 +6,7 @@ import { startTransition, useEffect, useMemo, useState } from "react";
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
 import { NumericInput } from "@/components/design-system/numeric-input";
 import { SharedTelescopeNotice } from "@/components/design-system/shared-telescope-notice";
+import { MathExpression } from "@/components/equations";
 import {
   parseSharedTelescopeSelection,
   SHARED_TELESCOPE_SELECTION_KEY,
@@ -239,9 +240,82 @@ export function SensorTiltCalculator() {
               </div>
               <div className={styles.equation}>
                 <h3>Model</h3>
+                <MathExpression label="Horizontal and vertical tilt">
+                  <mrow>
+                    <msub>
+                      <mi>θ</mi>
+                      <mi>x</mi>
+                    </msub>
+                    <mo>=</mo>
+                    <mi>atan</mi>
+                    <mo>(</mo>
+                    <mfrac>
+                      <mrow>
+                        <mi>Δ</mi>
+                        <mi>x</mi>
+                      </mrow>
+                      <mi>w</mi>
+                    </mfrac>
+                    <mo>)</mo>
+                    <mo>,</mo>
+                    <msub>
+                      <mi>θ</mi>
+                      <mi>y</mi>
+                    </msub>
+                    <mo>=</mo>
+                    <mi>atan</mi>
+                    <mo>(</mo>
+                    <mfrac>
+                      <mrow>
+                        <mi>Δ</mi>
+                        <mi>y</mi>
+                      </mrow>
+                      <mi>h</mi>
+                    </mfrac>
+                    <mo>)</mo>
+                  </mrow>
+                </MathExpression>
+                <MathExpression label="Combined plane tilt">
+                  <mrow>
+                    <mi>θ</mi>
+                    <mo>=</mo>
+                    <mi>atan</mi>
+                    <mo>(</mo>
+                    <msqrt>
+                      <mrow>
+                        <msup>
+                          <mrow>
+                            <mfrac>
+                              <mrow>
+                                <mi>Δ</mi>
+                                <mi>x</mi>
+                              </mrow>
+                              <mi>w</mi>
+                            </mfrac>
+                          </mrow>
+                          <mn>2</mn>
+                        </msup>
+                        <mo>+</mo>
+                        <msup>
+                          <mrow>
+                            <mfrac>
+                              <mrow>
+                                <mi>Δ</mi>
+                                <mi>y</mi>
+                              </mrow>
+                              <mi>h</mi>
+                            </mfrac>
+                          </mrow>
+                          <mn>2</mn>
+                        </msup>
+                      </mrow>
+                    </msqrt>
+                    <mo>)</mo>
+                  </mrow>
+                </MathExpression>
                 <p>
-                  θx = atan(Δx / width), θy = atan(Δy / height), and combined
-                  tilt = atan(√(tan²θx + tan²θy)).
+                  The signed axis equations retain direction; their orthogonal
+                  slopes combine into the magnitude of the tilted plane.
                 </p>
               </div>
               <p className={styles.note}>

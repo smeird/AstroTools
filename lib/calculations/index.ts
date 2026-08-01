@@ -22,6 +22,7 @@ export {
 } from "./resolution";
 export { calculateModifierEffects } from "./modifier-effects";
 export { calculateSensorTilt } from "./sensor-tilt";
+export { calculateBackfocusSpacing } from "./backfocus-spacing";
 export type {
   CameraSensorInput,
   DerivedFocalLengthInput,
@@ -51,5 +52,9 @@ export type {
   ModifierEffectsSnapshot,
 } from "./modifier-effects";
 export type { SensorTiltInput, SensorTiltResult } from "./sensor-tilt";
+export type {
+  BackfocusSpacingInput,
+  BackfocusSpacingResult,
+} from "./backfocus-spacing";
 export { CalculationInputError } from "./validation";
 export { inchesToMillimetres, millimetresToInches } from "./units";

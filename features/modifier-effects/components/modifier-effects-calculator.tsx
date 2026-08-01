@@ -6,6 +6,7 @@ import { startTransition, useEffect, useMemo, useState } from "react";
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
 import { NumericInput } from "@/components/design-system/numeric-input";
 import { SharedTelescopeNotice } from "@/components/design-system/shared-telescope-notice";
+import { MathExpression } from "@/components/equations";
 import {
   applySharedTelescopeWhenChanged,
   parseSharedTelescopeSelection,
@@ -267,6 +268,40 @@ export function ModifierEffectsCalculator() {
                   reducer widens the field and increases arcseconds per pixel; a
                   Barlow does the opposite.
                 </p>
+                <MathExpression label="Modified focal length">
+                  <mrow>
+                    <msub>
+                      <mi>f</mi>
+                      <mi>modified</mi>
+                    </msub>
+                    <mo>=</mo>
+                    <msub>
+                      <mi>f</mi>
+                      <mi>native</mi>
+                    </msub>
+                    <mo>⁢</mo>
+                    <mi>m</mi>
+                  </mrow>
+                </MathExpression>
+                <MathExpression label="Exact angular field">
+                  <mrow>
+                    <mi>θ</mi>
+                    <mo>=</mo>
+                    <mn>2</mn>
+                    <mo>⁢</mo>
+                    <mi>atan</mi>
+                    <mo>(</mo>
+                    <mfrac>
+                      <mi>d</mi>
+                      <mrow>
+                        <mn>2</mn>
+                        <mo>⁢</mo>
+                        <mi>f</mi>
+                      </mrow>
+                    </mfrac>
+                    <mo>)</mo>
+                  </mrow>
+                </MathExpression>
               </div>
               <p className={styles.note}>
                 The calculator models the stated multiplier as ideal. Real
