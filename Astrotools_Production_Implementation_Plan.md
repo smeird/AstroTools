@@ -1280,6 +1280,27 @@ Done when
 binning across applicable calculators.
 • Cross-browser accessibility and narrow-screen overflow checks pass.
 
+Post-release work packages 20–21: Dew control and storage planning
+
+Goal
+
+Complete the planned calculator set with environmental dew guidance and a
+camera-derived capture data budget.
+
+Deliverables
+
+• Magnus dew point, safety margin, target temperature and qualified heater power
+• Camera-resolution frame size, capture count, total volume and write rate
+• Saved settings, native MathML equations and explicit limitations
+• Homepage, navigation and equipment-overview entries for both calculators
+
+Done when
+
+• Dew-point and byte-count fixtures agree without premature rounding.
+• Heater power is presented as an estimate, not a guaranteed controller setting.
+• Saved camera resolution populates storage planning when available.
+• Cross-browser accessibility and overflow checks pass for both pages.
+
 Post-release work package 18: Exposure and signal-to-noise estimation
 
 Goal

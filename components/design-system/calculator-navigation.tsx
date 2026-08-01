@@ -15,6 +15,8 @@ export function CalculatorNavigation({
     | "polar-alignment-drift"
     | "exposure-snr"
     | "mosaic-planning"
+    | "dew-heater"
+    | "storage-volume"
     | "equipment";
 }) {
   return (
@@ -98,6 +100,22 @@ export function CalculatorNavigation({
         prefetch={false}
       >
         Mosaic Planning
+      </Link>
+      <Link
+        aria-current={active === "dew-heater" ? "page" : undefined}
+        className={styles.link}
+        href="/calculators/dew-heater"
+        prefetch={false}
+      >
+        Dew &amp; Heater
+      </Link>
+      <Link
+        aria-current={active === "storage-volume" ? "page" : undefined}
+        className={styles.link}
+        href="/calculators/storage-volume"
+        prefetch={false}
+      >
+        Storage
       </Link>
     </nav>
   );

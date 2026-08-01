@@ -47,6 +47,8 @@ export interface SharedImagingTrain {
   readonly binningFactor: string;
   readonly sensorWidthMm: string;
   readonly sensorHeightMm: string;
+  readonly resolutionWidthPx?: string;
+  readonly resolutionHeightPx?: string;
 }
 
 export function imagingTrainFromConfiguration(
@@ -82,6 +84,8 @@ export function imagingTrainFromConfiguration(
     binningFactor: String(binning),
     sensorWidthMm: camera.sensorWidthMm,
     sensorHeightMm: camera.sensorHeightMm,
+    resolutionWidthPx: state.camera.resolutionWidthPx,
+    resolutionHeightPx: state.camera.resolutionHeightPx,
   };
 }
 
@@ -117,6 +121,13 @@ export function parseSharedImagingTrain(
           typeof candidate[field] !== "string" ||
           !Number.isFinite(Number(candidate[field])) ||
           Number(candidate[field]) <= 0,
+      ) ||
+      ["resolutionWidthPx", "resolutionHeightPx"].some(
+        (field) =>
+          candidate[field] !== undefined &&
+          (typeof candidate[field] !== "string" ||
+            !Number.isFinite(Number(candidate[field])) ||
+            Number(candidate[field]) <= 0),
       )
     )
       return null;

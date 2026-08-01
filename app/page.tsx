@@ -66,6 +66,15 @@ export default function HomePage() {
             >
               Plan a mosaic<span aria-hidden="true">↗</span>
             </Link>
+            <Link className="secondary-action" href="/calculators/dew-heater">
+              Plan dew control<span aria-hidden="true">↗</span>
+            </Link>
+            <Link
+              className="secondary-action"
+              href="/calculators/storage-volume"
+            >
+              Estimate storage needs<span aria-hidden="true">↗</span>
+            </Link>
           </div>
 
           <div className="field-study" aria-hidden="true">

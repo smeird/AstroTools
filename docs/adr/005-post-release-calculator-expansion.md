@@ -91,3 +91,9 @@ The next approved package is **Mosaic Planning**, at
 optical train and finds the minimum aligned grid that covers a target extent at
 the requested overlap. Rotation and operational cropping remain explicit
 limitations rather than hidden margins.
+
+The final planned packages are **Dew Point and Heater Power** at
+`/calculators/dew-heater`, and **Storage and Data Volume** at
+`/calculators/storage-volume`. The former separates stable dew-point maths from
+a qualified thermal estimate. The latter consumes saved camera resolution and
+explicit capture assumptions. These complete the plan’s calculator list.

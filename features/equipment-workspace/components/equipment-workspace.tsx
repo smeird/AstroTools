@@ -367,6 +367,44 @@ export function EquipmentWorkspace({
                 Estimate the exposure stack →
               </Link>
             </article>
+            <article className={styles.card}>
+              <p className={styles.kind}>Needs weather</p>
+              <h3>Dew Point &amp; Heater Power</h3>
+              {telescope.apertureMm ? (
+                <>
+                  <strong>{format(telescope.apertureMm, 0)} mm optic</strong>
+                  <span>Add temperature, humidity and heater geometry.</span>
+                </>
+              ) : (
+                <p>Needs optic diameter and local conditions.</p>
+              )}
+              <Link href="/calculators/dew-heater">Plan dew control →</Link>
+            </article>
+            <article className={styles.card}>
+              <p className={styles.kind}>Camera-derived</p>
+              <h3>Storage &amp; Data Volume</h3>
+              {state.camera.resolutionWidthPx &&
+              state.camera.resolutionHeightPx ? (
+                <>
+                  <strong>
+                    {Number(state.camera.resolutionWidthPx).toLocaleString(
+                      "en-GB",
+                    )}{" "}
+                    ×{" "}
+                    {Number(state.camera.resolutionHeightPx).toLocaleString(
+                      "en-GB",
+                    )}{" "}
+                    px
+                  </strong>
+                  <span>Add format, exposure cadence and session length.</span>
+                </>
+              ) : (
+                <p>Needs camera pixel resolution.</p>
+              )}
+              <Link href="/calculators/storage-volume">
+                Build a data budget →
+              </Link>
+            </article>
           </div>
         </section>
       </div>

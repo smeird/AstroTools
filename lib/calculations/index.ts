@@ -27,6 +27,8 @@ export { calculateGuidingRatio } from "./guiding-ratio";
 export { calculatePolarAlignmentDrift } from "./polar-alignment-drift";
 export { calculateExposureSnr } from "./exposure-snr";
 export { calculateMosaicPlanning } from "./mosaic-planning";
+export { calculateDewHeater } from "./dew-heater";
+export { calculateStorageVolume } from "./storage-volume";
 export type {
   CameraSensorInput,
   DerivedFocalLengthInput,
@@ -70,5 +72,7 @@ export type {
   MosaicPlanningInput,
   MosaicPlanningResult,
 } from "./mosaic-planning";
+export type { DewHeaterInput, DewHeaterResult } from "./dew-heater";
+export type { StorageVolumeInput, StorageVolumeResult } from "./storage-volume";
 export { CalculationInputError } from "./validation";
 export { inchesToMillimetres, millimetresToInches } from "./units";

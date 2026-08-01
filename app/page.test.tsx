@@ -34,6 +34,12 @@ describe("home page", () => {
     expect(
       screen.getByRole("link", { name: /plan a mosaic/i }),
     ).toHaveAttribute("href", "/calculators/mosaic-planning");
+    expect(
+      screen.getByRole("link", { name: /plan dew control/i }),
+    ).toHaveAttribute("href", "/calculators/dew-heater");
+    expect(
+      screen.getByRole("link", { name: /estimate storage needs/i }),
+    ).toHaveAttribute("href", "/calculators/storage-volume");
     expect(screen.getAllByRole("listitem")).toHaveLength(4);
   });
 });
