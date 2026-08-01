@@ -1,7 +1,7 @@
 # Data model
 
 - Status: Work Package 3 catalogue contract
-- Last reviewed: 30 July 2026
+- Last reviewed: 1 August 2026
 
 MySQL 8.4 LTS and Prisma store the curated equipment and target catalogue. The
 schema follows the core tables in the implementation baseline: manufacturers,
@@ -63,6 +63,14 @@ before assessing fit. Equal-axis targets are rotation-invariant.
 Runtime scraping is prohibited. A catalogue change updates its repository seed,
 provenance evidence, validation tests, and change-log representation in the same
 review.
+
+The 1 August 2026 telescope expansion contains twelve sourced models across
+William Optics, Celestron, Sky-Watcher, and PlaneWave Instruments. Every scope
+records its manufacturer model, aperture, native focal length and explicit
+optical design. The batch deliberately covers refractor/Petzval astrographs,
+Newtonian reflectors, classical and EdgeHD Schmidt-Cassegrains, and Corrected
+Dall-Kirkham reflectors so the equipment workspace can select an appropriate
+optical ray diagram without inferring type from focal ratio.
 
 ## Database identities
 

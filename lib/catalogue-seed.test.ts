@@ -30,11 +30,45 @@ describe("catalogue seed data", () => {
   });
 
   it("contains the reviewed Work Package 3 catalogue", () => {
-    expect(catalogueSeed.manufacturers).toHaveLength(4);
-    expect(catalogueSeed.telescopes).toHaveLength(4);
+    expect(catalogueSeed.manufacturers).toHaveLength(5);
+    expect(catalogueSeed.telescopes).toHaveLength(12);
     expect(catalogueSeed.cameras).toHaveLength(3);
     expect(catalogueSeed.opticalModifiers).toHaveLength(4);
     expect(catalogueSeed.astronomicalTargets).toHaveLength(6);
+  });
+
+  it("covers multiple telescope vendors and explicit optical families", () => {
+    expect(
+      new Set(
+        catalogueSeed.telescopes.map(
+          ({ manufacturerSlug }) => manufacturerSlug,
+        ),
+      ),
+    ).toEqual(
+      new Set([
+        "william-optics",
+        "celestron",
+        "sky-watcher",
+        "planewave-instruments",
+      ]),
+    );
+
+    const designs = catalogueSeed.telescopes.map(({ opticalDesign }) =>
+      opticalDesign.toLowerCase(),
+    );
+    expect(designs.some((design) => design.includes("refractor"))).toBe(true);
+    expect(designs.some((design) => design.includes("newtonian"))).toBe(true);
+    expect(
+      designs.some((design) => design.includes("schmidt-cassegrain")),
+    ).toBe(true);
+    expect(designs.some((design) => design.includes("dall-kirkham"))).toBe(
+      true,
+    );
+
+    for (const telescope of catalogueSeed.telescopes) {
+      expect(telescope.opticalDesign.trim()).not.toBe("");
+      expect(new URL(telescope.sourceUrl).hostname).not.toBe("example.com");
+    }
   });
 
   it("includes the user's EdgeHD 11 imaging configuration", () => {
@@ -85,7 +119,9 @@ describe("catalogue seed data", () => {
 
     for (const record of sourcedRecords) {
       expect(new URL(record.sourceUrl).protocol).toBe("https:");
-      expect(record.verifiedAt).toBe(CATALOGUE_VERIFICATION_DATE);
+      expect([CATALOGUE_VERIFICATION_DATE, "2026-08-01"]).toContain(
+        record.verifiedAt,
+      );
     }
   });
 

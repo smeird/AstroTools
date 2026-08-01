@@ -1601,6 +1601,31 @@ paths and labelled optical surfaces.
 containment remain intact.
 • Unit, accessibility, browser and production-build checks pass.
 
+Post-release work package 28: Multi-vendor telescope catalogue expansion
+
+Goal
+
+Give users a materially broader set of sourced telescope models while making
+optical type explicit enough to drive calculations and the optical diagram.
+
+Deliverables
+
+• A reviewed first expansion from four to twelve telescope models and from four
+to five catalogue manufacturers.
+• Manufacturer model, aperture, native focal length, optical design, active
+state, official source URL and verification date for every new record.
+• Coverage of refractor/Petzval, Newtonian, Schmidt-Cassegrain, EdgeHD and
+Corrected Dall-Kirkham families.
+• Updated idempotent seed and catalogue-count/type tests.
+
+Done when
+
+• Repository seed validation accepts all records and rejects missing types.
+• Manufacturer sources support the recorded measurements and design names.
+• Integration expectations match the new idempotent catalogue counts.
+• Type checking, unit/integration checks, production build and API behaviour
+pass without a schema migration.
+
 16. Release 1 acceptance criteria
 
 The release is acceptable only when all statements are true:

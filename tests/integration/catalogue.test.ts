@@ -227,8 +227,8 @@ describe("MySQL catalogue integration", () => {
     });
 
     expect(countsBefore).toMatchObject({
-      manufacturers: 4,
-      telescopes: 4,
+      manufacturers: 5,
+      telescopes: 12,
       cameras: 3,
       modifiers: 4,
       targets: 6,
@@ -262,7 +262,7 @@ describe("MySQL catalogue integration", () => {
         prisma.astronomicalTarget.count(),
         migrationPrisma.catalogueChangeLog.count(),
       ]),
-    ).resolves.toEqual([4, 4, 3, 4, 6, countsBefore.changes]);
+    ).resolves.toEqual([5, 12, 3, 4, 6, countsBefore.changes]);
     await expect(
       prisma.telescope.findMany({
         orderBy: { slug: "asc" },
