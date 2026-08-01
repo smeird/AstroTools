@@ -1,7 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { createEquipmentConfiguration } from "@/features/field-of-view/model/equipment-configuration";
+import {
+  createEquipmentConfiguration,
+  equipmentConfigurationReducer,
+} from "@/features/field-of-view/model/equipment-configuration";
 import { fieldOfViewCatalogueFixture } from "@/tests/fixtures/field-of-view-catalogue";
 
 import {
@@ -31,10 +34,33 @@ describe("imaging train diagram", () => {
     expect(screen.getByRole("img")).toHaveAccessibleName(
       /ED doublet apochromatic refractor/,
     );
+    expect(screen.getByRole("img")).toHaveAccessibleName(
+      /Two-dimensional refractor line diagram shows the representative light path/,
+    );
     expect(screen.getByText("Clear aperture")).toBeInTheDocument();
     expect(screen.getAllByText("Ø 80.0 mm")).toHaveLength(2);
     expect(screen.getByText("Effective focal length")).toBeInTheDocument();
     expect(screen.getByText("Sensor")).toBeInTheDocument();
     expect(screen.getByText("Image scale")).toBeInTheDocument();
+  });
+
+  it("uses a distinct folded light path for a Schmidt-Cassegrain", () => {
+    const state = equipmentConfigurationReducer(
+      createEquipmentConfiguration(fieldOfViewCatalogueFixture),
+      {
+        type: "telescope-preset",
+        preset: fieldOfViewCatalogueFixture.telescopes[0]!,
+      },
+    );
+    const { container } = render(<ImagingTrainDiagram state={state} />);
+
+    expect(screen.getByRole("img")).toHaveAccessibleName(
+      /Two-dimensional catadioptric line diagram shows the representative light path/,
+    );
+    expect(
+      container.querySelector('[data-light-path="catadioptric"]'),
+    ).toBeInTheDocument();
+    expect(screen.getByText("corrector + secondary")).toBeInTheDocument();
+    expect(screen.getByText("primary mirror")).toBeInTheDocument();
   });
 });

@@ -20,13 +20,7 @@
   overflow-x: auto;
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-control);
-  background:
-    radial-gradient(
-      circle at 35% 45%,
-      rgba(114, 229, 210, 0.08),
-      transparent 48%
-    ),
-    #081019;
+  background: #081019;
 }
 .viewport svg {
   display: block;
@@ -46,22 +40,50 @@
   stroke: rgba(201, 222, 226, 0.28);
   stroke-dasharray: 5 8;
 }
-.scope {
-  fill: url(#tube);
-  stroke: var(--color-text-muted);
-  stroke-width: 2;
-}
-.secondary {
-  fill: #0b1721;
-  stroke: var(--color-signal);
-  stroke-width: 2;
-}
-.mirror,
-.secondarySupport,
+.tube,
+.focuser,
+.corrector,
+.objective,
+.primaryMirror,
+.secondaryMirror,
+.primaryOpening,
 .dimension {
   fill: none;
-  stroke: var(--color-signal);
+  stroke: var(--color-text-soft);
   stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+.corrector,
+.objective {
+  stroke: var(--color-signal);
+}
+.primaryMirror,
+.secondaryMirror,
+.primaryOpening {
+  stroke: var(--color-accent);
+}
+.lightPath,
+.lightPathSecondary {
+  fill: none;
+  stroke: #ffcf4a;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+  marker-end: url("#ray-arrow");
+  vector-effect: non-scaling-stroke;
+}
+.lightPathSecondary {
+  stroke: #f3a83b;
+  stroke-dasharray: 4 3;
+}
+.rayArrow {
+  fill: #ffcf4a;
+  stroke: none;
+}
+.viewport .opticLabel {
+  fill: var(--color-text-muted);
+  font-size: 8px;
+  text-transform: uppercase;
 }
 .dimension {
   marker-end: none;
@@ -69,28 +91,28 @@
 }
 .ring,
 .connector {
-  fill: #273b49;
+  fill: none;
   stroke: #67808d;
 }
 .modifier {
-  fill: #192c38;
+  fill: none;
   stroke: var(--color-accent);
-  stroke-width: 2;
+  stroke-width: 1.5;
 }
 .camera {
-  fill: #192630;
+  fill: none;
   stroke: #8199a4;
-  stroke-width: 2;
+  stroke-width: 1.5;
 }
 .glass {
-  fill: rgba(114, 229, 210, 0.2);
+  fill: none;
   stroke: var(--color-signal);
-  stroke-width: 2;
+  stroke-width: 1.5;
 }
 .sensor {
-  fill: rgba(198, 235, 102, 0.17);
+  fill: none;
   stroke: var(--color-accent);
-  stroke-width: 2;
+  stroke-width: 2.2;
 }
 .facts {
   display: grid;

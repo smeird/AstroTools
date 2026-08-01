@@ -39,11 +39,15 @@ parts in optical order, and a horizontally constrained viewport protects narrow
 screens when a train contains many modifiers.
 
 Catalogue optical-design text selects a refractor, reflector or catadioptric
-silhouette. Manual scopes remain generic because shape is never inferred from
-focal ratio alone. The schematic and adjacent fact table progressively expose
-aperture, native and effective focal properties, modifier types and factors,
-sensor dimensions, resolution, pixel pitch, binning, exact field and image scale
-only when each value is valid.
+two-dimensional optical section. Manual scopes remain generic because shape is
+never inferred from focal ratio alone. Flat linework identifies lenses, mirrors,
+correctors, the sensor and two representative rays. A refractor converges rays
+after its objective; a catadioptric path folds primary-to-secondary-to-rear
+focus; and a reflector uses its mirror path. The diagram is explanatory rather
+than a prescription for collimation or fabrication. The schematic and adjacent
+fact table progressively expose aperture, native and effective focal properties,
+modifier types and factors, sensor dimensions, resolution, pixel pitch, binning,
+exact field and image scale only when each value is valid.
 
 Other than the optional user-authored rig label and observing-site measurements,
 the equipment URL contains no personal data, analytics identifier, secret, or

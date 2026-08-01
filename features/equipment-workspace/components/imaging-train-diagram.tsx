@@ -32,70 +32,83 @@ const format = (value: number, digits = 2) =>
     minimumFractionDigits: digits,
   });
 
-function TelescopeSilhouette({ family }: { family: OpticalDesignFamily }) {
+function TelescopeOptics({
+  family,
+  sensorX,
+}: {
+  family: OpticalDesignFamily;
+  sensorX: number;
+}) {
   if (family === "catadioptric") {
     return (
-      <g>
-        <ellipse className={styles.glass} cx="62" cy="96" rx="16" ry="58" />
-        <rect
-          className={styles.scope}
-          x="62"
-          y="38"
-          width="245"
-          height="116"
-          rx="20"
+      <g data-light-path="catadioptric">
+        <path className={styles.tube} d="M58 38 H315 M58 154 H315" />
+        <path className={styles.corrector} d="M64 40 Q48 96 64 152" />
+        <path className={styles.primaryMirror} d="M304 43 Q334 96 304 149" />
+        <path className={styles.secondaryMirror} d="M91 79 Q108 96 91 113" />
+        <circle className={styles.primaryOpening} cx="312" cy="96" r="10" />
+        <path
+          className={styles.lightPath}
+          d={`M20 58 L302 58 L99 88 L312 94 L${sensorX} 96`}
         />
-        <circle className={styles.secondary} cx="84" cy="96" r="20" />
-        <rect
-          className={styles.ring}
-          x="286"
-          y="53"
-          width="22"
-          height="86"
-          rx="5"
+        <path
+          className={styles.lightPathSecondary}
+          d={`M20 134 L302 134 L99 104 L312 98 L${sensorX} 96`}
         />
-        <path className={styles.scope} d="M308 74 H350 V118 H308 Z" />
+        <text className={styles.opticLabel} x="76" y="28">
+          corrector + secondary
+        </text>
+        <text className={styles.opticLabel} x="270" y="28">
+          primary mirror
+        </text>
       </g>
     );
   }
   if (family === "reflector") {
     return (
-      <g>
-        <path
-          className={styles.scope}
-          d="M48 43 H310 L345 58 V134 L310 149 H48 Z"
-        />
-        <path className={styles.mirror} d="M58 48 Q32 96 58 144" />
+      <g data-light-path="reflector">
+        <path className={styles.tube} d="M48 38 H315 M48 154 H315" />
+        <path className={styles.primaryMirror} d="M304 43 Q334 96 304 149" />
         <line
-          className={styles.secondarySupport}
-          x1="280"
-          y1="48"
-          x2="250"
-          y2="96"
+          className={styles.secondaryMirror}
+          x1="132"
+          y1="76"
+          x2="154"
+          y2="98"
         />
-        <circle className={styles.secondary} cx="250" cy="96" r="11" />
+        <path
+          className={styles.lightPath}
+          d={`M20 58 L302 58 L144 85 L${sensorX} 96`}
+        />
+        <path
+          className={styles.lightPathSecondary}
+          d={`M20 134 L302 134 L144 91 L${sensorX} 96`}
+        />
+        <text className={styles.opticLabel} x="270" y="28">
+          primary mirror
+        </text>
+        <text className={styles.opticLabel} x="112" y="68">
+          secondary
+        </text>
       </g>
     );
   }
   return (
-    <g>
-      <ellipse className={styles.glass} cx="54" cy="96" rx="20" ry="55" />
+    <g data-light-path={family}>
+      <path className={styles.tube} d="M58 38 H330 M58 154 H330" />
       <path
-        className={styles.scope}
-        d={
-          family === "refractor"
-            ? "M54 41 H292 L350 68 V124 L292 151 H54 Z"
-            : "M54 41 H310 L350 67 V125 L310 151 H54 Z"
-        }
+        className={styles.objective}
+        d="M68 40 Q48 96 68 152 M72 40 Q92 96 72 152"
       />
-      <rect
-        className={styles.ring}
-        x="292"
-        y="55"
-        width="18"
-        height="82"
-        rx="4"
+      <path className={styles.focuser} d="M330 74 H354 M330 118 H354" />
+      <path className={styles.lightPath} d={`M20 58 L70 58 L${sensorX} 96`} />
+      <path
+        className={styles.lightPathSecondary}
+        d={`M20 134 L70 134 L${sensorX} 96`}
       />
+      <text className={styles.opticLabel} x="48" y="28">
+        {family === "refractor" ? "objective lens" : "optical entrance"}
+      </text>
     </g>
   );
 }
@@ -135,7 +148,7 @@ export function ImagingTrainDiagram({
     ),
     camera?.label ?? "Incomplete camera",
   ];
-  const description = `${parts.join(" then ")}; ${state.binning}× binning.`;
+  const description = `${parts.join(" then ")}; ${state.binning}× binning. Two-dimensional ${family} line diagram shows the representative light path to the sensor.`;
   const modifierCount = state.modifiers.length;
   const viewWidth = 660 + modifierCount * 140;
   const cameraX = 485 + modifierCount * 140;
@@ -213,11 +226,16 @@ export function ImagingTrainDiagram({
       >
         <svg viewBox={`0 0 ${viewWidth} 225`} aria-hidden="true">
           <defs>
-            <linearGradient id="tube" x1="0" x2="1">
-              <stop offset="0" stopColor="#263846" />
-              <stop offset="0.5" stopColor="#d7e1e4" />
-              <stop offset="1" stopColor="#263846" />
-            </linearGradient>
+            <marker
+              id="ray-arrow"
+              markerHeight="5"
+              markerWidth="7"
+              orient="auto"
+              refX="6"
+              refY="2.5"
+            >
+              <path className={styles.rayArrow} d="M0 0 L7 2.5 L0 5 Z" />
+            </marker>
           </defs>
           <line
             className={styles.axis}
@@ -226,7 +244,7 @@ export function ImagingTrainDiagram({
             x2={viewWidth - 30}
             y2="96"
           />
-          <TelescopeSilhouette family={family} />
+          <TelescopeOptics family={family} sensorX={cameraX + 28} />
           <line className={styles.dimension} x1="28" y1="41" x2="28" y2="151" />
           <text
             className={styles.measurement}

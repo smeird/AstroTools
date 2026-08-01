@@ -1576,6 +1576,31 @@ Done when
 • The calculations view and PDF show only the supplied site measurements.
 • Unit, URL, shared-state, browser and production-build checks pass.
 
+Post-release work package 27: Two-dimensional optical ray diagrams
+
+Goal
+
+Make the equipment schematic read as a compact optical diagram rather than a
+rendered product silhouette, with the light path explaining each scope family.
+
+Deliverables
+
+• Flat, unfilled linework for telescope, modifier and camera components.
+• Distinct refractor, reflector and catadioptric optical sections selected from
+catalogue design metadata, with generic manual equipment kept non-specific.
+• Visible representative rays from entrance aperture to sensor, including the
+folded primary-secondary-rear-focus path of a Schmidt-Cassegrain.
+• A non-visual description that identifies the diagram family and light path.
+
+Done when
+
+• Refractor and Schmidt-Cassegrain fixtures render structurally different ray
+paths and labelled optical surfaces.
+• No gradient, three-dimensional shading or solid product silhouette remains.
+• Existing equipment facts, modifiers, sensor details and narrow-screen
+containment remain intact.
+• Unit, accessibility, browser and production-build checks pass.
+
 16. Release 1 acceptance criteria
 
 The release is acceptable only when all statements are true:
