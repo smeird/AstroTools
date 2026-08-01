@@ -31,6 +31,10 @@ export default function HomePage() {
               Open the field lab
               <span aria-hidden="true">↗</span>
             </Link>
+            <Link className="secondary-action" href="/equipment">
+              Save my equipment setup
+              <span aria-hidden="true">↗</span>
+            </Link>
             <Link
               className="secondary-action"
               href="/calculators/resolution-and-sampling"

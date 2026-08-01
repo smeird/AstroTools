@@ -10,10 +10,19 @@ export function CalculatorNavigation({
     | "resolution-and-sampling"
     | "modifier-effects"
     | "sensor-tilt"
-    | "backfocus-spacing";
+    | "backfocus-spacing"
+    | "equipment";
 }) {
   return (
     <nav aria-label="Calculators" className={styles.navigation}>
+      <Link
+        aria-current={active === "equipment" ? "page" : undefined}
+        className={styles.link}
+        href="/equipment"
+        prefetch={false}
+      >
+        My Equipment
+      </Link>
       <Link
         aria-current={active === "field-of-view" ? "page" : undefined}
         className={styles.link}

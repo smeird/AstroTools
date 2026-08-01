@@ -1,4 +1,6 @@
 export const SENSOR_TILT_PERSISTENCE_KEY = "astrotools.sensor-tilt.settings.v1";
+export const SENSOR_TILT_CAMERA_APPLIED_KEY =
+  "astrotools.sensor-tilt.applied-camera.v1";
 
 export interface SensorTiltValues {
   sensorWidthMm: string;

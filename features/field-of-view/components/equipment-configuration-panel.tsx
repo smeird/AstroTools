@@ -67,6 +67,7 @@ interface EquipmentConfigurationPanelProps {
   catalogue: FieldOfViewCatalogue;
   state: EquipmentConfigurationState;
   dispatch: Dispatch<EquipmentConfigurationAction>;
+  scope?: "complete" | "equipment";
 }
 
 function telescopeLabel(
@@ -174,6 +175,7 @@ export function EquipmentConfigurationPanel({
   catalogue,
   state,
   dispatch,
+  scope = "complete",
 }: EquipmentConfigurationPanelProps) {
   const telescopePreset = catalogue.telescopes.find(
     ({ slug }) => slug === state.telescope.lastPreset?.slug,
@@ -1013,54 +1015,58 @@ export function EquipmentConfigurationPanel({
             options={BINNING_OPTIONS}
             value={state.binning}
           />
-          <RangeInput
-            description="An estimate of atmospheric stellar FWHM at your site."
-            id="seeing"
-            label="Seeing"
-            max={10}
-            min={0.5}
-            name="seeing"
-            onValueChange={(value) => dispatch({ type: "seeing", value })}
-            step={0.1}
-            value={state.seeingFwhmArcsec}
-            valueText={state.seeingFwhmArcsec.toFixed(1) + " arcseconds"}
-          />
+          {scope === "complete" ? (
+            <RangeInput
+              description="An estimate of atmospheric stellar FWHM at your site."
+              id="seeing"
+              label="Seeing"
+              max={10}
+              min={0.5}
+              name="seeing"
+              onValueChange={(value) => dispatch({ type: "seeing", value })}
+              step={0.1}
+              value={state.seeingFwhmArcsec}
+              valueText={state.seeingFwhmArcsec.toFixed(1) + " arcseconds"}
+            />
+          ) : null}
         </section>
 
-        <section className={styles.subsection} aria-labelledby="target-title">
-          <div className={styles.subsectionHeader}>
-            <span className={styles.step}>05</span>
-            <div>
-              <h3 id="target-title">Target</h3>
-              <p>
-                Choose the object that the proportional simulator will frame.
-              </p>
+        {scope === "complete" ? (
+          <section className={styles.subsection} aria-labelledby="target-title">
+            <div className={styles.subsectionHeader}>
+              <span className={styles.step}>05</span>
+              <div>
+                <h3 id="target-title">Target</h3>
+                <p>
+                  Choose the object that the proportional simulator will frame.
+                </p>
+              </div>
             </div>
-          </div>
-          <Combobox
-            description="The selected target is drawn from its catalogue angular dimensions in the framing workspace."
-            disabled={catalogueUnavailable}
-            error={
-              state.targetSlug && !targetSelection
-                ? "Choose a target preset. The previous target remains active until then."
-                : undefined
-            }
-            id="target-preset"
-            label="Astronomical target"
-            name="target-preset"
-            noResultsText="No matching target presets"
-            onQueryChange={setTargetQuery}
-            onSelectionChange={(value) => {
-              setTargetSelection(value);
-              if (value) {
-                dispatch({ type: "target", slug: value });
+            <Combobox
+              description="The selected target is drawn from its catalogue angular dimensions in the framing workspace."
+              disabled={catalogueUnavailable}
+              error={
+                state.targetSlug && !targetSelection
+                  ? "Choose a target preset. The previous target remains active until then."
+                  : undefined
               }
-            }}
-            options={targetOptions}
-            query={targetQuery}
-            selectedValue={targetSelection}
-          />
-        </section>
+              id="target-preset"
+              label="Astronomical target"
+              name="target-preset"
+              noResultsText="No matching target presets"
+              onQueryChange={setTargetQuery}
+              onSelectionChange={(value) => {
+                setTargetSelection(value);
+                if (value) {
+                  dispatch({ type: "target", slug: value });
+                }
+              }}
+              options={targetOptions}
+              query={targetQuery}
+              selectedValue={targetSelection}
+            />
+          </section>
+        ) : null}
       </div>
     </section>
   );

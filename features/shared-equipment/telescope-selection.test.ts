@@ -1,11 +1,16 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  cameraSelectionFromConfiguration,
+  parseSharedCameraSelection,
+  serializeSharedCameraSelection,
   applySharedTelescopeWhenChanged,
   parseSharedTelescopeSelection,
   serializeSharedTelescopeSelection,
   type SharedTelescopeSelection,
 } from "./telescope-selection";
+import { createEquipmentConfiguration } from "@/features/field-of-view/model/equipment-configuration";
+import { fieldOfViewCatalogueFixture } from "@/tests/fixtures/field-of-view-catalogue";
 
 const telescope: SharedTelescopeSelection = {
   version: 1,
@@ -16,6 +21,20 @@ const telescope: SharedTelescopeSelection = {
 };
 
 describe("shared telescope selection", () => {
+  it("creates a portable camera selection from equipment state", () => {
+    const state = createEquipmentConfiguration(fieldOfViewCatalogueFixture);
+    const camera = cameraSelectionFromConfiguration(state.camera);
+    expect(camera).toMatchObject({
+      slug: "asi2600mc-pro",
+      sensorWidthMm: "23.5",
+      sensorHeightMm: "15.7",
+      pixelSizeUm: "3.76",
+    });
+    expect(
+      parseSharedCameraSelection(serializeSharedCameraSelection(camera!)),
+    ).toEqual(camera);
+  });
+
   it("round-trips a bounded versioned selection", () => {
     expect(
       parseSharedTelescopeSelection(

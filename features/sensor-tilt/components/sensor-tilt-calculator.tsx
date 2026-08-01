@@ -8,7 +8,10 @@ import { NumericInput } from "@/components/design-system/numeric-input";
 import { SharedTelescopeNotice } from "@/components/design-system/shared-telescope-notice";
 import { MathExpression } from "@/components/equations";
 import {
+  applySharedCameraWhenChanged,
+  parseSharedCameraSelection,
   parseSharedTelescopeSelection,
+  SHARED_CAMERA_SELECTION_KEY,
   SHARED_TELESCOPE_SELECTION_KEY,
   type SharedTelescopeSelection,
 } from "@/features/shared-equipment/telescope-selection";
@@ -16,6 +19,7 @@ import { calculateSensorTilt } from "@/lib/calculations";
 
 import {
   parseSensorTilt,
+  SENSOR_TILT_CAMERA_APPLIED_KEY,
   SENSOR_TILT_PERSISTENCE_KEY,
   serializeSensorTilt,
   type SensorTiltValues,
@@ -53,13 +57,34 @@ export function SensorTiltCalculator() {
     const sharedRaw = window.localStorage.getItem(
       SHARED_TELESCOPE_SELECTION_KEY,
     );
+    const sharedCameraRaw = window.localStorage.getItem(
+      SHARED_CAMERA_SELECTION_KEY,
+    );
+    const sharedCamera = sharedCameraRaw
+      ? parseSharedCameraSelection(sharedCameraRaw)
+      : null;
+    const cameraApplied = applySharedCameraWhenChanged(
+      restored ?? defaults,
+      sharedCamera,
+      window.localStorage.getItem(SENSOR_TILT_CAMERA_APPLIED_KEY),
+      (current, camera) => ({
+        ...current,
+        sensorWidthMm: camera.sensorWidthMm,
+        sensorHeightMm: camera.sensorHeightMm,
+      }),
+    );
     startTransition(() => {
-      if (restored) setValues(restored);
+      setValues(cameraApplied.values);
       setSharedTelescope(
         sharedRaw ? parseSharedTelescopeSelection(sharedRaw) : null,
       );
       setLoaded(true);
     });
+    if (cameraApplied.changed && cameraApplied.appliedSelection)
+      window.localStorage.setItem(
+        SENSOR_TILT_CAMERA_APPLIED_KEY,
+        cameraApplied.appliedSelection,
+      );
   }, []);
 
   useEffect(() => {

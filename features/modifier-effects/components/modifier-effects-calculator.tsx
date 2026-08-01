@@ -9,7 +9,10 @@ import { SharedTelescopeNotice } from "@/components/design-system/shared-telesco
 import { MathExpression } from "@/components/equations";
 import {
   applySharedTelescopeWhenChanged,
+  applySharedCameraWhenChanged,
+  parseSharedCameraSelection,
   parseSharedTelescopeSelection,
+  SHARED_CAMERA_SELECTION_KEY,
   SHARED_TELESCOPE_SELECTION_KEY,
   type SharedTelescopeSelection,
 } from "@/features/shared-equipment/telescope-selection";
@@ -17,6 +20,7 @@ import { calculateModifierEffects } from "@/lib/calculations";
 
 import {
   MODIFIER_EFFECTS_PERSISTENCE_KEY,
+  MODIFIER_CAMERA_APPLIED_KEY,
   MODIFIER_TELESCOPE_APPLIED_KEY,
   parseModifierEffects,
   serializeModifierEffects,
@@ -57,6 +61,12 @@ export function ModifierEffectsCalculator() {
       SHARED_TELESCOPE_SELECTION_KEY,
     );
     const shared = sharedRaw ? parseSharedTelescopeSelection(sharedRaw) : null;
+    const sharedCameraRaw = window.localStorage.getItem(
+      SHARED_CAMERA_SELECTION_KEY,
+    );
+    const sharedCamera = sharedCameraRaw
+      ? parseSharedCameraSelection(sharedCameraRaw)
+      : null;
     const applied = applySharedTelescopeWhenChanged(
       restored ?? defaults,
       shared,
@@ -67,8 +77,19 @@ export function ModifierEffectsCalculator() {
         apertureMm: telescope.apertureMm,
       }),
     );
+    const cameraApplied = applySharedCameraWhenChanged(
+      applied.values,
+      sharedCamera,
+      window.localStorage.getItem(MODIFIER_CAMERA_APPLIED_KEY),
+      (current, camera) => ({
+        ...current,
+        sensorWidthMm: camera.sensorWidthMm,
+        sensorHeightMm: camera.sensorHeightMm,
+        pixelSizeUm: camera.pixelSizeUm,
+      }),
+    );
     startTransition(() => {
-      setValues(applied.values);
+      setValues(cameraApplied.values);
       setSharedTelescope(shared);
       setLoaded(true);
     });
@@ -78,6 +99,11 @@ export function ModifierEffectsCalculator() {
         applied.appliedSelection,
       );
     }
+    if (cameraApplied.changed && cameraApplied.appliedSelection)
+      window.localStorage.setItem(
+        MODIFIER_CAMERA_APPLIED_KEY,
+        cameraApplied.appliedSelection,
+      );
   }, []);
   useEffect(() => {
     if (loaded)

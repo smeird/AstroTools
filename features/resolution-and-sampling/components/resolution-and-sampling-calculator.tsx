@@ -9,7 +9,10 @@ import { SharedTelescopeNotice } from "@/components/design-system/shared-telesco
 import { MathExpression } from "@/components/equations";
 import {
   applySharedTelescopeWhenChanged,
+  applySharedCameraWhenChanged,
+  parseSharedCameraSelection,
   parseSharedTelescopeSelection,
+  SHARED_CAMERA_SELECTION_KEY,
   SHARED_TELESCOPE_SELECTION_KEY,
   type SharedTelescopeSelection,
 } from "@/features/shared-equipment/telescope-selection";
@@ -22,6 +25,7 @@ import type { ResolutionAndSamplingInput } from "@/lib/calculations";
 import {
   parseResolutionAndSamplingState,
   RESOLUTION_AND_SAMPLING_PERSISTENCE_KEY,
+  RESOLUTION_CAMERA_APPLIED_KEY,
   RESOLUTION_TELESCOPE_APPLIED_KEY,
   serializeResolutionAndSamplingState,
 } from "../model/persistence";
@@ -62,6 +66,12 @@ export function ResolutionAndSamplingCalculator() {
       SHARED_TELESCOPE_SELECTION_KEY,
     );
     const shared = sharedRaw ? parseSharedTelescopeSelection(sharedRaw) : null;
+    const sharedCameraRaw = window.localStorage.getItem(
+      SHARED_CAMERA_SELECTION_KEY,
+    );
+    const sharedCamera = sharedCameraRaw
+      ? parseSharedCameraSelection(sharedCameraRaw)
+      : null;
     const applied = applySharedTelescopeWhenChanged(
       restored ?? defaults,
       shared,
@@ -72,8 +82,14 @@ export function ResolutionAndSamplingCalculator() {
         focalLengthMm: telescope.nativeFocalLengthMm,
       }),
     );
+    const cameraApplied = applySharedCameraWhenChanged(
+      applied.values,
+      sharedCamera,
+      window.localStorage.getItem(RESOLUTION_CAMERA_APPLIED_KEY),
+      (current, camera) => ({ ...current, pixelSizeUm: camera.pixelSizeUm }),
+    );
     startTransition(() => {
-      setValues(applied.values);
+      setValues(cameraApplied.values);
       setSharedTelescope(shared);
       setPersistedStateLoaded(true);
     });
@@ -83,6 +99,11 @@ export function ResolutionAndSamplingCalculator() {
         applied.appliedSelection,
       );
     }
+    if (cameraApplied.changed && cameraApplied.appliedSelection)
+      window.localStorage.setItem(
+        RESOLUTION_CAMERA_APPLIED_KEY,
+        cameraApplied.appliedSelection,
+      );
   }, []);
   useEffect(() => {
     if (persistedStateLoaded) {

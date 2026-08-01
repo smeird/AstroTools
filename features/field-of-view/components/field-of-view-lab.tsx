@@ -34,7 +34,10 @@ import type { FieldOfViewCatalogue } from "../services/calculator-catalogue";
 import type { EquipmentConfigurationState } from "../model/equipment-configuration";
 import type { FieldOfViewShareNotice } from "../schemas/shareable-state";
 import {
+  cameraSelectionFromConfiguration,
+  serializeSharedCameraSelection,
   serializeSharedTelescopeSelection,
+  SHARED_CAMERA_SELECTION_KEY,
   SHARED_TELESCOPE_SELECTION_KEY,
   telescopeSelectionFromConfiguration,
 } from "@/features/shared-equipment/telescope-selection";
@@ -104,6 +107,15 @@ export function FieldOfViewLab({
       );
     }
   }, [persistedStateLoaded, state.telescope]);
+  useEffect(() => {
+    if (!persistedStateLoaded) return;
+    const selection = cameraSelectionFromConfiguration(state.camera);
+    if (selection)
+      window.localStorage.setItem(
+        SHARED_CAMERA_SELECTION_KEY,
+        serializeSharedCameraSelection(selection),
+      );
+  }, [persistedStateLoaded, state.camera]);
   const telescopeInputs = resolveTelescopeInputs(state.telescope);
   const cameraSensor = resolveCameraSensor(state.camera);
   const opticalMultipliers = resolveModifierMultipliers(state.modifiers);

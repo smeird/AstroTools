@@ -115,6 +115,12 @@ selection for continuity but do not apply it to unrelated inputs. The shared
 selection remains in browser local storage; it is not sent to the server and is
 not included in analytics or accounts.
 
+The canonical equipment-first bookmark is `/equipment?v=1&…`. Unlike the Field
+of View share link, it contains only reusable telescope, camera, modifier, and
+binning state. The equipment overview restores this URL, lists all implemented
+calculators, and carries compatible inputs into each detail route. See
+`docs/equipment-workspace.md` for the contract and scope boundary.
+
 ## Compatibility fixtures
 
 Manually authored v1 fixtures live in
