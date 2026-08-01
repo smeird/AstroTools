@@ -6,14 +6,14 @@ const manualEquipment =
   "&c=_manual&cm=manual&cg=physical-dimensions&sw=23.5&sh=15.7" +
   "&px=3.76&rw=6250&rh=4176&b=1";
 
-test("a bookmarked manual setup reproduces the overview and opens calculator details", async ({
+test("a bookmarked manual setup reproduces equipment and opens consolidated calculations", async ({
   page,
 }) => {
   await page.goto(manualEquipment);
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "One setup. Every useful calculation.",
+      name: "One setup. Complete equipment context.",
     }),
   ).toBeVisible();
   await expect(
@@ -23,10 +23,18 @@ test("a bookmarked manual setup reproduces the overview and opens calculator det
     page.getByRole("spinbutton", { name: "Sensor width" }),
   ).toHaveValue("23.5");
   await expect(
-    page.getByRole("region", { name: "What this setup tells you" }),
-  ).toContainText("2.24° × 1.50°");
-
-  await page.getByRole("link", { name: "Open resolution details →" }).click();
+    page.getByRole("heading", { name: "Setup check" }),
+  ).toBeVisible();
+  await page.getByRole("link", { name: "View all calculations →" }).click();
+  await expect(
+    page.getByRole("heading", { name: "One train. Every result." }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("region", { name: "Optical geometry result table" }),
+  ).toContainText("2.244");
+  await page
+    .getByRole("link", { name: "Resolution & Sampling details →" })
+    .click();
   await expect(
     page.getByRole("spinbutton", { name: "Focal length" }),
   ).toHaveValue("600");
@@ -69,7 +77,7 @@ test("equipment URL copy is canonical and the overview is accessible", async ({
   ).toEqual([]);
 });
 
-test("equipment overview remains information-dense without mobile overflow", async ({
+test("equipment workspace remains focused without mobile overflow", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -81,5 +89,5 @@ test("equipment overview remains information-dense without mobile overflow", asy
   }));
   expect(dimensions.scrollWidth).toBe(dimensions.clientWidth);
   expect(dimensions.contentWidth).toBe(dimensions.clientWidth);
-  await expect(page.locator("article")).toHaveCount(11);
+  await expect(page.locator("article:visible")).toHaveCount(0);
 });

@@ -35,6 +35,10 @@ export default function HomePage() {
               Save my equipment setup
               <span aria-hidden="true">↗</span>
             </Link>
+            <Link className="secondary-action" href="/calculations">
+              View all calculations
+              <span aria-hidden="true">↗</span>
+            </Link>
             <Link
               className="secondary-action"
               href="/calculators/resolution-and-sampling"

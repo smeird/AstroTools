@@ -121,6 +121,10 @@ binning state. The equipment overview restores this URL, lists all implemented
 calculators, and carries compatible inputs into each detail route. See
 `docs/equipment-workspace.md` for the contract and scope boundary.
 
+The site-wide Presentation/Academic density preference is stored separately in
+the browser. It is deliberately absent from both equipment and calculator URLs,
+because it changes presentation only and never calculation state.
+
 ## Compatibility fixtures
 
 Manually authored v1 fixtures live in

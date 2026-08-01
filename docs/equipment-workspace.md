@@ -16,12 +16,11 @@ in a fresh browser reconstructs manual values as well as available, inactive, or
 later-retired catalogue selections without requiring an account or server-side
 profile.
 
-The overview lists every implemented calculator. It shows equipment-derived
-results immediately and explicitly identifies calculations that still need a
-measurement or calculator-specific input. Detail links use the same pure
-calculation inputs and publish the shared telescope and camera locally before
-navigation. A bare `/equipment` route may restore the last locally remembered
-setup as a convenience; the URL remains the portable source of truth.
+The page is deliberately equipment-only. It shows a concise effective-train
+check, while `/calculations` lists every implemented calculator, derived result,
+and explicit missing measurement. Both routes consume the same locally published
+full imaging train. A bare `/equipment` route may restore the last locally
+remembered setup as a convenience; the URL remains the portable source of truth.
 
 The equipment URL contains no personal data, analytics identifier, secret, or
 opaque lookup key. Clearing browser storage does not affect a bookmarked URL.

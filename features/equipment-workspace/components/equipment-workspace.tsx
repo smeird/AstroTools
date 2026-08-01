@@ -176,11 +176,11 @@ export function EquipmentWorkspace({
       <CalculatorNavigation active="equipment" />
       <header className={styles.intro}>
         <p className="eyebrow">Your equipment workspace</p>
-        <h1>One setup. Every useful calculation.</h1>
+        <h1>One setup. Complete equipment context.</h1>
         <p className={styles.lede}>
-          Configure your normal imaging train once. This page keeps the setup in
-          its URL, so the bookmark itself restores your equipment without an
-          account.
+          Configure your imaging train once. This equipment-only page keeps the
+          setup in its URL; the separate calculations sheet consumes the same
+          train without an account.
         </p>
         <button
           className={styles.copyButton}
@@ -208,7 +208,46 @@ export function EquipmentWorkspace({
             state={state}
           />
         </div>
-        <section className={styles.overview} aria-labelledby="overview-title">
+        <aside
+          className={styles.trainSummary}
+          aria-labelledby="train-summary-title"
+        >
+          <p className="eyebrow">Effective imaging train</p>
+          <h2 id="train-summary-title">Setup check</h2>
+          {result ? (
+            <dl>
+              <div>
+                <dt>Effective focal length</dt>
+                <dd>{format(result.effectiveFocalLengthMm, 0)} mm</dd>
+              </div>
+              <div>
+                <dt>Effective focal ratio</dt>
+                <dd>f/{format(result.effectiveFocalRatio, 1)}</dd>
+              </div>
+              <div>
+                <dt>Sensor</dt>
+                <dd>
+                  {format(result.sensorDimensionsMm.widthMm)} ×{" "}
+                  {format(result.sensorDimensionsMm.heightMm)} mm
+                </dd>
+              </div>
+              <div>
+                <dt>Image scale</dt>
+                <dd>{format(result.imageScaleArcsecPerPixel, 3)}″ / px</dd>
+              </div>
+            </dl>
+          ) : (
+            <p>Complete the equipment fields to verify the effective train.</p>
+          )}
+          <Link className={styles.calculationsLink} href="/calculations">
+            View all calculations →
+          </Link>
+        </aside>
+        <section
+          hidden
+          className={styles.overview}
+          aria-labelledby="overview-title"
+        >
           <div className={styles.overviewHeader}>
             <p className="eyebrow">Calculated overview</p>
             <h2 id="overview-title">What this setup tells you</h2>

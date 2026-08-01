@@ -23,6 +23,9 @@ describe("home page", () => {
       screen.getByRole("link", { name: /open the field lab/i }),
     ).toHaveAttribute("href", "/calculators/field-of-view");
     expect(
+      screen.getByRole("link", { name: /view all calculations/i }),
+    ).toHaveAttribute("href", "/calculations");
+    expect(
       screen.getByRole("link", { name: /check guiding ratio/i }),
     ).toHaveAttribute("href", "/calculators/guiding-ratio");
     expect(

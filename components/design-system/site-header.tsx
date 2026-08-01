@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { ViewModeToggle } from "./view-mode-toggle";
+
 interface SiteHeaderProps {
   releaseLabel?: string;
 }
@@ -19,7 +21,10 @@ export function SiteHeader({ releaseLabel = "Release 01" }: SiteHeaderProps) {
           </span>
           <span>Astrotools</span>
         </Link>
-        <span className="release-tag">{releaseLabel}</span>
+        <div className="site-header-actions">
+          <ViewModeToggle />
+          <span className="release-tag">{releaseLabel}</span>
+        </div>
       </div>
     </header>
   );

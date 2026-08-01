@@ -17,6 +17,7 @@ export function CalculatorNavigation({
     | "mosaic-planning"
     | "dew-heater"
     | "storage-volume"
+    | "calculations"
     | "equipment";
 }) {
   return (
@@ -28,6 +29,14 @@ export function CalculatorNavigation({
         prefetch={false}
       >
         My Equipment
+      </Link>
+      <Link
+        aria-current={active === "calculations" ? "page" : undefined}
+        className={styles.link}
+        href="/calculations"
+        prefetch={false}
+      >
+        All Calculations
       </Link>
       <Link
         aria-current={active === "field-of-view" ? "page" : undefined}

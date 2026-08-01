@@ -117,6 +117,33 @@ main {
   justify-content: space-between;
 }
 
+.site-header-actions {
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.view-mode-toggle {
+  display: inline-flex;
+  min-height: var(--control-min-size);
+  padding: 0.55rem 0.75rem;
+  gap: var(--space-2);
+  align-items: center;
+  border: 1px solid var(--color-border-control);
+  border-radius: var(--radius-control);
+  background: var(--color-surface-input);
+  color: var(--color-text-soft);
+  font: inherit;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-small);
+  cursor: pointer;
+}
+
+.view-mode-toggle[aria-pressed="true"] {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
 .brand {
   display: inline-flex;
   min-width: 2.75rem;
@@ -455,5 +482,76 @@ main {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+}
+
+html[data-view-mode="academic"] {
+  --space-2: 0.35rem;
+  --space-3: 0.55rem;
+  --space-4: 0.75rem;
+  --space-5: 1rem;
+  --space-6: 1.25rem;
+  --radius-control: 0.15rem;
+  --radius-panel: 0.2rem;
+  --site-header-height: 3.75rem;
+}
+
+html[data-view-mode="academic"] body {
+  background: #081019;
+}
+
+html[data-view-mode="academic"] .site-header-inner {
+  min-height: var(--site-header-height);
+}
+
+html[data-view-mode="academic"] :where(main > header) h1,
+html[data-view-mode="academic"] .hero-copy h1 {
+  max-width: none;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+
+html[data-view-mode="academic"] .hero {
+  min-height: auto;
+  padding: 2rem 0;
+}
+
+html[data-view-mode="academic"] .field-study {
+  max-height: 24rem;
+}
+
+html[data-view-mode="academic"] .questions {
+  padding: 2rem 0;
+}
+
+html[data-view-mode="academic"] :where(section, article) {
+  scroll-margin-top: 4rem;
+}
+
+html[data-view-mode="academic"] .site-footer-inner {
+  padding-top: 1rem;
+  padding-bottom: 1.25rem;
+}
+
+@media print {
+  .site-header,
+  .site-footer,
+  nav,
+  .view-mode-toggle,
+  .skip-link {
+    display: none !important;
+  }
+
+  html,
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  main {
+    width: 100% !important;
+    min-height: 0 !important;
+    padding: 0 !important;
   }
 }
