@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { ViewModeToggle } from "./view-mode-toggle";
+import { AstrotoolsLogo } from "./astrotools-logo";
 
 interface SiteHeaderProps {
   releaseLabel?: string;
@@ -16,12 +17,13 @@ export function SiteHeader({ releaseLabel = "Release 01" }: SiteHeaderProps) {
           prefetch={false}
           aria-label="Astrotools home"
         >
-          <span className="brand-mark" aria-hidden="true">
-            <span />
-          </span>
+          <AstrotoolsLogo />
           <span>Astrotools</span>
         </Link>
         <div className="site-header-actions">
+          <Link className="header-search-link" href="/find" prefetch={false}>
+            Find a calculation
+          </Link>
           <ViewModeToggle />
           <span className="release-tag">{releaseLabel}</span>
         </div>

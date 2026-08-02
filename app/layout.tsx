@@ -3,12 +3,21 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://astrotools.smeird.com"),
   title: {
     default: "Astrotools",
     template: "%s · Astrotools",
   },
   description:
-    "Scientifically honest planning tools for astrophotography, beginning with field of view and image sampling.",
+    "Searchable, scientifically honest astrophotography planning tools for optics, sampling, exposure, guiding, sky conditions and sessions.",
+  openGraph: {
+    type: "website",
+    siteName: "Astrotools",
+    title: "Astrotools · Astrophotography Planning Suite",
+    description:
+      "Specify one imaging train, then search and calculate every planning result from pixel scale to exposure and storage.",
+    url: "https://astrotools.smeird.com",
+  },
 };
 
 export const viewport: Viewport = {

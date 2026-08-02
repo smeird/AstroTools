@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SiteFooter } from "@/components/design-system/site-footer";
 import { SiteHeader } from "@/components/design-system/site-header";
 import { SkipLink } from "@/components/design-system/skip-link";
+import { calculatorRegistry } from "@/lib/calculator-registry";
 
 const calculatorGroups = [
   {
@@ -207,6 +208,36 @@ export default function HomePage() {
               <span>Operations</span>
             </div>
           </div>
+        </section>
+
+        <section className="home-workflow" aria-labelledby="find-title">
+          <div>
+            <p className="eyebrow">Start with a question</p>
+            <h2 id="find-title">Find the result, not the menu.</h2>
+            <p>
+              Search quantities, units, formulas or natural questions across all{" "}
+              {calculatorRegistry.length} calculators.
+            </p>
+          </div>
+          <form action="/find" role="search">
+            <label htmlFor="home-calculation-search">
+              What do you need to calculate?
+            </label>
+            <div className="home-actions">
+              <input
+                id="home-calculation-search"
+                name="q"
+                placeholder="Pixel scale, sub-exposure, dew point…"
+              />
+              <button className="primary-action" type="submit">
+                Search calculations →
+              </button>
+            </div>
+            <p>
+              <Link href="/find">Browse the complete quantity index</Link> ·{" "}
+              <Link href="/compare">Compare two bookmarked rigs</Link>
+            </p>
+          </form>
         </section>
 
         <section className="home-workflow" aria-labelledby="workflow-title">

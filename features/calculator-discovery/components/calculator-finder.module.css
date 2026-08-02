@@ -1,0 +1,149 @@
+.finder {
+  display: grid;
+  gap: 1.5rem;
+}
+.search {
+  display: grid;
+  gap: 0.5rem;
+  font-weight: 700;
+}
+.search input {
+  min-height: 3.5rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 0.5rem;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 1.05rem;
+}
+.questions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.questions button,
+.star {
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  padding: 0.55rem 0.8rem;
+  cursor: pointer;
+}
+.count {
+  color: var(--color-text-soft);
+  margin: 0;
+}
+.saved {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  padding: 0.8rem;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 0.5rem;
+}
+.saved div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.8rem;
+}
+.saved strong {
+  color: var(--color-text-soft);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.saved a {
+  color: var(--color-accent);
+  font-size: 0.82rem;
+}
+.group {
+  display: grid;
+  gap: 0.75rem;
+}
+.group h2 {
+  margin: 0;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: 0.75rem;
+}
+.card {
+  padding: 1rem;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 0.55rem;
+  background: var(--color-surface);
+}
+.card p {
+  color: var(--color-text-soft);
+}
+.cardHeading {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem;
+  align-items: start;
+}
+.cardHeading h3,
+.cardHeading p {
+  margin: 0;
+}
+.cardHeading a {
+  color: var(--color-text);
+  text-decoration: none;
+}
+.cardHeading a:hover {
+  color: var(--color-accent);
+}
+.star {
+  font-size: 1.25rem;
+  line-height: 1;
+  padding: 0.35rem;
+}
+.card dl {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.75rem 0 0;
+  font-size: 0.82rem;
+}
+.card dl div {
+  display: grid;
+  grid-template-columns: 5rem 1fr;
+  gap: 0.5rem;
+}
+.card dt {
+  color: var(--color-text-soft);
+}
+.card dd {
+  margin: 0;
+}
+.quantities {
+  border-top: 1px solid var(--color-border-subtle);
+  padding-top: 1.5rem;
+}
+.quantities ul {
+  columns: 3 16rem;
+  list-style: none;
+  padding: 0;
+}
+.quantities li {
+  break-inside: avoid;
+  margin: 0 0 0.4rem;
+}
+.quantities a {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  color: var(--color-text);
+  text-decoration: none;
+}
+.quantities small {
+  color: var(--color-text-soft);
+  text-align: right;
+}
+.empty {
+  padding: 2rem;
+  border: 1px dashed var(--color-border-subtle);
+}

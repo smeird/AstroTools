@@ -21,8 +21,37 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const normalized = normaliseEquipmentPageSearchParams(await searchParams);
   const rigName = normalized.get("n");
+  const telescope = normalized.get("tm") ?? "telescope";
+  const camera = normalized.get("cm") ?? "camera";
+  const focalLength = normalized.get("f");
+  const aperture = normalized.get("a");
+  const facts = [
+    focalLength ? `${focalLength} mm focal length` : null,
+    aperture ? `${aperture} mm aperture` : null,
+  ]
+    .filter(Boolean)
+    .join(", ");
+  const query = normalized.toString();
+  const canonical = `/equipment${query ? `?${query}` : ""}`;
+  const title = rigName ? `${rigName} · Equipment` : "Your Equipment Workspace";
+  const description = `${rigName ? `${rigName}: ` : "Astrophotography rig: "}${telescope} with ${camera}${facts ? `; ${facts}` : ""}. Open the complete equipment profile in Astrotools.`;
   return {
-    title: rigName ? `${rigName} · Equipment` : "Your Equipment Workspace",
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      images: [
+        {
+          url: `/api/og/rig${query ? `?${query}` : ""}`,
+          width: 1200,
+          height: 630,
+          alt: `${rigName ?? "Astrophotography rig"} equipment profile`,
+        },
+      ],
+    },
   };
 }
 

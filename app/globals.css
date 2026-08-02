@@ -967,3 +967,85 @@ html[data-view-mode="academic"] .site-footer-inner {
     padding: 0 !important;
   }
 }
+.astrotools-logo {
+  display: inline-flex;
+  width: 2.25rem;
+  height: 1.5rem;
+  color: var(--color-accent);
+}
+.astrotools-logo svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.header-search-link {
+  color: var(--color-text-soft);
+  font-size: 0.8rem;
+  text-decoration: none;
+}
+.header-search-link:hover {
+  color: var(--color-accent);
+}
+.rig-compare {
+  display: grid;
+  gap: 1.2rem;
+}
+.rig-compare-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.rig-compare-inputs label {
+  display: grid;
+  gap: 0.4rem;
+  font-weight: 700;
+}
+.rig-compare-inputs input,
+.home-workflow form input {
+  min-height: 3rem;
+  padding: 0.7rem;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 0.4rem;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+.rig-compare-table {
+  overflow: auto;
+}
+.rig-compare table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.rig-compare th,
+.rig-compare td {
+  padding: 0.65rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.rig-compare thead th {
+  background: var(--color-surface);
+}
+.home-workflow form {
+  display: grid;
+  gap: 0.65rem;
+}
+.home-workflow form label {
+  font-weight: 700;
+}
+.home-workflow form input {
+  flex: 1;
+  min-width: min(100%, 18rem);
+}
+@media (max-width: 700px) {
+  .rig-compare-inputs {
+    grid-template-columns: 1fr;
+  }
+  .header-search-link {
+    display: none;
+  }
+}

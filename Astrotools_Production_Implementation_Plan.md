@@ -1714,6 +1714,47 @@ Done when
 contrast on white.
 • Desktop, mobile, print, accessibility and production-build checks pass.
 
+Post-release work package 32: Discovery, reference and sharing system
+
+Goal
+
+Make a twenty-three-calculator suite easy to search, understand, navigate and
+share without duplicating calculator knowledge across unrelated interfaces.
+
+Deliverables
+
+• One authoritative registry of calculators, quantities, symbols, questions,
+input provenance, confidence class, formula summary, icon and relationships.
+• A question-and-quantity search experience, alphabetical quantity index,
+grouped calculator navigation, related tools, favourites and recent history.
+• Progressive calculator explanations naming purpose, interpretation,
+assumptions, input sources and the distinction between exact, measured,
+estimated and heuristic results.
+• A reusable Astrotools SVG identity, favicon and restrained line-icon family.
+• Server-readable equipment and calculations metadata with canonical URLs,
+Open Graph text/images and a share preview that includes URL-carried rig facts.
+• A two-bookmark rig comparison view and equipment headline dashboard links.
+
+Done when
+
+• Searching for “pixel scale”, its symbol, unit or a natural-language question
+finds the relevant quantity and calculator.
+• Every calculator is reachable through grouped navigation and exposes
+consistent explanation, input provenance, formula and related-tool context.
+• Social crawlers can read a named equipment profile without localStorage.
+• Favourites, recent calculators and view preference stay local and account-free.
+• Search, keyboard, accessibility, metadata, mobile and production-build checks
+pass.
+
+Implementation decision
+
+The registry is the source for search, navigation, the quantity index,
+explanation panels, input provenance, confidence labels and related tools.
+Favourites and recent calculators remain in browser storage. Equipment share
+metadata is derived from the bookmark query string so social crawlers never
+depend on browser storage. Two-rig comparison is local-only and accepts
+equipment bookmark URLs.
+
 16. Release 1 acceptance criteria
 
 The release is acceptable only when all statements are true:
