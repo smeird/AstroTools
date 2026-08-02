@@ -1690,6 +1690,30 @@ labelled non-visual equivalent of its technical figure.
 • Formula, boundary, persistence, accessibility, browser and production-build
 checks pass.
 
+Post-release work package 31: Paper Academic palette
+
+Goal
+
+Make Academic view read as a dense printed technical sheet while leaving the
+dark Presentation identity unchanged.
+
+Deliverables
+
+• A white paper surface, dark ink hierarchy, grey rules and restrained
+high-contrast teal/olive technical accents.
+• Light controls, result cards, tables, equations and line diagrams inherited
+through semantic design tokens.
+• Removal of decorative glow and dark panel backgrounds from Academic view,
+without removing the information hierarchy or focus indication.
+
+Done when
+
+• Switching view changes both density and palette and persists across routes.
+• Presentation view retains its established dark palette.
+• Academic controls, equations, diagrams and muted text meet WCAG 2.2 AA
+contrast on white.
+• Desktop, mobile, print, accessibility and production-build checks pass.
+
 16. Release 1 acceptance criteria
 
 The release is acceptable only when all statements are true:

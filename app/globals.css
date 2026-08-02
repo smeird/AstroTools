@@ -798,6 +798,22 @@ main {
 }
 
 html[data-view-mode="academic"] {
+  color-scheme: light;
+  --color-text: #182124;
+  --color-text-soft: #39474a;
+  --color-text-muted: #637174;
+  --color-surface: #ffffff;
+  --color-surface-input: #ffffff;
+  --color-surface-raised: #f4f6f4;
+  --color-border-subtle: rgba(32, 48, 52, 0.22);
+  --color-border-control: #7b8889;
+  --color-border-control-hover: #36484a;
+  --color-accent: #506900;
+  --color-accent-soft: rgba(80, 105, 0, 0.1);
+  --color-signal: #006d65;
+  --color-error-text: #8d271b;
+  --color-error-border: #a84636;
+  --shadow-overlay: 0 0.4rem 1.2rem rgba(26, 37, 39, 0.14);
   --font-body: Aptos, "Segoe UI", Arial, sans-serif;
   --font-heading: Aptos, "Segoe UI", Arial, sans-serif;
   --font-mono:
@@ -824,7 +840,43 @@ html[data-view-mode="academic"] :where(h1, h2, h3, h4) {
 }
 
 html[data-view-mode="academic"] body {
-  background: #081019;
+  background: #ffffff;
+  color: var(--color-text);
+}
+
+html[data-view-mode="academic"] .site-header,
+html[data-view-mode="academic"] .site-footer {
+  background: #ffffff;
+}
+
+html[data-view-mode="academic"] .lede {
+  color: var(--color-text-soft);
+}
+
+html[data-view-mode="academic"] main :where(section, article, aside, figure) {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+html[data-view-mode="academic"] .field-study {
+  background:
+    linear-gradient(rgba(0, 109, 101, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 109, 101, 0.08) 1px, transparent 1px),
+    #ffffff;
+  background-size: 3rem 3rem;
+}
+
+html[data-view-mode="academic"] .rig-flow {
+  background:
+    linear-gradient(rgba(0, 109, 101, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 109, 101, 0.06) 1px, transparent 1px),
+    #ffffff;
+  background-size: 2rem 2rem;
+}
+
+html[data-view-mode="academic"] .target-core {
+  background: rgba(80, 105, 0, 0.2);
+  filter: none;
 }
 
 html[data-view-mode="academic"] .site-header-inner {

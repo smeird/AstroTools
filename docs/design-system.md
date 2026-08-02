@@ -153,6 +153,13 @@ overly narrow face. No webfont request, tracking service or layout-blocking
 download is introduced. Headings gain a firmer technical weight while controls,
 tables and ordinary text use the same readable family.
 
+Academic view also changes the semantic colour tokens to a paper palette: white
+surfaces, near-black ink, grey rules, dark teal measurements and a muted olive
+decision accent. Panels lose decorative dark fills and shadows, while controls,
+equations, diagrams and status treatments retain their boundaries and meaning at
+WCAG AA contrast. Presentation view continues to use the original
+observatory-dark palette.
+
 The current homepage reflects the equipment-first product architecture. Its two
 primary routes are the named equipment workspace and consolidated calculation
 dossier. The rig-flow figure explains shared context, the workflow explains

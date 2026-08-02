@@ -72,5 +72,26 @@ test("academic view uses condensed typography without changing content", async (
   expect(
     await heading.evaluate((element) => getComputedStyle(element).fontFamily),
   ).toContain("Aptos");
+  expect(
+    await page
+      .locator("body")
+      .evaluate((element) => getComputedStyle(element).backgroundColor),
+  ).toBe("rgb(255, 255, 255)");
+  expect(
+    await page
+      .locator("body")
+      .evaluate((element) => getComputedStyle(element).color),
+  ).toBe("rgb(24, 33, 36)");
   await expect(heading).toHaveText(before ?? "");
+
+  await page.goto("/calculators/optimal-sub-exposure");
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-view-mode",
+    "academic",
+  );
+  expect(
+    await page
+      .getByLabel("Read noise")
+      .evaluate((element) => getComputedStyle(element).backgroundColor),
+  ).toBe("rgb(255, 255, 255)");
 });
