@@ -114,6 +114,16 @@ export function HomeInstrumentPanel() {
           </div>
           {rig ? (
             <>
+              <div
+                className={styles.rigDiagram}
+                aria-label="Imaging train diagram"
+              >
+                <span className={styles.telescope}>Telescope</span>
+                <i aria-hidden="true">→</i>
+                <span className={styles.modifier}>Optical modifiers</span>
+                <i aria-hidden="true">→</i>
+                <span className={styles.camera}>Camera sensor</span>
+              </div>
               <div className={styles.train}>
                 <span>{rig.telescope}</span>
                 <i>→</i>

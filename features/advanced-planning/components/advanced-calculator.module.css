@@ -32,6 +32,25 @@
   color: var(--color-text-soft);
   line-height: 1.55;
 }
+.explainer {
+  max-width: 78rem;
+  margin: 0 0 var(--space-4);
+  padding: var(--space-4);
+  border-left: 3px solid var(--color-signal);
+  background: var(--color-surface-raised);
+}
+.explainer h2,
+.working h3 {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+}
+.explainer p,
+.working p {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-soft);
+  line-height: 1.55;
+}
 .rigNotice {
   margin: calc(-1 * var(--space-2)) 0 var(--space-4);
   padding: var(--space-2) var(--space-3);
@@ -98,6 +117,31 @@
   border-left: 3px solid var(--color-accent);
   background: rgba(202, 255, 92, 0.06);
 }
+.working {
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border-subtle);
+}
+.working dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+}
+.working dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  background: var(--color-surface-raised);
+}
+.working dt {
+  color: var(--color-text-soft);
+}
+.working dd {
+  margin: 0;
+  font-family: var(--font-mono);
+}
 :global(html[data-view-mode="academic"]) .page {
   padding-top: var(--space-3);
 }
@@ -109,6 +153,10 @@
 }
 :global(html[data-view-mode="academic"]) .panel {
   padding: var(--space-3);
+  background: var(--color-surface);
+}
+:global(html[data-view-mode="academic"]) .note {
+  background: var(--color-accent-soft);
 }
 @media (max-width: 950px) {
   .workspace {
