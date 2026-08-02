@@ -75,6 +75,38 @@
   font-family: var(--font-mono);
   text-align: center;
 }
+.rigDiagram {
+  display: grid;
+  grid-template-columns: 1.35fr auto 1fr auto 0.7fr;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 1rem 0 0;
+  color: var(--color-text-soft);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-align: center;
+}
+.rigDiagram span {
+  min-height: 2.6rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--color-border-control);
+  background: var(--color-surface-raised);
+}
+.rigDiagram .telescope {
+  border-radius: 2rem 0.4rem 0.4rem 2rem;
+}
+.rigDiagram .modifier {
+  border-radius: 0.4rem;
+}
+.rigDiagram .camera {
+  border-radius: 0.4rem 2rem 2rem 0.4rem;
+}
+.rigDiagram i {
+  color: var(--color-accent);
+  font-size: 1rem;
+  font-style: normal;
+}
 .train i {
   color: var(--color-accent);
   font-style: normal;
@@ -161,6 +193,12 @@
   }
   .train {
     grid-template-columns: 1fr;
+  }
+  .rigDiagram {
+    grid-template-columns: 1fr;
+  }
+  .rigDiagram i {
+    transform: rotate(90deg);
   }
   .train i {
     transform: rotate(90deg);

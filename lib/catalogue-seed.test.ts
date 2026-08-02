@@ -29,11 +29,11 @@ describe("catalogue seed data", () => {
     );
   });
 
-  it("contains the reviewed Work Package 3 catalogue", () => {
+  it("contains the reviewed Work Package 28 catalogue", () => {
     expect(catalogueSeed.manufacturers).toHaveLength(5);
-    expect(catalogueSeed.telescopes).toHaveLength(12);
+    expect(catalogueSeed.telescopes).toHaveLength(50);
     expect(catalogueSeed.cameras).toHaveLength(3);
-    expect(catalogueSeed.opticalModifiers).toHaveLength(4);
+    expect(catalogueSeed.opticalModifiers).toHaveLength(10);
     expect(catalogueSeed.astronomicalTargets).toHaveLength(6);
   });
 
@@ -119,9 +119,11 @@ describe("catalogue seed data", () => {
 
     for (const record of sourcedRecords) {
       expect(new URL(record.sourceUrl).protocol).toBe("https:");
-      expect([CATALOGUE_VERIFICATION_DATE, "2026-08-01"]).toContain(
-        record.verifiedAt,
-      );
+      expect([
+        CATALOGUE_VERIFICATION_DATE,
+        "2026-08-01",
+        "2026-08-02",
+      ]).toContain(record.verifiedAt);
     }
   });
 

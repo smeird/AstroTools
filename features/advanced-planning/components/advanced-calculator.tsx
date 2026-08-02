@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { startTransition, useEffect, useMemo, useState } from "react";
+import { Fragment, startTransition, useEffect, useMemo, useState } from "react";
 
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
 import { NumericInput } from "@/components/design-system/numeric-input";
@@ -51,22 +51,67 @@ function sharedValue(
   }
 }
 
-function formulaSymbols(kind: AdvancedCalculatorKind): string {
-  const formulas: Record<AdvancedCalculatorKind, string> = {
-    "optimal-sub-exposure": "tₘᵢₙ = kR² ÷ (Sₛₖᵧ + D)",
-    "integration-planner": "SNR₂ ÷ SNR₁ = √(T₂ ÷ T₁)",
-    "filter-exposure-planner": "Tᵢ = T × (wᵢ ÷ ηᵢ) ÷ Σ(w ÷ η)",
-    "star-saturation": "tₛₐₜ = W(1 − h) ÷ F★",
-    "guiding-exposure": "SNR = Ft ÷ √((F + B)t + R²)",
-    "plate-solving-scale": "s = 206.265p ÷ f",
-    "imaging-window": "cos H = (sin a − sin φ sin δ) ÷ (cos φ cos δ)",
-    "atmospheric-extinction": "Δm = kX ; transmission = 10⁻⁰·⁴Δᵐ",
-    "calibration-frames": "σₘₐₛₜₑᵣ = σ₁ ÷ √N",
-    "drizzle-planner": "Nₚᵢₓ,out = Nₚᵢₓ,in × d²",
-    "field-rotation": "Δsₑdge = rθ",
-    "autofocus-planning": "CFZ ≈ 2.2λN²",
+function Formula({ kind }: { kind: AdvancedCalculatorKind }) {
+  const equations: Record<AdvancedCalculatorKind, readonly string[]> = {
+    "optimal-sub-exposure": ["t", "=", "kR", "²", "/", "(S", "+", "D)"],
+    "integration-planner": ["SNR", "∝", "√T"],
+    "filter-exposure-planner": [
+      "T",
+      "=",
+      "T",
+      "×",
+      "(w",
+      "/",
+      "η)",
+      "/",
+      "Σ(w/η)",
+    ],
+    "star-saturation": ["t", "=", "W(1", "−", "h)", "/", "F"],
+    "guiding-exposure": [
+      "SNR",
+      "=",
+      "Ft",
+      "/",
+      "√((F",
+      "+",
+      "B)t",
+      "+",
+      "R",
+      "²)",
+    ],
+    "plate-solving-scale": ["s", "=", "206.265p", "/", "f"],
+    "imaging-window": [
+      "cos",
+      "H",
+      "=",
+      "(sin",
+      "a",
+      "−",
+      "sin",
+      "φ",
+      "sin",
+      "δ)",
+      "/",
+      "(cos",
+      "φ",
+      "cos",
+      "δ)",
+    ],
+    "atmospheric-extinction": ["Δm", "=", "kX", ";", "T", "=", "10", "⁻⁰·⁴Δᵐ"],
+    "calibration-frames": ["σ", "=", "σ", "/", "√N"],
+    "drizzle-planner": ["N", "=", "N", "×", "d", "²"],
+    "field-rotation": ["Δs", "=", "rθ"],
+    "autofocus-planning": ["CFZ", "≈", "2.2λN", "²"],
   };
-  return formulas[kind];
+  return (
+    <mrow>
+      {equations[kind].map((part, index) => (
+        <Fragment key={`${part}-${index}`}>
+          <mi>{part}</mi>
+        </Fragment>
+      ))}
+    </mrow>
+  );
 }
 
 function formatValue(value: number | boolean | string, digits = 2) {
@@ -164,6 +209,18 @@ export function AdvancedCalculator({ kind }: { kind: AdvancedCalculatorKind }) {
         <h1>{definition.title}</h1>
         <p className={styles.lede}>{definition.lede}</p>
       </header>
+      <section className={styles.explainer} aria-labelledby={`${kind}-guide`}>
+        <h2 id={`${kind}-guide`}>What this calculator does</h2>
+        <p>
+          {definition.lede} Change a value and the result updates immediately,
+          so you can compare realistic options before you collect data.
+        </p>
+        <p>
+          If the answer looks wrong, first check the units and whether the
+          measurement describes your actual camera, telescope, sky or session.{" "}
+          {definition.note}
+        </p>
+      </section>
       <CalculatorLineDiagram kind={kind} />
       {rigLabel ? (
         <p className={styles.rigNotice} role="note">
@@ -225,14 +282,32 @@ export function AdvancedCalculator({ kind }: { kind: AdvancedCalculatorKind }) {
           <div className={styles.formula}>
             <h3>Governing equation</h3>
             <MathExpression label={definition.formulaLabel}>
-              <mrow>
-                <mtext>{formulaSymbols(kind)}</mtext>
-              </mrow>
+              <Formula kind={kind} />
             </MathExpression>
             <p>
               <strong>In words:</strong> {definition.formulaWords}
             </p>
           </div>
+          {results ? (
+            <div className={styles.working}>
+              <h3>Show the working</h3>
+              <p>
+                The calculator applies the equation above to the values
+                currently entered, without rounding until this display.
+              </p>
+              <dl>
+                {results.map((result, index) => (
+                  <div key={`${result.label}-${index}`}>
+                    <dt>{result.label}</dt>
+                    <dd>
+                      {formatValue(result.value, result.digits)}
+                      {result.unit ? ` ${result.unit}` : ""}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          ) : null}
           <p className={styles.note}>{definition.note}</p>
         </section>
       </div>

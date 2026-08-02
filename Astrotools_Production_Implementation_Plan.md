@@ -1610,8 +1610,8 @@ optical type explicit enough to drive calculations and the optical diagram.
 
 Deliverables
 
-• A reviewed first expansion from four to twelve telescope models and from four
-to five catalogue manufacturers.
+• A reviewed expansion from four to fifty telescope models, retaining at least
+five catalogue manufacturers.
 • Manufacturer model, aperture, native focal length, optical design, active
 state, official source URL and verification date for every new record.
 • Coverage of refractor/Petzval, Newtonian, Schmidt-Cassegrain, EdgeHD and
