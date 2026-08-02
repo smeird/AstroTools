@@ -524,7 +524,7 @@ export const catalogueSeed = validateCatalogueSeed({
       apertureMm: 61,
       nativeFocalLengthMm: 360,
       active: true,
-      sourceUrl: "https://williamoptics.com/zenithstar-61-ii",
+      sourceUrl: "https://williamoptics.com/collections/telescopes",
       verifiedAt: "2026-08-02",
     },
     {
@@ -535,7 +535,7 @@ export const catalogueSeed = validateCatalogueSeed({
       apertureMm: 71,
       nativeFocalLengthMm: 420,
       active: true,
-      sourceUrl: "https://williamoptics.com/gran-turismo-71",
+      sourceUrl: "https://williamoptics.com/collections/telescopes",
       verifiedAt: "2026-08-02",
     },
     {
@@ -557,7 +557,7 @@ export const catalogueSeed = validateCatalogueSeed({
       apertureMm: 91,
       nativeFocalLengthMm: 540,
       active: true,
-      sourceUrl: "https://williamoptics.com/flt-91",
+      sourceUrl: "https://williamoptics.com/collections/telescopes",
       verifiedAt: "2026-08-02",
     },
     {
@@ -568,7 +568,7 @@ export const catalogueSeed = validateCatalogueSeed({
       apertureMm: 120,
       nativeFocalLengthMm: 900,
       active: true,
-      sourceUrl: "https://williamoptics.com/flt-120",
+      sourceUrl: "https://williamoptics.com/collections/telescopes",
       verifiedAt: "2026-08-02",
     },
     {
@@ -579,7 +579,7 @@ export const catalogueSeed = validateCatalogueSeed({
       apertureMm: 132,
       nativeFocalLengthMm: 925,
       active: true,
-      sourceUrl: "https://williamoptics.com/flt-132",
+      sourceUrl: "https://williamoptics.com/collections/telescopes",
       verifiedAt: "2026-08-02",
     },
     {
@@ -601,7 +601,7 @@ export const catalogueSeed = validateCatalogueSeed({
       apertureMm: 127,
       nativeFocalLengthMm: 1250,
       active: true,
-      sourceUrl: "https://www.celestron.com/products/c5-optical-tube-assembly",
+      sourceUrl: "https://www.celestron.com/products/nexstar-5slt",
       verifiedAt: "2026-08-02",
     },
     {
@@ -672,8 +672,7 @@ export const catalogueSeed = validateCatalogueSeed({
       apertureMm: 356,
       nativeFocalLengthMm: 790,
       active: true,
-      sourceUrl:
-        "https://www.celestron.com/products/rowe-ackermann-schmidt-astrograph-rasa-14",
+      sourceUrl: "https://www.celestron.com/collections/optical-tubes",
       verifiedAt: "2026-08-02",
     },
     {
@@ -697,7 +696,7 @@ export const catalogueSeed = validateCatalogueSeed({
       nativeFocalLengthMm: 1200,
       active: true,
       sourceUrl:
-        "https://www.celestron.com/products/starsense-explorer-8-dobsonian",
+        "https://www.celestron.com/products/starsense-explorer-8-smartphone-app-enabled-dobsonian-telescope",
       verifiedAt: "2026-08-02",
     },
     {
@@ -708,8 +707,7 @@ export const catalogueSeed = validateCatalogueSeed({
       apertureMm: 305,
       nativeFocalLengthMm: 1500,
       active: true,
-      sourceUrl:
-        "https://www.celestron.com/products/starsense-explorer-12-dobsonian",
+      sourceUrl: "https://www.celestron.com/collections/telescopes",
       verifiedAt: "2026-08-02",
     },
     {
@@ -780,8 +778,7 @@ export const catalogueSeed = validateCatalogueSeed({
       apertureMm: 200,
       nativeFocalLengthMm: 800,
       active: true,
-      sourceUrl:
-        "https://www.skywatcherusa.com/products/quattro-200p-imaging-newtonian-8",
+      sourceUrl: "https://www.skywatcherusa.com/collections/quattro-imaging-newtonians",
       verifiedAt: "2026-08-02",
     },
     {
@@ -792,7 +789,7 @@ export const catalogueSeed = validateCatalogueSeed({
       apertureMm: 127,
       nativeFocalLengthMm: 1500,
       active: true,
-      sourceUrl: "https://www.skywatcherusa.com/products/skymax-127",
+      sourceUrl: "https://www.skywatcherusa.com/collections/skymax-maksutov-reflectors",
       verifiedAt: "2026-08-02",
     },
     {
