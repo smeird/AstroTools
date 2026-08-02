@@ -13,14 +13,16 @@ describe("home page", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: /know your rig before you lose the night/i,
+        name: /one equipment profile.*every calculation/i,
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: /build or open my rig/i }),
+      screen.getByRole("link", { name: /create my equipment profile/i }),
     ).toHaveAttribute("href", "/equipment");
     expect(
-      screen.getByRole("link", { name: /open the calculation dossier/i }),
+      screen.getByRole("link", {
+        name: /open the complete calculation dossier/i,
+      }),
     ).toHaveAttribute("href", "/calculations");
     for (const [name, href] of [
       [/^field of view/i, "/calculators/field-of-view"],
@@ -35,6 +37,6 @@ describe("home page", () => {
     ] as const) {
       expect(screen.getByRole("link", { name })).toHaveAttribute("href", href);
     }
-    expect(screen.getAllByRole("listitem")).toHaveLength(30);
+    expect(screen.getAllByRole("listitem")).toHaveLength(23);
   });
 });

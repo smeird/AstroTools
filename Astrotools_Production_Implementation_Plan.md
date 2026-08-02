@@ -1755,6 +1755,33 @@ metadata is derived from the bookmark query string so social crawlers never
 depend on browser storage. Two-rig comparison is local-only and accepts
 equipment bookmark URLs.
 
+Post-release work package 33: Equipment-first landing instrument
+
+Goal
+
+Make the landing page a rapid routing surface for active planning rather than
+a marketing or duplicate-calculator page.
+
+Deliverables
+
+• A returning-user console summarising the locally saved rig, its effective
+focal length, aperture, pixel scale and observing site.
+• Immediate routes to equipment editing, the complete calculation dossier,
+rig comparison, favourite tools and recently used calculators.
+• A first-time setup prompt occupying the same stable interface region when no
+equipment has been stored.
+• Prominent question-led search and a compact, expandable discipline directory
+containing every calculator.
+
+Done when
+
+• The landing page adapts locally without an account or network request.
+• A saved equipment profile is the dominant returning-user object.
+• Equipment setup and calculation search remain the two primary entry points.
+• Every calculator remains discoverable without presenting twenty-three equal
+cards above the fold.
+• Desktop, mobile, keyboard, Academic-view and production-build checks pass.
+
 16. Release 1 acceptance criteria
 
 The release is acceptable only when all statements are true:
