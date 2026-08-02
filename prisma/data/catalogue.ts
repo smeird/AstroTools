@@ -1035,6 +1035,79 @@ export const catalogueSeed = validateCatalogueSeed({
         "https://www.skywatcherusa.com/products/reducer-corrector-85x-for-evostar-80",
       verifiedAt: CATALOGUE_VERIFICATION_DATE,
     },
+    {
+      manufacturerSlug: "celestron",
+      slug: "reducer-corrector-0-63x-sct",
+      model: "Reducer - Corrector",
+      modifierType: "reducer-corrector",
+      multiplier: 0.63,
+      compatibleNotes:
+        "Compatible with Celestron C5, C6, C8, C9.25, C11 and C14 Schmidt-Cassegrain optical tubes; not compatible with EdgeHD tubes.",
+      active: true,
+      sourceUrl: "https://www.celestron.com/products/reducer-corrector",
+      verifiedAt: "2026-08-02",
+    },
+    {
+      manufacturerSlug: "celestron",
+      slug: "omni-2x-barlow-1-25",
+      model: "Omni 2x Barlow Lens - 1.25 inch",
+      modifierType: "Barlow lens",
+      multiplier: 2,
+      compatibleNotes:
+        "For 1.25-inch eyepieces and focusers/diagonals; doubles visual magnification.",
+      active: true,
+      sourceUrl: "https://www.celestron.com/products/omni-2x-barlow-lens-125in",
+      verifiedAt: "2026-08-02",
+    },
+    {
+      manufacturerSlug: "celestron",
+      slug: "x-cel-lx-3x-barlow-1-25",
+      model: "X-Cel LX 3x Barlow Lens - 1.25 inch",
+      modifierType: "Barlow lens",
+      multiplier: 3,
+      compatibleNotes: "For 1.25-inch eyepieces; triples visual magnification.",
+      active: true,
+      sourceUrl:
+        "https://www.celestron.com/products/x-cel-lx-3x-barlow-lens-125in",
+      verifiedAt: "2026-08-02",
+    },
+    {
+      manufacturerSlug: "sky-watcher",
+      slug: "reducer-corrector-0-85x-evostar-100",
+      model: "Reducer/Corrector 0.85x for Evostar 100",
+      modifierType: "reducer-corrector",
+      multiplier: 0.85,
+      compatibleNotes: "Optimized for the Sky-Watcher Evostar 100 ED APO.",
+      active: true,
+      sourceUrl:
+        "https://www.skywatcherusa.com/collections/refractor-factor-promo-2023/products/reducer-corrector-85x-for-evostar-100",
+      verifiedAt: "2026-08-02",
+    },
+    {
+      manufacturerSlug: "sky-watcher",
+      slug: "quattro-coma-corrector",
+      model: "Quattro Coma Corrector",
+      modifierType: "coma corrector",
+      multiplier: 1,
+      compatibleNotes:
+        "Corrects coma for compatible Sky-Watcher Quattro Newtonians without changing focal length.",
+      active: true,
+      sourceUrl:
+        "https://www.skywatcherusa.com/products/sky-watcher-quattro-coma-corrector",
+      verifiedAt: "2026-08-02",
+    },
+    {
+      manufacturerSlug: "sky-watcher",
+      slug: "evostar-100edx-flattener-0-92x",
+      model: "Esprit 70EDX / Evostar 100EDX Flattener",
+      modifierType: "field flattener-reducer",
+      multiplier: 0.92,
+      compatibleNotes:
+        "For the Evostar 100EDX and Esprit 70EDX; source lists 0.92x reduction for the Evostar 100EDX configuration.",
+      active: true,
+      sourceUrl: "https://www.skywatcherusa.com/products/evostar-100edx",
+      verifiedAt: "2026-08-02",
+    },
   ],
   astronomicalTargets: [
     {

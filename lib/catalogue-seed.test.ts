@@ -33,7 +33,7 @@ describe("catalogue seed data", () => {
     expect(catalogueSeed.manufacturers).toHaveLength(5);
     expect(catalogueSeed.telescopes).toHaveLength(50);
     expect(catalogueSeed.cameras).toHaveLength(3);
-    expect(catalogueSeed.opticalModifiers).toHaveLength(4);
+    expect(catalogueSeed.opticalModifiers).toHaveLength(10);
     expect(catalogueSeed.astronomicalTargets).toHaveLength(6);
   });
 
