@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { startTransition, useEffect, useMemo, useState } from "react";
+import { startTransition, useEffect, useMemo, useRef, useState } from "react";
 
+import { CalculatorExplainer } from "@/components/design-system/calculator-explainer";
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
+import { EquipmentInheritanceNotice } from "@/components/design-system/equipment-inheritance-notice";
 import { CalculatorLineDiagram } from "@/components/diagrams/calculator-line-diagram";
 import { NumericInput } from "@/components/design-system/numeric-input";
-import { SharedTelescopeNotice } from "@/components/design-system/shared-telescope-notice";
 import { MathExpression } from "@/components/equations";
 import {
   applySharedTelescopeWhenChanged,
@@ -18,7 +19,6 @@ import {
   SHARED_CAMERA_SELECTION_KEY,
   SHARED_IMAGING_TRAIN_KEY,
   SHARED_TELESCOPE_SELECTION_KEY,
-  type SharedTelescopeSelection,
 } from "@/features/shared-equipment/telescope-selection";
 import {
   calculateResolutionAndSampling,
@@ -60,8 +60,11 @@ function format(value: number, digits = 2): string {
 export function ResolutionAndSamplingCalculator() {
   const [values, setValues] = useState(defaults);
   const [persistedStateLoaded, setPersistedStateLoaded] = useState(false);
-  const [sharedTelescope, setSharedTelescope] =
-    useState<SharedTelescopeSelection | null>(null);
+  const [equipmentLabel, setEquipmentLabel] = useState<string | null>(null);
+  const [equipmentFields, setEquipmentFields] = useState<readonly string[]>([]);
+  const telescopeMarker = useRef<string | null>(null);
+  const cameraMarker = useRef<string | null>(null);
+  const trainMarker = useRef<string | null>(null);
   useEffect(() => {
     const stored = window.localStorage.getItem(
       RESOLUTION_AND_SAMPLING_PERSISTENCE_KEY,
@@ -94,9 +97,10 @@ export function ResolutionAndSamplingCalculator() {
       (current, camera) => ({ ...current, pixelSizeUm: camera.pixelSizeUm }),
     );
     const trainRaw = window.localStorage.getItem(SHARED_IMAGING_TRAIN_KEY);
+    const train = trainRaw ? parseSharedImagingTrain(trainRaw) : null;
     const trainApplied = applySharedImagingTrainWhenChanged(
       cameraApplied.values,
-      trainRaw ? parseSharedImagingTrain(trainRaw) : null,
+      train,
       window.localStorage.getItem(RESOLUTION_TRAIN_APPLIED_KEY),
       (current, train) => ({
         ...current,
@@ -108,25 +112,31 @@ export function ResolutionAndSamplingCalculator() {
     );
     startTransition(() => {
       setValues(trainApplied.values);
-      setSharedTelescope(shared);
+      setEquipmentLabel(
+        train?.rigName || train?.telescopeLabel || shared?.label || null,
+      );
+      setEquipmentFields(
+        train
+          ? [
+              "effective focal length",
+              "aperture",
+              "camera pixel pitch",
+              "binning",
+            ]
+          : [
+              ...(shared ? ["focal length", "aperture"] : []),
+              ...(sharedCamera ? ["camera pixel pitch"] : []),
+            ],
+      );
       setPersistedStateLoaded(true);
     });
-    if (applied.changed && applied.appliedSelection) {
-      window.localStorage.setItem(
-        RESOLUTION_TELESCOPE_APPLIED_KEY,
-        applied.appliedSelection,
-      );
-    }
-    if (cameraApplied.changed && cameraApplied.appliedSelection)
-      window.localStorage.setItem(
-        RESOLUTION_CAMERA_APPLIED_KEY,
-        cameraApplied.appliedSelection,
-      );
-    if (trainApplied.changed && trainApplied.appliedSelection)
-      window.localStorage.setItem(
-        RESOLUTION_TRAIN_APPLIED_KEY,
-        trainApplied.appliedSelection,
-      );
+    telescopeMarker.current = applied.changed ? applied.appliedSelection : null;
+    cameraMarker.current = cameraApplied.changed
+      ? cameraApplied.appliedSelection
+      : null;
+    trainMarker.current = trainApplied.changed
+      ? trainApplied.appliedSelection
+      : null;
   }, []);
   useEffect(() => {
     if (persistedStateLoaded) {
@@ -134,6 +144,21 @@ export function ResolutionAndSamplingCalculator() {
         RESOLUTION_AND_SAMPLING_PERSISTENCE_KEY,
         serializeResolutionAndSamplingState(values),
       );
+      if (telescopeMarker.current)
+        window.localStorage.setItem(
+          RESOLUTION_TELESCOPE_APPLIED_KEY,
+          telescopeMarker.current,
+        );
+      if (cameraMarker.current)
+        window.localStorage.setItem(
+          RESOLUTION_CAMERA_APPLIED_KEY,
+          cameraMarker.current,
+        );
+      if (trainMarker.current)
+        window.localStorage.setItem(
+          RESOLUTION_TRAIN_APPLIED_KEY,
+          trainMarker.current,
+        );
     }
   }, [persistedStateLoaded, values]);
   const result = useMemo(() => {
@@ -172,8 +197,15 @@ export function ResolutionAndSamplingCalculator() {
           immediately.
         </p>
       </header>
+      <CalculatorExplainer
+        slug="resolution-and-sampling"
+        guidance="Use the effective focal length after reducers or Barlows, the camera's native pixel pitch, the selected binning and a realistic local seeing estimate."
+      />
       <CalculatorLineDiagram kind="resolution-sampling" />
-      <SharedTelescopeNotice selection={sharedTelescope} used />
+      <EquipmentInheritanceNotice
+        appliedFields={equipmentFields}
+        equipmentLabel={equipmentLabel}
+      />
 
       <div className={styles.workspace}>
         <section className={styles.panel} aria-labelledby="inputs-title">

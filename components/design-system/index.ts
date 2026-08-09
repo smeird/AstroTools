@@ -1,3 +1,4 @@
+export { CalculatorExplainer } from "./calculator-explainer";
 export { Combobox } from "./combobox";
 export type { ComboboxOption, ComboboxProps } from "./combobox";
 export { NumericInput } from "./numeric-input";
@@ -8,3 +9,4 @@ export { ResultCard, ResultGrid } from "./result-card";
 export type { ResultCardProps } from "./result-card";
 export { SegmentedControl } from "./segmented-control";
 export type { SegmentedControlProps, SegmentOption } from "./segmented-control";
+export { EquipmentInheritanceNotice } from "./equipment-inheritance-notice";

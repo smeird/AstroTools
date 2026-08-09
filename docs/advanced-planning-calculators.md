@@ -18,6 +18,13 @@ stores its own specialist measurements separately. A changed shared train
 updates only fields derived from equipment; ordinary navigation does not reset
 sky measurements, planning targets or operational assumptions.
 
+Plate Solving inherits focal length, effective pixel size and binned image
+dimensions; Drizzle inherits binned dimensions; Autofocus inherits focal ratio.
+The remaining advanced calculators display the saved rig only as available
+context and explicitly state that their specialist measurements are not stored
+in the equipment profile. They never claim that equipment values were applied
+when no field is mapped.
+
 ## Interpretation limits
 
 Optimal exposure, guiding, extinction, imaging-window, rotation and autofocus

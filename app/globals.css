@@ -5,6 +5,10 @@
   --color-surface: #081019;
   --color-surface-input: #0b1721;
   --color-surface-raised: #101c25;
+  --color-surface-panel: rgba(16, 28, 37, 0.72);
+  --color-surface-deep: rgba(8, 16, 25, 0.68);
+  --color-surface-controls: rgba(5, 11, 18, 0.7);
+  --color-surface-visual: rgba(8, 16, 25, 0.88);
   --color-border-subtle: rgba(180, 205, 202, 0.2);
   --color-border-control: #607472;
   --color-border-control-hover: #94aaa7;
@@ -805,6 +809,10 @@ html[data-view-mode="academic"] {
   --color-surface: #ffffff;
   --color-surface-input: #ffffff;
   --color-surface-raised: #f4f6f4;
+  --color-surface-panel: #f4f6f4;
+  --color-surface-deep: #ffffff;
+  --color-surface-controls: #ffffff;
+  --color-surface-visual: #ffffff;
   --color-border-subtle: rgba(32, 48, 52, 0.22);
   --color-border-control: #7b8889;
   --color-border-control-hover: #36484a;

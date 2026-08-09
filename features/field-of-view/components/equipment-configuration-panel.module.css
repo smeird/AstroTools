@@ -4,7 +4,7 @@
   gap: var(--space-5);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-panel);
-  background: rgba(8, 16, 25, 0.66);
+  background: var(--color-surface-deep);
 }
 
 .panelHeader,
@@ -178,7 +178,7 @@
   gap: var(--space-3);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-control);
-  background: rgba(5, 11, 18, 0.7);
+  background: var(--color-surface-controls);
 }
 
 .modifier fieldset[id$="-type"] > div {

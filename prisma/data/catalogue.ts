@@ -778,7 +778,8 @@ export const catalogueSeed = validateCatalogueSeed({
       apertureMm: 200,
       nativeFocalLengthMm: 800,
       active: true,
-      sourceUrl: "https://www.skywatcherusa.com/collections/quattro-imaging-newtonians",
+      sourceUrl:
+        "https://www.skywatcherusa.com/collections/quattro-imaging-newtonians",
       verifiedAt: "2026-08-02",
     },
     {
@@ -789,7 +790,8 @@ export const catalogueSeed = validateCatalogueSeed({
       apertureMm: 127,
       nativeFocalLengthMm: 1500,
       active: true,
-      sourceUrl: "https://www.skywatcherusa.com/collections/skymax-maksutov-reflectors",
+      sourceUrl:
+        "https://www.skywatcherusa.com/collections/skymax-maksutov-reflectors",
       verifiedAt: "2026-08-02",
     },
     {

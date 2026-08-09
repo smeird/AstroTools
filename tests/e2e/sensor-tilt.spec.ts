@@ -25,6 +25,7 @@ test("sensor tilt updates locally and remains keyboard operable", async ({
     "36",
   );
 
+  await page.getByText("Browse all 23 calculators").click();
   await page.getByRole("link", { name: "Reducer & Barlow" }).focus();
   await expect(
     page.getByRole("link", { name: "Reducer & Barlow" }),

@@ -1,0 +1,41 @@
+.explainer {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.62fr) minmax(0, 1.38fr);
+  margin-bottom: var(--space-5);
+  padding: var(--space-4);
+  gap: var(--space-5);
+  border: 1px solid var(--color-border-subtle);
+  border-left: 3px solid var(--color-signal);
+  border-radius: var(--radius-panel);
+  background: var(--color-surface-raised);
+}
+
+.explainer h2,
+.explainer p {
+  margin: 0;
+}
+
+.explainer h2 {
+  margin-top: var(--space-2);
+  font-family: var(--font-heading);
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+  font-weight: 400;
+}
+
+.copy {
+  display: grid;
+  gap: var(--space-3);
+  color: var(--color-text-soft);
+  line-height: 1.55;
+}
+
+.copy strong {
+  color: var(--color-text);
+}
+
+@media (max-width: 44rem) {
+  .explainer {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+}

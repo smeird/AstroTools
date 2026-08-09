@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import type { FieldOfViewShareNotice } from "../schemas/shareable-state";
+import { CalculatorExplainer } from "@/components/design-system/calculator-explainer";
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
 import { CalculatorLineDiagram } from "@/components/diagrams/calculator-line-diagram";
 
@@ -48,6 +49,10 @@ export function FieldOfViewShell({
         </p>
       </section>
 
+      <CalculatorExplainer
+        slug="field-of-view"
+        guidance="Focal length controls the angular field; aperture affects focal ratio and sampling context but does not independently change field of view. Display zoom changes only the drawing."
+      />
       <CalculatorLineDiagram kind="field-of-view" />
 
       {notice ? (

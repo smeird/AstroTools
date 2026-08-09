@@ -15,6 +15,7 @@ test("modifier effects update live and persist after reload", async ({
 
   await page.getByRole("spinbutton", { name: "Modifier factor" }).fill("2");
   await expect(page.getByText("2,000 mm", { exact: false })).toBeVisible();
+  await page.getByText("Browse all 23 calculators").click();
   await expect(
     page.getByRole("link", { name: "Reducer & Barlow" }),
   ).toHaveAttribute("aria-current", "page");

@@ -87,9 +87,7 @@ test("academic view uses condensed typography without changing content", async (
   await page.goto("/");
   const heading = page.getByRole("heading", { level: 1 });
   const before = await heading.textContent();
-  await page
-    .getByRole("button", { name: "Use academic information-dense view" })
-    .click();
+  await page.getByRole("button", { name: "Switch to academic view" }).click();
   await expect(page.locator("html")).toHaveAttribute(
     "data-view-mode",
     "academic",

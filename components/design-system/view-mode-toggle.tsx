@@ -7,6 +7,18 @@ type ViewMode = "presentation" | "academic";
 
 function applyMode(mode: ViewMode) {
   document.documentElement.dataset.viewMode = mode;
+  document.documentElement.style.colorScheme =
+    mode === "academic" ? "light" : "dark";
+  let theme = document.querySelector<HTMLMetaElement>(
+    'meta[name="theme-color"][data-astrotools-view-mode]',
+  );
+  if (!theme) {
+    theme = document.createElement("meta");
+    theme.name = "theme-color";
+    theme.dataset.astrotoolsViewMode = "true";
+    document.head.append(theme);
+  }
+  theme.content = mode === "academic" ? "#ffffff" : "#081019";
 }
 
 export function ViewModeToggle() {
@@ -33,7 +45,7 @@ export function ViewModeToggle() {
 
   return (
     <button
-      aria-label="Use academic information-dense view"
+      aria-label={`Switch to ${mode === "academic" ? "presentation" : "academic"} view`}
       aria-pressed={mode === "academic"}
       className="view-mode-toggle"
       data-loaded={loaded ? "true" : "false"}

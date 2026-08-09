@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { startTransition, useEffect, useMemo, useState } from "react";
+import { startTransition, useEffect, useMemo, useRef, useState } from "react";
 
+import { CalculatorExplainer } from "@/components/design-system/calculator-explainer";
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
+import { EquipmentInheritanceNotice } from "@/components/design-system/equipment-inheritance-notice";
 import { CalculatorLineDiagram } from "@/components/diagrams/calculator-line-diagram";
 import { NumericInput } from "@/components/design-system/numeric-input";
-import { SharedTelescopeNotice } from "@/components/design-system/shared-telescope-notice";
 import { MathExpression } from "@/components/equations";
 import {
   applySharedTelescopeWhenChanged,
@@ -18,7 +19,6 @@ import {
   SHARED_CAMERA_SELECTION_KEY,
   SHARED_IMAGING_TRAIN_KEY,
   SHARED_TELESCOPE_SELECTION_KEY,
-  type SharedTelescopeSelection,
 } from "@/features/shared-equipment/telescope-selection";
 import { calculateModifierEffects } from "@/lib/calculations";
 
@@ -55,8 +55,11 @@ const format = (value: number, digits = 2) =>
 export function ModifierEffectsCalculator() {
   const [values, setValues] = useState(defaults);
   const [loaded, setLoaded] = useState(false);
-  const [sharedTelescope, setSharedTelescope] =
-    useState<SharedTelescopeSelection | null>(null);
+  const [equipmentLabel, setEquipmentLabel] = useState<string | null>(null);
+  const [equipmentFields, setEquipmentFields] = useState<readonly string[]>([]);
+  const telescopeMarker = useRef<string | null>(null);
+  const cameraMarker = useRef<string | null>(null);
+  const trainMarker = useRef<string | null>(null);
   useEffect(() => {
     const stored = window.localStorage.getItem(
       MODIFIER_EFFECTS_PERSISTENCE_KEY,
@@ -94,9 +97,10 @@ export function ModifierEffectsCalculator() {
       }),
     );
     const trainRaw = window.localStorage.getItem(SHARED_IMAGING_TRAIN_KEY);
+    const train = trainRaw ? parseSharedImagingTrain(trainRaw) : null;
     const trainApplied = applySharedImagingTrainWhenChanged(
       cameraApplied.values,
-      trainRaw ? parseSharedImagingTrain(trainRaw) : null,
+      train,
       window.localStorage.getItem(MODIFIER_TRAIN_APPLIED_KEY),
       (current, train) => ({
         ...current,
@@ -111,31 +115,54 @@ export function ModifierEffectsCalculator() {
     );
     startTransition(() => {
       setValues(trainApplied.values);
-      setSharedTelescope(shared);
+      setEquipmentLabel(
+        train?.rigName || train?.telescopeLabel || shared?.label || null,
+      );
+      setEquipmentFields(
+        train
+          ? [
+              "native focal length",
+              "aperture",
+              "optical multiplier",
+              "sensor size",
+              "pixel pitch",
+              "binning",
+            ]
+          : [
+              ...(shared ? ["native focal length", "aperture"] : []),
+              ...(sharedCamera ? ["sensor size", "pixel pitch"] : []),
+            ],
+      );
       setLoaded(true);
     });
-    if (applied.changed && applied.appliedSelection) {
-      window.localStorage.setItem(
-        MODIFIER_TELESCOPE_APPLIED_KEY,
-        applied.appliedSelection,
-      );
-    }
-    if (cameraApplied.changed && cameraApplied.appliedSelection)
-      window.localStorage.setItem(
-        MODIFIER_CAMERA_APPLIED_KEY,
-        cameraApplied.appliedSelection,
-      );
-    if (trainApplied.changed && trainApplied.appliedSelection)
-      window.localStorage.setItem(
-        MODIFIER_TRAIN_APPLIED_KEY,
-        trainApplied.appliedSelection,
-      );
+    telescopeMarker.current = applied.changed ? applied.appliedSelection : null;
+    cameraMarker.current = cameraApplied.changed
+      ? cameraApplied.appliedSelection
+      : null;
+    trainMarker.current = trainApplied.changed
+      ? trainApplied.appliedSelection
+      : null;
   }, []);
   useEffect(() => {
     if (loaded)
       window.localStorage.setItem(
         MODIFIER_EFFECTS_PERSISTENCE_KEY,
         serializeModifierEffects(values),
+      );
+    if (loaded && telescopeMarker.current)
+      window.localStorage.setItem(
+        MODIFIER_TELESCOPE_APPLIED_KEY,
+        telescopeMarker.current,
+      );
+    if (loaded && cameraMarker.current)
+      window.localStorage.setItem(
+        MODIFIER_CAMERA_APPLIED_KEY,
+        cameraMarker.current,
+      );
+    if (loaded && trainMarker.current)
+      window.localStorage.setItem(
+        MODIFIER_TRAIN_APPLIED_KEY,
+        trainMarker.current,
       );
   }, [loaded, values]);
   const result = useMemo(() => {
@@ -161,8 +188,15 @@ export function ModifierEffectsCalculator() {
           Barlow factor. Every result updates locally as you change the factor.
         </p>
       </header>
+      <CalculatorExplainer
+        slug="modifier-effects"
+        guidance="The saved train supplies the native telescope, current optical multiplier, camera geometry and binning. Change the multiplier to compare another reducer or Barlow without altering the equipment bookmark."
+      />
       <CalculatorLineDiagram kind="modifier-effects" />
-      <SharedTelescopeNotice selection={sharedTelescope} used />
+      <EquipmentInheritanceNotice
+        appliedFields={equipmentFields}
+        equipmentLabel={equipmentLabel}
+      />
       <div className={styles.workspace}>
         <section
           className={styles.panel}

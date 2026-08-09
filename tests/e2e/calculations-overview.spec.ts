@@ -21,10 +21,12 @@ test("academic view persists and never changes consolidated results", async ({
   await expect(imageScaleCell).toBeVisible();
   const before = await imageScaleCell.textContent();
   const toggle = page.getByRole("button", {
-    name: "Use academic information-dense view",
+    name: "Switch to academic view",
   });
   await toggle.click();
-  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+  await expect(
+    page.getByRole("button", { name: "Switch to presentation view" }),
+  ).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator("html")).toHaveAttribute(
     "data-view-mode",
     "academic",

@@ -16,7 +16,7 @@ test("a remembered telescope follows the user between relevant calculators", asy
     );
   });
   await page.goto("/calculators/modifier-effects");
-  await expect(page.getByTestId("shared-telescope")).toContainText(
+  await expect(page.getByTestId("shared-equipment")).toContainText(
     "Celestron EdgeHD 8-inch Optical Tube Assembly",
   );
   await expect(
@@ -34,8 +34,9 @@ test("a remembered telescope follows the user between relevant calculators", asy
     page.getByRole("spinbutton", { name: "Native focal length" }),
   ).toHaveValue("1800");
 
+  await page.getByText("Browse all 23 calculators").click();
   await page.getByRole("link", { name: "Resolution & Sampling" }).click();
-  await expect(page.getByTestId("shared-telescope")).toContainText(
+  await expect(page.getByTestId("shared-equipment")).toContainText(
     "Celestron EdgeHD 8-inch Optical Tube Assembly",
   );
   await expect(
@@ -45,8 +46,9 @@ test("a remembered telescope follows the user between relevant calculators", asy
     "203.2",
   );
 
+  await page.getByText("Browse all 23 calculators").click();
   await page.getByRole("link", { name: "Sensor Tilt" }).click();
-  await expect(page.getByTestId("shared-telescope")).toContainText(
-    "This calculator does not use telescope geometry.",
+  await expect(page.getByTestId("shared-equipment")).toContainText(
+    "specialist measurements that are not stored",
   );
 });

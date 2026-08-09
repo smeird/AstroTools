@@ -1,7 +1,9 @@
 "use client";
 import Link from "next/link";
-import { startTransition, useEffect, useMemo, useState } from "react";
+import { startTransition, useEffect, useMemo, useRef, useState } from "react";
+import { CalculatorExplainer } from "@/components/design-system/calculator-explainer";
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
+import { EquipmentInheritanceNotice } from "@/components/design-system/equipment-inheritance-notice";
 import { CalculatorLineDiagram } from "@/components/diagrams/calculator-line-diagram";
 import { NumericInput } from "@/components/design-system/numeric-input";
 import { MathExpression } from "@/components/equations";
@@ -37,12 +39,15 @@ const format = (n: number, d = 2) =>
 export function MosaicPlanningCalculator() {
   const [values, setValues] = useState(defaults);
   const [loaded, setLoaded] = useState(false);
+  const [equipmentLabel, setEquipmentLabel] = useState<string | null>(null);
+  const trainMarker = useRef<string | null>(null);
   useEffect(() => {
     const raw = localStorage.getItem(MOSAIC_PERSISTENCE_KEY);
     const trainRaw = localStorage.getItem(SHARED_IMAGING_TRAIN_KEY);
+    const train = trainRaw ? parseSharedImagingTrain(trainRaw) : null;
     const applied = applySharedImagingTrainWhenChanged(
       raw ? (parseMosaic(raw) ?? defaults) : defaults,
-      trainRaw ? parseSharedImagingTrain(trainRaw) : null,
+      train,
       localStorage.getItem(MOSAIC_TRAIN_APPLIED_KEY),
       (current, train) => ({
         ...current,
@@ -53,14 +58,16 @@ export function MosaicPlanningCalculator() {
     );
     startTransition(() => {
       setValues(applied.values);
+      setEquipmentLabel(train?.rigName || train?.telescopeLabel || null);
       setLoaded(true);
     });
-    if (applied.changed && applied.appliedSelection)
-      localStorage.setItem(MOSAIC_TRAIN_APPLIED_KEY, applied.appliedSelection);
+    trainMarker.current = applied.changed ? applied.appliedSelection : null;
   }, []);
   useEffect(() => {
     if (loaded)
       localStorage.setItem(MOSAIC_PERSISTENCE_KEY, serializeMosaic(values));
+    if (loaded && trainMarker.current)
+      localStorage.setItem(MOSAIC_TRAIN_APPLIED_KEY, trainMarker.current);
   }, [loaded, values]);
   const result = useMemo(() => {
     const input = Object.fromEntries(
@@ -89,7 +96,19 @@ export function MosaicPlanningCalculator() {
           size into an overlapping panel grid and integration budget.
         </p>
       </header>
+      <CalculatorExplainer
+        slug="mosaic-planning"
+        guidance="The saved focal length and sensor dimensions set each panel's exact field. Target extent, overlap and integration per panel remain specific to this mosaic."
+      />
       <CalculatorLineDiagram kind="mosaic-planning" />
+      <EquipmentInheritanceNotice
+        appliedFields={[
+          "effective focal length",
+          "sensor width",
+          "sensor height",
+        ]}
+        equipmentLabel={equipmentLabel}
+      />
       <div className={styles.workspace}>
         <section className={styles.panel} aria-labelledby="mosaic-inputs">
           <div className={styles.panelHeader}>

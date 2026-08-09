@@ -5,7 +5,7 @@
   gap: var(--space-5);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-panel);
-  background: rgba(8, 16, 25, 0.66);
+  background: var(--color-surface-deep);
 }
 
 .header {

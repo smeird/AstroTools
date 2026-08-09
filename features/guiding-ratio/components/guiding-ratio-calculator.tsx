@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { startTransition, useEffect, useMemo, useState } from "react";
+import { startTransition, useEffect, useMemo, useRef, useState } from "react";
 
+import { CalculatorExplainer } from "@/components/design-system/calculator-explainer";
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
+import { EquipmentInheritanceNotice } from "@/components/design-system/equipment-inheritance-notice";
 import { CalculatorLineDiagram } from "@/components/diagrams/calculator-line-diagram";
 import { NumericInput } from "@/components/design-system/numeric-input";
-import { SharedTelescopeNotice } from "@/components/design-system/shared-telescope-notice";
 import { MathExpression } from "@/components/equations";
 import {
   applySharedCameraWhenChanged,
@@ -18,7 +19,6 @@ import {
   SHARED_CAMERA_SELECTION_KEY,
   SHARED_IMAGING_TRAIN_KEY,
   SHARED_TELESCOPE_SELECTION_KEY,
-  type SharedTelescopeSelection,
 } from "@/features/shared-equipment/telescope-selection";
 import { calculateGuidingRatio } from "@/lib/calculations";
 
@@ -55,8 +55,11 @@ const format = (value: number, digits = 2) =>
 export function GuidingRatioCalculator() {
   const [values, setValues] = useState(defaults);
   const [loaded, setLoaded] = useState(false);
-  const [sharedTelescope, setSharedTelescope] =
-    useState<SharedTelescopeSelection | null>(null);
+  const [equipmentLabel, setEquipmentLabel] = useState<string | null>(null);
+  const [equipmentFields, setEquipmentFields] = useState<readonly string[]>([]);
+  const telescopeMarker = useRef<string | null>(null);
+  const cameraMarker = useRef<string | null>(null);
+  const trainMarker = useRef<string | null>(null);
 
   useEffect(() => {
     const stored = window.localStorage.getItem(GUIDING_RATIO_PERSISTENCE_KEY);
@@ -88,9 +91,10 @@ export function GuidingRatioCalculator() {
       }),
     );
     const trainRaw = window.localStorage.getItem(SHARED_IMAGING_TRAIN_KEY);
+    const train = trainRaw ? parseSharedImagingTrain(trainRaw) : null;
     const trainApplied = applySharedImagingTrainWhenChanged(
       cameraApplied.values,
-      trainRaw ? parseSharedImagingTrain(trainRaw) : null,
+      train,
       window.localStorage.getItem(GUIDING_TRAIN_APPLIED_KEY),
       (current, train) => ({
         ...current,
@@ -101,24 +105,28 @@ export function GuidingRatioCalculator() {
     );
     startTransition(() => {
       setValues(trainApplied.values);
-      setSharedTelescope(telescope);
+      setEquipmentLabel(
+        train?.rigName || train?.telescopeLabel || telescope?.label || null,
+      );
+      setEquipmentFields(
+        train
+          ? ["imaging focal length", "imaging pixel pitch", "imaging binning"]
+          : [
+              ...(telescope ? ["imaging focal length"] : []),
+              ...(camera ? ["imaging pixel pitch"] : []),
+            ],
+      );
       setLoaded(true);
     });
-    if (telescopeApplied.changed && telescopeApplied.appliedSelection)
-      window.localStorage.setItem(
-        GUIDING_TELESCOPE_APPLIED_KEY,
-        telescopeApplied.appliedSelection,
-      );
-    if (cameraApplied.changed && cameraApplied.appliedSelection)
-      window.localStorage.setItem(
-        GUIDING_CAMERA_APPLIED_KEY,
-        cameraApplied.appliedSelection,
-      );
-    if (trainApplied.changed && trainApplied.appliedSelection)
-      window.localStorage.setItem(
-        GUIDING_TRAIN_APPLIED_KEY,
-        trainApplied.appliedSelection,
-      );
+    telescopeMarker.current = telescopeApplied.changed
+      ? telescopeApplied.appliedSelection
+      : null;
+    cameraMarker.current = cameraApplied.changed
+      ? cameraApplied.appliedSelection
+      : null;
+    trainMarker.current = trainApplied.changed
+      ? trainApplied.appliedSelection
+      : null;
   }, []);
 
   useEffect(() => {
@@ -126,6 +134,21 @@ export function GuidingRatioCalculator() {
       window.localStorage.setItem(
         GUIDING_RATIO_PERSISTENCE_KEY,
         serializeGuidingRatio(values),
+      );
+    if (loaded && telescopeMarker.current)
+      window.localStorage.setItem(
+        GUIDING_TELESCOPE_APPLIED_KEY,
+        telescopeMarker.current,
+      );
+    if (loaded && cameraMarker.current)
+      window.localStorage.setItem(
+        GUIDING_CAMERA_APPLIED_KEY,
+        cameraMarker.current,
+      );
+    if (loaded && trainMarker.current)
+      window.localStorage.setItem(
+        GUIDING_TRAIN_APPLIED_KEY,
+        trainMarker.current,
       );
   }, [loaded, values]);
 
@@ -158,8 +181,15 @@ export function GuidingRatioCalculator() {
           see the centroid precision needed to hold an imaging pixel.
         </p>
       </header>
+      <CalculatorExplainer
+        slug="guiding-ratio"
+        guidance="The main imaging scale comes from the saved telescope, modifier, camera and binning. Guide-scope and guide-camera measurements remain local because they are not part of the equipment profile."
+      />
       <CalculatorLineDiagram kind="guiding-ratio" />
-      <SharedTelescopeNotice selection={sharedTelescope} used />
+      <EquipmentInheritanceNotice
+        appliedFields={equipmentFields}
+        equipmentLabel={equipmentLabel}
+      />
 
       <div className={styles.workspace}>
         <section className={styles.panel} aria-labelledby="guiding-inputs">

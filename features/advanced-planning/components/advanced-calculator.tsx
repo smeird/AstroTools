@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { Fragment, startTransition, useEffect, useMemo, useState } from "react";
 
+import { CalculatorExplainer } from "@/components/design-system/calculator-explainer";
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
+import { EquipmentInheritanceNotice } from "@/components/design-system/equipment-inheritance-notice";
 import { NumericInput } from "@/components/design-system/numeric-input";
 import { CalculatorLineDiagram } from "@/components/diagrams/calculator-line-diagram";
 import { MathExpression } from "@/components/equations";
@@ -136,6 +138,9 @@ export function AdvancedCalculator({ kind }: { kind: AdvancedCalculatorKind }) {
   const [loaded, setLoaded] = useState(false);
   const [rigLabel, setRigLabel] = useState<string | null>(null);
   const persistenceKey = `astrotools.${kind}.settings.v1`;
+  const equipmentFields = definition.fields
+    .filter((field) => field.shared)
+    .map((field) => field.label.toLowerCase());
 
   useEffect(() => {
     let restored = defaults;
@@ -209,26 +214,15 @@ export function AdvancedCalculator({ kind }: { kind: AdvancedCalculatorKind }) {
         <h1>{definition.title}</h1>
         <p className={styles.lede}>{definition.lede}</p>
       </header>
-      <section className={styles.explainer} aria-labelledby={`${kind}-guide`}>
-        <h2 id={`${kind}-guide`}>What this calculator does</h2>
-        <p>
-          {definition.lede} Change a value and the result updates immediately,
-          so you can compare realistic options before you collect data.
-        </p>
-        <p>
-          If the answer looks wrong, first check the units and whether the
-          measurement describes your actual camera, telescope, sky or session.{" "}
-          {definition.note}
-        </p>
-      </section>
+      <CalculatorExplainer
+        slug={kind}
+        guidance={`Change a value and the result updates immediately. ${definition.note}`}
+      />
       <CalculatorLineDiagram kind={kind} />
-      {rigLabel ? (
-        <p className={styles.rigNotice} role="note">
-          Shared rig applied: <strong>{rigLabel}</strong>. Rig-derived fields
-          update when the saved imaging train changes; specialist measurements
-          remain local to this calculator.
-        </p>
-      ) : null}
+      <EquipmentInheritanceNotice
+        appliedFields={equipmentFields}
+        equipmentLabel={rigLabel}
+      />
       <div className={styles.workspace}>
         <section className={styles.panel} aria-labelledby={`${kind}-inputs`}>
           <div className={styles.panelHeader}>
