@@ -100,6 +100,16 @@ shared component keeps this contract consistent across all calculator routes.
 Academic view reduces the surrounding space without removing the caption; narrow
 layouts place the caption above the drawing to avoid horizontal overflow.
 
+Every calculator also renders the shared `CalculatorExplainer` before its
+technical figure. It exposes the practical question, a concise purpose, an “In
+words” description of the governing relationship, and calculator-specific input
+guidance without requiring the collapsed reference panel to be opened.
+
+`EquipmentInheritanceNotice` follows the figure when a saved rig is available.
+It lists the exact fields inherited from equipment. When the calculator needs
+only measurements that are not part of the equipment profile, it says so rather
+than claiming that the rig was applied.
+
 ## Equipment configuration
 
 Work Package 4 applies the control primitives to the production input hierarchy:
@@ -159,6 +169,11 @@ decision accent. Panels lose decorative dark fills and shadows, while controls,
 equations, diagrams and status treatments retain their boundaries and meaning at
 WCAG AA contrast. Presentation view continues to use the original
 observatory-dark palette.
+
+All component surfaces, including the imaging-train diagram and Field of View
+framing controls, use semantic surface tokens. The view toggle also updates the
+document colour scheme, browser theme colour and its accessible action label so
+browser chrome and assistive technology describe the active mode correctly.
 
 The current homepage reflects the equipment-first product architecture. Its two
 primary routes are the named equipment workspace and consolidated calculation

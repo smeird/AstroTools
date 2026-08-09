@@ -3,15 +3,17 @@
 import Link from "next/link";
 import { startTransition, useEffect, useMemo, useState } from "react";
 
+import { CalculatorExplainer } from "@/components/design-system/calculator-explainer";
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
+import { EquipmentInheritanceNotice } from "@/components/design-system/equipment-inheritance-notice";
 import { CalculatorLineDiagram } from "@/components/diagrams/calculator-line-diagram";
 import { NumericInput } from "@/components/design-system/numeric-input";
-import { SharedTelescopeNotice } from "@/components/design-system/shared-telescope-notice";
 import { MathExpression } from "@/components/equations";
 import {
+  parseSharedImagingTrain,
   parseSharedTelescopeSelection,
+  SHARED_IMAGING_TRAIN_KEY,
   SHARED_TELESCOPE_SELECTION_KEY,
-  type SharedTelescopeSelection,
 } from "@/features/shared-equipment/telescope-selection";
 import { calculateBackfocusSpacing } from "@/lib/calculations";
 
@@ -47,8 +49,7 @@ const format = (value: number, digits = 2) =>
 export function BackfocusSpacingCalculator() {
   const [values, setValues] = useState(defaults);
   const [loaded, setLoaded] = useState(false);
-  const [sharedTelescope, setSharedTelescope] =
-    useState<SharedTelescopeSelection | null>(null);
+  const [equipmentLabel, setEquipmentLabel] = useState<string | null>(null);
 
   useEffect(() => {
     const stored = window.localStorage.getItem(
@@ -58,10 +59,18 @@ export function BackfocusSpacingCalculator() {
     const sharedRaw = window.localStorage.getItem(
       SHARED_TELESCOPE_SELECTION_KEY,
     );
+    const sharedTelescope = sharedRaw
+      ? parseSharedTelescopeSelection(sharedRaw)
+      : null;
+    const trainRaw = window.localStorage.getItem(SHARED_IMAGING_TRAIN_KEY);
+    const train = trainRaw ? parseSharedImagingTrain(trainRaw) : null;
     startTransition(() => {
       if (restored) setValues(restored);
-      setSharedTelescope(
-        sharedRaw ? parseSharedTelescopeSelection(sharedRaw) : null,
+      setEquipmentLabel(
+        train?.rigName ||
+          train?.telescopeLabel ||
+          sharedTelescope?.label ||
+          null,
       );
       setLoaded(true);
     });
@@ -113,8 +122,15 @@ export function BackfocusSpacingCalculator() {
           then account for the first-order focus shift introduced by a filter.
         </p>
       </header>
+      <CalculatorExplainer
+        slug="backfocus-spacing"
+        guidance="Mechanical sensor depth, accessory thicknesses and the reducer or flattener's specified back-focus are not part of the optical equipment profile, so they must be measured or read from drawings."
+      />
       <CalculatorLineDiagram kind="backfocus-spacing" />
-      <SharedTelescopeNotice selection={sharedTelescope} used={false} />
+      <EquipmentInheritanceNotice
+        appliedFields={[]}
+        equipmentLabel={equipmentLabel}
+      />
 
       <div className={styles.workspace}>
         <section className={styles.panel} aria-labelledby="backfocus-inputs">

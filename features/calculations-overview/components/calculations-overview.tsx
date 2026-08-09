@@ -777,8 +777,10 @@ export function CalculationsOverview() {
                         </tr>
                       </thead>
                       <tbody>
-                        {section.rows.map((row) => (
-                          <tr key={`${section.id}-${row.label}`}>
+                        {section.rows.map((row, rowIndex) => (
+                          <tr
+                            key={`${section.id}-${row.label}-${row.unit ?? rowIndex}`}
+                          >
                             <th scope="row">{row.label}</th>
                             <td>{row.symbol ?? "—"}</td>
                             <td>{row.value}</td>
@@ -892,8 +894,10 @@ export function CalculationsOverview() {
                       </tr>
                     </thead>
                     <tbody>
-                      {section.rows.map((row) => (
-                        <tr key={`report-${section.id}-${row.label}`}>
+                      {section.rows.map((row, rowIndex) => (
+                        <tr
+                          key={`report-${section.id}-${row.label}-${row.unit ?? rowIndex}`}
+                        >
                           <th scope="row">{row.label}</th>
                           <td>{row.symbol ?? "—"}</td>
                           <td>{row.value}</td>

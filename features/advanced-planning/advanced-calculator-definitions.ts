@@ -264,8 +264,12 @@ export const advancedCalculatorDefinitions: Record<
           value: r.saturationSeconds,
           unit: "s",
         },
-        { label: "Predicted peak", value: r.predictedElectrons, unit: "e⁻" },
-        { label: "Predicted peak", value: r.predictedAdu, unit: "ADU" },
+        {
+          label: "Predicted peak electrons",
+          value: r.predictedElectrons,
+          unit: "e⁻",
+        },
+        { label: "Predicted peak ADU", value: r.predictedAdu, unit: "ADU" },
         { label: "Well used", value: r.wellPercent, unit: "%" },
         {
           label: "Headroom status",
@@ -662,7 +666,7 @@ export const advancedCalculatorDefinitions: Record<
           unit: "µm",
         },
         {
-          label: "Critical focus zone",
+          label: "Critical focus zone steps",
           value: r.criticalFocusZoneSteps,
           unit: "steps",
         },

@@ -1,20 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { startTransition, useEffect, useMemo, useState } from "react";
+import { startTransition, useEffect, useMemo, useRef, useState } from "react";
 
+import { CalculatorExplainer } from "@/components/design-system/calculator-explainer";
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
+import { EquipmentInheritanceNotice } from "@/components/design-system/equipment-inheritance-notice";
 import { CalculatorLineDiagram } from "@/components/diagrams/calculator-line-diagram";
 import { NumericInput } from "@/components/design-system/numeric-input";
-import { SharedTelescopeNotice } from "@/components/design-system/shared-telescope-notice";
 import { MathExpression } from "@/components/equations";
 import {
   applySharedCameraWhenChanged,
   parseSharedCameraSelection,
+  parseSharedImagingTrain,
   parseSharedTelescopeSelection,
   SHARED_CAMERA_SELECTION_KEY,
+  SHARED_IMAGING_TRAIN_KEY,
   SHARED_TELESCOPE_SELECTION_KEY,
-  type SharedTelescopeSelection,
 } from "@/features/shared-equipment/telescope-selection";
 import { calculateSensorTilt } from "@/lib/calculations";
 
@@ -49,20 +51,24 @@ const format = (value: number, digits = 3) =>
 export function SensorTiltCalculator() {
   const [values, setValues] = useState(defaults);
   const [loaded, setLoaded] = useState(false);
-  const [sharedTelescope, setSharedTelescope] =
-    useState<SharedTelescopeSelection | null>(null);
+  const [equipmentLabel, setEquipmentLabel] = useState<string | null>(null);
+  const [equipmentFields, setEquipmentFields] = useState<readonly string[]>([]);
+  const cameraMarker = useRef<string | null>(null);
 
   useEffect(() => {
     const stored = window.localStorage.getItem(SENSOR_TILT_PERSISTENCE_KEY);
     const restored = stored ? parseSensorTilt(stored) : null;
-    const sharedRaw = window.localStorage.getItem(
-      SHARED_TELESCOPE_SELECTION_KEY,
-    );
     const sharedCameraRaw = window.localStorage.getItem(
       SHARED_CAMERA_SELECTION_KEY,
     );
     const sharedCamera = sharedCameraRaw
       ? parseSharedCameraSelection(sharedCameraRaw)
+      : null;
+    const telescopeRaw = window.localStorage.getItem(
+      SHARED_TELESCOPE_SELECTION_KEY,
+    );
+    const telescope = telescopeRaw
+      ? parseSharedTelescopeSelection(telescopeRaw)
       : null;
     const cameraApplied = applySharedCameraWhenChanged(
       restored ?? defaults,
@@ -76,16 +82,21 @@ export function SensorTiltCalculator() {
     );
     startTransition(() => {
       setValues(cameraApplied.values);
-      setSharedTelescope(
-        sharedRaw ? parseSharedTelescopeSelection(sharedRaw) : null,
+      const trainRaw = window.localStorage.getItem(SHARED_IMAGING_TRAIN_KEY);
+      const train = trainRaw ? parseSharedImagingTrain(trainRaw) : null;
+      setEquipmentLabel(
+        train?.rigName ||
+          train?.telescopeLabel ||
+          sharedCamera?.label ||
+          telescope?.label ||
+          null,
       );
+      setEquipmentFields(sharedCamera ? ["sensor width", "sensor height"] : []);
       setLoaded(true);
     });
-    if (cameraApplied.changed && cameraApplied.appliedSelection)
-      window.localStorage.setItem(
-        SENSOR_TILT_CAMERA_APPLIED_KEY,
-        cameraApplied.appliedSelection,
-      );
+    cameraMarker.current = cameraApplied.changed
+      ? cameraApplied.appliedSelection
+      : null;
   }, []);
 
   useEffect(() => {
@@ -94,6 +105,11 @@ export function SensorTiltCalculator() {
         SENSOR_TILT_PERSISTENCE_KEY,
         serializeSensorTilt(values),
       );
+      if (cameraMarker.current)
+        window.localStorage.setItem(
+          SENSOR_TILT_CAMERA_APPLIED_KEY,
+          cameraMarker.current,
+        );
     }
   }, [loaded, values]);
 
@@ -138,8 +154,15 @@ export function SensorTiltCalculator() {
           the tilt magnitude and the equivalent adjustment at your tilt plate.
         </p>
       </header>
+      <CalculatorExplainer
+        slug="sensor-tilt"
+        guidance="The saved camera supplies the sensor dimensions. Focus offsets and adjuster spacing must come from your own focus analysis and tilt-plate geometry."
+      />
       <CalculatorLineDiagram kind="sensor-tilt" />
-      <SharedTelescopeNotice selection={sharedTelescope} used={false} />
+      <EquipmentInheritanceNotice
+        appliedFields={equipmentFields}
+        equipmentLabel={equipmentLabel}
+      />
 
       <div className={styles.workspace}>
         <section className={styles.panel} aria-labelledby="tilt-inputs-title">

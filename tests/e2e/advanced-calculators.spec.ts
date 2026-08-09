@@ -34,7 +34,7 @@ test("integration results respond locally and persist", async ({ page }) => {
   await page.goto("/calculators/integration-planner");
   const target = page.getByLabel("Target integration");
   await target.fill("10");
-  await expect(page.getByText("200", { exact: true })).toBeVisible();
+  await expect(page.getByText("200", { exact: true }).first()).toBeVisible();
   await page.reload();
   await expect(target).toHaveValue("10");
 });

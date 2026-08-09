@@ -1,7 +1,9 @@
 "use client";
 import Link from "next/link";
-import { startTransition, useEffect, useMemo, useState } from "react";
+import { startTransition, useEffect, useMemo, useRef, useState } from "react";
+import { CalculatorExplainer } from "@/components/design-system/calculator-explainer";
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
+import { EquipmentInheritanceNotice } from "@/components/design-system/equipment-inheritance-notice";
 import { CalculatorLineDiagram } from "@/components/diagrams/calculator-line-diagram";
 import { NumericInput } from "@/components/design-system/numeric-input";
 import { MathExpression } from "@/components/equations";
@@ -33,6 +35,8 @@ const f = (n: number, d = 2) =>
 export function StorageVolumeCalculator() {
   const [values, setValues] = useState(defaults);
   const [loaded, setLoaded] = useState(false);
+  const [equipmentLabel, setEquipmentLabel] = useState<string | null>(null);
+  const trainMarker = useRef<string | null>(null);
   useEffect(() => {
     let restored = defaults;
     try {
@@ -60,14 +64,16 @@ export function StorageVolumeCalculator() {
       );
     startTransition(() => {
       setValues(applied.values);
+      setEquipmentLabel(train?.rigName || train?.telescopeLabel || null);
       setLoaded(true);
     });
-    if (applied.changed && applied.appliedSelection)
-      localStorage.setItem(appliedKey, applied.appliedSelection);
+    trainMarker.current = applied.changed ? applied.appliedSelection : null;
   }, []);
   useEffect(() => {
     if (loaded)
       localStorage.setItem(key, JSON.stringify({ version: 1, values }));
+    if (loaded && trainMarker.current)
+      localStorage.setItem(appliedKey, trainMarker.current);
   }, [loaded, values]);
   const result = useMemo(() => {
     try {
@@ -106,7 +112,15 @@ export function StorageVolumeCalculator() {
           into frame size, session volume and sustained write rate.
         </p>
       </header>
+      <CalculatorExplainer
+        slug="storage-volume"
+        guidance="The saved camera supplies native resolution. File format, channel count, cadence, session duration and calibration count remain capture-plan choices."
+      />
       <CalculatorLineDiagram kind="storage-volume" />
+      <EquipmentInheritanceNotice
+        appliedFields={["camera resolution width", "camera resolution height"]}
+        equipmentLabel={equipmentLabel}
+      />
       <div className={styles.workspace}>
         <section className={styles.panel} aria-labelledby="storage-inputs">
           <div className={styles.panelHeader}>

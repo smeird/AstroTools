@@ -22,6 +22,19 @@ and explicit missing measurement. Both routes consume the same locally published
 full imaging train. A bare `/equipment` route may restore the last locally
 remembered setup as a convenience; the URL remains the portable source of truth.
 
+Calculator handoff is idempotent. Equipment-derived values are applied when the
+published train changes and the applied marker is committed only after the
+calculator state is persisted. Development-mode effect replay therefore cannot
+replace inherited values with defaults, while a user's later specialist edits
+remain intact when the same train is reopened.
+
+Each detail calculator names the inherited fields. Optical and camera geometry
+flow into Field of View, Modifier Effects, Resolution, Sensor Tilt, Guiding,
+Polar Alignment, Exposure SNR, Mosaic, Dew Heater and Storage wherever the
+equipment profile contains the required value. Back-focus remains
+specialist-only because mechanical sensor depth and accessory thicknesses are
+not part of the profile.
+
 The optional rig name is canonical URL state (`n=`), limited to 80 normalised
 plain-text characters. It becomes the equipment and calculations document title
 so a browser bookmark is recognisable. It is also copied into the local shared

@@ -5,7 +5,7 @@
   gap: var(--space-5);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-panel);
-  background: rgba(8, 16, 25, 0.66);
+  background: var(--color-surface-raised);
 }
 
 .sectionHeader {
@@ -37,7 +37,7 @@
   padding: var(--space-4);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-control);
-  background: rgba(5, 11, 18, 0.68);
+  background: var(--color-surface-input);
 }
 
 .controls fieldset {
@@ -165,12 +165,24 @@
   position: absolute;
   z-index: 2;
   padding: 0.35rem 0.45rem;
-  background: rgba(8, 16, 25, 0.88);
+  background: var(--color-surface-visual);
   color: var(--color-text-soft);
   font-family: var(--font-mono);
   font-size: var(--font-size-meta);
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+:global(html[data-view-mode="academic"]) .viewport {
+  background: var(--color-surface-visual);
+}
+
+:global(html[data-view-mode="academic"]) .sky {
+  fill: var(--color-surface-visual);
+}
+
+:global(html[data-view-mode="academic"]) .scaleBar text {
+  stroke: var(--color-surface-visual);
 }
 
 .orientationMark {

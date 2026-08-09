@@ -1,7 +1,9 @@
 "use client";
 import Link from "next/link";
-import { startTransition, useEffect, useMemo, useState } from "react";
+import { startTransition, useEffect, useMemo, useRef, useState } from "react";
+import { CalculatorExplainer } from "@/components/design-system/calculator-explainer";
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
+import { EquipmentInheritanceNotice } from "@/components/design-system/equipment-inheritance-notice";
 import { CalculatorLineDiagram } from "@/components/diagrams/calculator-line-diagram";
 import { NumericInput } from "@/components/design-system/numeric-input";
 import { MathExpression } from "@/components/equations";
@@ -39,12 +41,15 @@ const format = (n: number, d = 2) =>
 export function ExposureSnrCalculator() {
   const [values, setValues] = useState(defaults);
   const [loaded, setLoaded] = useState(false);
+  const [equipmentLabel, setEquipmentLabel] = useState<string | null>(null);
+  const trainMarker = useRef<string | null>(null);
   useEffect(() => {
     const raw = localStorage.getItem(EXPOSURE_SNR_PERSISTENCE_KEY);
     const trainRaw = localStorage.getItem(SHARED_IMAGING_TRAIN_KEY);
+    const train = trainRaw ? parseSharedImagingTrain(trainRaw) : null;
     const applied = applySharedImagingTrainWhenChanged(
       raw ? (parseExposureSnr(raw) ?? defaults) : defaults,
-      trainRaw ? parseSharedImagingTrain(trainRaw) : null,
+      train,
       localStorage.getItem(EXPOSURE_SNR_TRAIN_APPLIED_KEY),
       (current, train) => ({
         ...current,
@@ -55,13 +60,10 @@ export function ExposureSnrCalculator() {
     );
     startTransition(() => {
       setValues(applied.values);
+      setEquipmentLabel(train?.rigName || train?.telescopeLabel || null);
       setLoaded(true);
     });
-    if (applied.changed && applied.appliedSelection)
-      localStorage.setItem(
-        EXPOSURE_SNR_TRAIN_APPLIED_KEY,
-        applied.appliedSelection,
-      );
+    trainMarker.current = applied.changed ? applied.appliedSelection : null;
   }, []);
   useEffect(() => {
     if (loaded)
@@ -69,6 +71,8 @@ export function ExposureSnrCalculator() {
         EXPOSURE_SNR_PERSISTENCE_KEY,
         serializeExposureSnr(values),
       );
+    if (loaded && trainMarker.current)
+      localStorage.setItem(EXPOSURE_SNR_TRAIN_APPLIED_KEY, trainMarker.current);
   }, [loaded, values]);
   const result = useMemo(() => {
     const input = Object.fromEntries(
@@ -120,7 +124,19 @@ export function ExposureSnrCalculator() {
           rates to compare signal, sky, dark current and read noise.
         </p>
       </header>
+      <CalculatorExplainer
+        slug="exposure-snr"
+        guidance="The saved optical train supplies image scale. Source, sky, dark-current and read-noise rates must describe the actual target, site and camera operating mode."
+      />
       <CalculatorLineDiagram kind="exposure-snr" />
+      <EquipmentInheritanceNotice
+        appliedFields={[
+          "effective focal length",
+          "camera pixel pitch",
+          "binning",
+        ]}
+        equipmentLabel={equipmentLabel}
+      />
       <div className={styles.workspace}>
         <section className={styles.panel} aria-labelledby="snr-inputs">
           <div className={styles.panelHeader}>

@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { startTransition, useEffect, useMemo, useState } from "react";
+import { startTransition, useEffect, useMemo, useRef, useState } from "react";
+import { CalculatorExplainer } from "@/components/design-system/calculator-explainer";
 import { CalculatorNavigation } from "@/components/design-system/calculator-navigation";
+import { EquipmentInheritanceNotice } from "@/components/design-system/equipment-inheritance-notice";
 import { CalculatorLineDiagram } from "@/components/diagrams/calculator-line-diagram";
 import { NumericInput } from "@/components/design-system/numeric-input";
 import { MathExpression } from "@/components/equations";
@@ -43,12 +45,15 @@ const format = (value: number, digits = 2) =>
 export function PolarAlignmentDriftCalculator() {
   const [values, setValues] = useState(defaults);
   const [loaded, setLoaded] = useState(false);
+  const [equipmentLabel, setEquipmentLabel] = useState<string | null>(null);
+  const trainMarker = useRef<string | null>(null);
   useEffect(() => {
     const raw = window.localStorage.getItem(POLAR_DRIFT_PERSISTENCE_KEY);
     const trainRaw = window.localStorage.getItem(SHARED_IMAGING_TRAIN_KEY);
+    const train = trainRaw ? parseSharedImagingTrain(trainRaw) : null;
     const applied = applySharedImagingTrainWhenChanged(
       raw ? (parsePolarDrift(raw) ?? defaults) : defaults,
-      trainRaw ? parseSharedImagingTrain(trainRaw) : null,
+      train,
       window.localStorage.getItem(POLAR_DRIFT_TRAIN_APPLIED_KEY),
       (current, train) => ({
         ...current,
@@ -59,19 +64,21 @@ export function PolarAlignmentDriftCalculator() {
     );
     startTransition(() => {
       setValues(applied.values);
+      setEquipmentLabel(train?.rigName || train?.telescopeLabel || null);
       setLoaded(true);
     });
-    if (applied.changed && applied.appliedSelection)
-      window.localStorage.setItem(
-        POLAR_DRIFT_TRAIN_APPLIED_KEY,
-        applied.appliedSelection,
-      );
+    trainMarker.current = applied.changed ? applied.appliedSelection : null;
   }, []);
   useEffect(() => {
     if (loaded)
       window.localStorage.setItem(
         POLAR_DRIFT_PERSISTENCE_KEY,
         serializePolarDrift(values),
+      );
+    if (loaded && trainMarker.current)
+      window.localStorage.setItem(
+        POLAR_DRIFT_TRAIN_APPLIED_KEY,
+        trainMarker.current,
       );
   }, [loaded, values]);
   const result = useMemo(() => {
@@ -106,7 +113,19 @@ export function PolarAlignmentDriftCalculator() {
           full imaging train converts detector pixels into sky angle.
         </p>
       </header>
+      <CalculatorExplainer
+        slug="polar-alignment-drift"
+        guidance="The saved imaging scale converts measured detector drift into sky drift. Latitude, hour angle, duration and signed pixel movement remain observation-specific."
+      />
       <CalculatorLineDiagram kind="polar-alignment" />
+      <EquipmentInheritanceNotice
+        appliedFields={[
+          "effective focal length",
+          "camera pixel pitch",
+          "binning",
+        ]}
+        equipmentLabel={equipmentLabel}
+      />
       <div className={styles.workspace}>
         <section className={styles.panel} aria-labelledby="drift-inputs">
           <div className={styles.panelHeader}>

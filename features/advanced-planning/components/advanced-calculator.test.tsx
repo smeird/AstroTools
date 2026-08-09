@@ -36,4 +36,40 @@ describe("advanced calculator pages", () => {
       );
     },
   );
+
+  it("labels whether the saved rig contributes fields", async () => {
+    window.localStorage.setItem(
+      "astrotools.shared.imaging-train.v1",
+      JSON.stringify({
+        version: 1,
+        rigName: "Garden Rig",
+        telescopeLabel: "Test telescope",
+        cameraLabel: "Test camera",
+        nativeFocalLengthMm: "600",
+        effectiveFocalLengthMm: "420",
+        apertureMm: "80",
+        opticalMultiplier: "0.7",
+        pixelSizeUm: "3.76",
+        binningFactor: "2",
+        sensorWidthMm: "23.5",
+        sensorHeightMm: "15.7",
+        resolutionWidthPx: "6250",
+        resolutionHeightPx: "4176",
+      }),
+    );
+
+    const { unmount } = render(
+      <AdvancedCalculator kind="integration-planner" />,
+    );
+    expect(await screen.findByTestId("shared-equipment")).toHaveTextContent(
+      "specialist measurements that are not stored",
+    );
+    unmount();
+
+    render(<AdvancedCalculator kind="plate-solving-scale" />);
+    expect(await screen.findByTestId("shared-equipment")).toHaveTextContent(
+      "Applied from equipment: effective focal length, effective pixel size, image width, image height.",
+    );
+    expect(screen.getByLabelText("Effective focal length")).toHaveValue(420);
+  });
 });
