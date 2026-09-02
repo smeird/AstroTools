@@ -20,10 +20,10 @@ describe("catalogue seed data", () => {
   it("prefers controlled migration credentials for production seeding", () => {
     expect(
       resolveSeedDatabaseUrl({
-        DATABASE_URL: "mysql://runtime.example/astrotools",
-        MIGRATION_DATABASE_URL: "mysql://migration.example/astrotools",
+        DATABASE_URL: "postgresql://runtime.example/astrotools",
+        MIGRATION_DATABASE_URL: "postgresql://migration.example/astrotools",
       }),
-    ).toBe("mysql://migration.example/astrotools");
+    ).toBe("postgresql://migration.example/astrotools");
     expect(() => resolveSeedDatabaseUrl({})).toThrow(
       /MIGRATION_DATABASE_URL or DATABASE_URL is required/,
     );

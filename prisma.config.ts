@@ -8,7 +8,7 @@ import {
 } from "./lib/db/config";
 
 const generationOnlyUrl =
-  "mysql://astrotools_generate:NOT_A_REAL_PASSWORD@127.0.0.1:3306/astrotools";
+  "postgresql://astrotools_generate:NOT_A_REAL_PASSWORD@127.0.0.1:5432/astrotools";
 
 const databaseUrl =
   process.env.MIGRATION_DATABASE_URL ??

@@ -1,4 +1,4 @@
-import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 import { PrismaClient } from "@/lib/db/generated/prisma/client";
 
@@ -13,7 +13,9 @@ const prismaGlobal = globalThis as PrismaGlobal;
 export function createPrismaClient(
   environment: DatabaseEnvironment = process.env,
 ): PrismaClient {
-  const adapter = new PrismaMariaDb(parseDatabaseConfiguration(environment));
+  const adapter = new PrismaPg({
+    connectionString: parseDatabaseConfiguration(environment),
+  });
 
   return new PrismaClient({ adapter });
 }

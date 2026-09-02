@@ -34,8 +34,10 @@ export function validateIntegrationDatabaseUrl(
   const isLoopback = ["127.0.0.1", "localhost", "::1", "[::1]"].includes(
     parsedUrl.hostname,
   );
-  if (parsedUrl.protocol !== "mysql:") {
-    throw new Error("Integration DATABASE_URL must use the mysql protocol.");
+  if (parsedUrl.protocol !== "postgresql:") {
+    throw new Error(
+      "Integration DATABASE_URL must use the postgresql protocol.",
+    );
   }
 
   if (
@@ -93,7 +95,7 @@ export function parseIntegrationRunnerMode(
 
 function databaseTarget(databaseUrl: string): string {
   const parsedUrl = new URL(databaseUrl);
-  const port = parsedUrl.port || "3306";
+  const port = parsedUrl.port || "5432";
   return `${parsedUrl.hostname.toLowerCase()}:${port}/${decodeURIComponent(
     parsedUrl.pathname.slice(1),
   )}`;

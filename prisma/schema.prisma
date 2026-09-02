@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
 }
 
 model Manufacturer {
@@ -12,8 +12,8 @@ model Manufacturer {
   slug       String            @unique @db.VarChar(191)
   name       String            @db.VarChar(255)
   websiteUrl String            @map("website_url") @db.VarChar(2048)
-  createdAt  DateTime          @default(now()) @map("created_at") @db.DateTime(3)
-  updatedAt  DateTime          @updatedAt @map("updated_at") @db.DateTime(3)
+  createdAt  DateTime          @default(now()) @map("created_at") @db.Timestamp(3)
+  updatedAt  DateTime          @updatedAt @map("updated_at") @db.Timestamp(3)
   telescopes Telescope[]
   cameras    Camera[]
   modifiers  OpticalModifier[]
@@ -32,8 +32,8 @@ model Telescope {
   active              Boolean      @default(true)
   sourceUrl           String       @map("source_url") @db.VarChar(2048)
   verifiedAt          DateTime     @map("verified_at") @db.Date
-  createdAt           DateTime     @default(now()) @map("created_at") @db.DateTime(3)
-  updatedAt           DateTime     @updatedAt @map("updated_at") @db.DateTime(3)
+  createdAt           DateTime     @default(now()) @map("created_at") @db.Timestamp(3)
+  updatedAt           DateTime     @updatedAt @map("updated_at") @db.Timestamp(3)
   manufacturer        Manufacturer @relation(fields: [manufacturerId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 
   @@unique([manufacturerId, model])
@@ -50,15 +50,15 @@ model Camera {
   sensorWidthMm      Decimal      @map("sensor_width_mm") @db.Decimal(9, 4)
   sensorHeightMm     Decimal      @map("sensor_height_mm") @db.Decimal(9, 4)
   pixelSizeUm        Decimal      @map("pixel_size_um") @db.Decimal(7, 3)
-  resolutionWidthPx  Int          @map("resolution_width_px") @db.UnsignedInt
-  resolutionHeightPx Int          @map("resolution_height_px") @db.UnsignedInt
+  resolutionWidthPx  Int          @map("resolution_width_px")
+  resolutionHeightPx Int          @map("resolution_height_px")
   sensorType         String       @map("sensor_type") @db.VarChar(100)
   colourMode         String       @map("colour_mode") @db.VarChar(100)
   active             Boolean      @default(true)
   sourceUrl          String       @map("source_url") @db.VarChar(2048)
   verifiedAt         DateTime     @map("verified_at") @db.Date
-  createdAt          DateTime     @default(now()) @map("created_at") @db.DateTime(3)
-  updatedAt          DateTime     @updatedAt @map("updated_at") @db.DateTime(3)
+  createdAt          DateTime     @default(now()) @map("created_at") @db.Timestamp(3)
+  updatedAt          DateTime     @updatedAt @map("updated_at") @db.Timestamp(3)
   manufacturer       Manufacturer @relation(fields: [manufacturerId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 
   @@unique([manufacturerId, model])
@@ -77,8 +77,8 @@ model OpticalModifier {
   active          Boolean      @default(true)
   sourceUrl       String       @map("source_url") @db.VarChar(2048)
   verifiedAt      DateTime     @map("verified_at") @db.Date
-  createdAt       DateTime     @default(now()) @map("created_at") @db.DateTime(3)
-  updatedAt       DateTime     @updatedAt @map("updated_at") @db.DateTime(3)
+  createdAt       DateTime     @default(now()) @map("created_at") @db.Timestamp(3)
+  updatedAt       DateTime     @updatedAt @map("updated_at") @db.Timestamp(3)
   manufacturer    Manufacturer @relation(fields: [manufacturerId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 
   @@unique([manufacturerId, model])
@@ -101,8 +101,8 @@ model AstronomicalTarget {
   framingNote        String?  @map("framing_note") @db.VarChar(1024)
   sourceUrl          String   @map("source_url") @db.VarChar(2048)
   verifiedAt         DateTime @map("verified_at") @db.Date
-  createdAt          DateTime @default(now()) @map("created_at") @db.DateTime(3)
-  updatedAt          DateTime @updatedAt @map("updated_at") @db.DateTime(3)
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamp(3)
+  updatedAt          DateTime @updatedAt @map("updated_at") @db.Timestamp(3)
 
   @@index([category])
   @@map("astronomical_targets")
@@ -117,7 +117,7 @@ model CatalogueChangeLog {
   afterJson  Json?    @map("after_json")
   sourceUrl  String   @map("source_url") @db.VarChar(2048)
   changedBy  String   @map("changed_by") @db.VarChar(191)
-  createdAt  DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamp(3)
 
   @@index([entityType, entityId])
   @@index([createdAt])

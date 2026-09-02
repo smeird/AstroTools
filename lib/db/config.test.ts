@@ -7,39 +7,26 @@ import {
 } from "./config";
 
 describe("parseDatabaseConfiguration", () => {
-  it("creates a bounded pool configuration from a valid MySQL URL", () => {
+  it("returns a valid PostgreSQL URL unchanged", () => {
     expect(
       parseDatabaseConfiguration({
         DATABASE_URL:
-          "mysql://astrotools%5Fapp:safe%20password@127.0.0.1:3307/astrotools",
+          "postgresql://astrotools%5Fapp:safe%20password@127.0.0.1:5433/astrotools",
       }),
-    ).toEqual({
-      host: "127.0.0.1",
-      port: 3307,
-      user: "astrotools_app",
-      password: "safe password",
-      database: "astrotools",
-      connectionLimit: 10,
-      minimumIdle: 1,
-      acquireTimeout: 2_000,
-      connectTimeout: 2_000,
-      idleTimeout: 60,
-      initializationTimeout: 2_000,
-      allowPublicKeyRetrieval: true,
-      initSql: "SET SESSION max_execution_time=2000",
-    });
+    ).toBe(
+      "postgresql://astrotools%5Fapp:safe%20password@127.0.0.1:5433/astrotools",
+    );
   });
 
   it.each([
     undefined,
     "",
     "not a url",
-    "postgresql://user:password@localhost/astrotools",
-    "mysql://user@localhost/astrotools",
-    "mysql://user:password@localhost/",
-    "mysql://user:password@localhost/astrotools?debug=true",
-    "mysql://root:password@localhost/astrotools",
-    "mysql://user:password@db.internal/astrotools",
+    "mysql://user:password@localhost/astrotools",
+    "postgresql://user@localhost/astrotools",
+    "postgresql://user:password@localhost/",
+    "postgresql://postgres:password@localhost/astrotools",
+    "postgresql://user:password@db.internal/astrotools",
   ])(
     "rejects unsafe or incomplete configuration without echoing it: %s",
     (url) => {
@@ -63,31 +50,31 @@ describe("parseDatabaseConfiguration", () => {
     },
   );
 
-  it("normalizes an IPv6 loopback host for the driver", () => {
+  it("accepts an IPv6 loopback host", () => {
     expect(
       parseDatabaseConfiguration({
-        DATABASE_URL: "mysql://user:password@[::1]:3306/astrotools",
-      }).host,
-    ).toBe("::1");
+        DATABASE_URL: "postgresql://user:password@[::1]:5432/astrotools",
+      }),
+    ).toBe("postgresql://user:password@[::1]:5432/astrotools");
   });
 
   it("recognizes equivalent loopback and encoded database targets", () => {
     expect(
       databaseUrlsTargetSameDatabase(
-        "mysql://owner:password@127.0.0.1:3306/astrotools%5Fdev",
-        "mysql://owner:password@localhost/ASTROTOOLS_DEV",
+        "postgresql://owner:password@127.0.0.1:5432/astrotools%5Fdev",
+        "postgresql://owner:password@localhost/ASTROTOOLS_DEV",
       ),
     ).toBe(true);
     expect(
       databaseUrlsTargetSameDatabase(
-        "mysql://owner:password@127.0.0.1:3306/astrotools_dev",
-        "mysql://owner:password@[::1]:3306/astrotools_shadow",
+        "postgresql://owner:password@127.0.0.1:5432/astrotools_dev",
+        "postgresql://owner:password@[::1]:5432/astrotools_shadow",
       ),
     ).toBe(false);
     expect(
       databaseUrlsTargetSameDatabase(
-        "mysql://owner:password@127.0.0.1:3306/astrotools_dev",
-        "mysql://owner:password@127.0.0.1:3307/astrotools_dev",
+        "postgresql://owner:password@127.0.0.1:5432/astrotools_dev",
+        "postgresql://owner:password@127.0.0.1:5433/astrotools_dev",
       ),
     ).toBe(false);
   });

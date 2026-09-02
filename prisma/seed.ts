@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 import { parseDatabaseConfiguration } from "../lib/db/config";
 import { PrismaClient, type Prisma } from "../lib/db/generated/prisma/client";
@@ -537,9 +537,9 @@ export async function seedCatalogue(client: PrismaClient) {
 
 async function main() {
   const databaseUrl = resolveSeedDatabaseUrl(process.env);
-  const adapter = new PrismaMariaDb(
-    parseDatabaseConfiguration({ DATABASE_URL: databaseUrl }),
-  );
+  const adapter = new PrismaPg({
+    connectionString: parseDatabaseConfiguration({ DATABASE_URL: databaseUrl }),
+  });
   const client = new PrismaClient({ adapter });
 
   try {

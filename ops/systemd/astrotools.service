@@ -1,6 +1,6 @@
 [Unit]
 Description=AstroTools Next.js application
-After=network-online.target mysql.service
+After=network-online.target postgresql.service
 Wants=network-online.target
 
 [Service]
@@ -12,8 +12,8 @@ EnvironmentFile=/etc/astrotools/astrotools.env
 Environment=NODE_ENV=production
 Environment=HOSTNAME=127.0.0.1
 Environment=PORT=3100
-Environment=PATH=/usr/local/bin:/usr/bin:/bin
-ExecStart=/usr/local/bin/node .next/standalone/server.js
+Environment=PATH=/opt/astrotools/node-v24.18.0-linux-x64/bin:/usr/bin:/bin
+ExecStart=/opt/astrotools/node-v24.18.0-linux-x64/bin/node .next/standalone/server.js
 Restart=on-failure
 RestartSec=5s
 TimeoutStopSec=30s

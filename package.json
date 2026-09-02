@@ -31,10 +31,11 @@
     "db:seed": "prisma db seed"
   },
   "dependencies": {
-    "@prisma/adapter-mariadb": "7.9.1",
+    "@prisma/adapter-pg": "7.9.1",
     "@prisma/client": "7.9.1",
     "fast-xml-parser": "5.10.1",
     "next": "16.2.12",
+    "pg": "8.16.3",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "zod": "4.4.3"
@@ -46,6 +47,7 @@
     "@testing-library/react": "16.3.2",
     "@testing-library/user-event": "14.6.1",
     "@types/node": "24.13.3",
+    "@types/pg": "8.15.5",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "dotenv": "17.4.2",

@@ -18,9 +18,9 @@ describe("integration database guard", () => {
     ).toThrow(/Unsupported integration test runner argument/);
   });
 
-  it("accepts a loopback MySQL test database", () => {
+  it("accepts a loopback PostgreSQL test database", () => {
     const databaseUrl =
-      "mysql://astrotools_app:test-only@127.0.0.1:3306/astrotools_test";
+      "postgresql://astrotools_app:test-only@127.0.0.1:5432/astrotools_test";
 
     expect(validateIntegrationDatabaseUrl({ DATABASE_URL: databaseUrl })).toBe(
       databaseUrl,
@@ -31,28 +31,30 @@ describe("integration database guard", () => {
     [{}, "DATABASE_URL is required"],
     [{ DATABASE_URL: "not a URL" }, "valid URL"],
     [
-      { DATABASE_URL: "postgres://app:test@127.0.0.1:5432/astrotools_test" },
-      "mysql protocol",
+      { DATABASE_URL: "postgresql://app:test@127.0.0.1:5432/astrotools_test" },
+      "postgresql protocol",
     ],
     [
-      { DATABASE_URL: "mysql://app:test@127.0.0.1:3306/astrotools" },
+      { DATABASE_URL: "postgresql://app:test@127.0.0.1:5432/astrotools" },
       "distinct 'test' segment",
     ],
     [
-      { DATABASE_URL: "mysql://root:test@127.0.0.1:3306/astrotools_test" },
+      { DATABASE_URL: "postgresql://root:test@127.0.0.1:5432/astrotools_test" },
       "non-root identity",
     ],
     [
-      { DATABASE_URL: "mysql://app@127.0.0.1:3306/astrotools_test" },
+      { DATABASE_URL: "postgresql://app@127.0.0.1:5432/astrotools_test" },
       "non-root identity",
     ],
     [
-      { DATABASE_URL: "mysql://app:test@db.internal:3306/astrotools_test" },
+      {
+        DATABASE_URL: "postgresql://app:test@db.internal:5432/astrotools_test",
+      },
       "non-loopback integration database",
     ],
     [
       {
-        DATABASE_URL: "mysql://app:test@127.0.0.1:3306/astrotools_test",
+        DATABASE_URL: "postgresql://app:test@127.0.0.1:5432/astrotools_test",
         NODE_ENV: "production",
       },
       "NODE_ENV=production",
@@ -63,7 +65,7 @@ describe("integration database guard", () => {
 
   it("rejects a remote test database even when a legacy opt-in is present", () => {
     const databaseUrl =
-      "mysql://astrotools_app:test-only@db.internal:3306/astrotools_test";
+      "postgresql://astrotools_app:test-only@db.internal:5432/astrotools_test";
 
     expect(() =>
       validateIntegrationDatabaseUrl({
@@ -75,7 +77,7 @@ describe("integration database guard", () => {
 
   it("accepts the bracketed IPv6 loopback hostname returned by URL parsing", () => {
     const databaseUrl =
-      "mysql://astrotools_app:test-only@[::1]:3306/astrotools_test";
+      "postgresql://astrotools_app:test-only@[::1]:5432/astrotools_test";
 
     expect(validateIntegrationDatabaseUrl({ DATABASE_URL: databaseUrl })).toBe(
       databaseUrl,
@@ -86,15 +88,15 @@ describe("integration database guard", () => {
     expect(
       resolveIntegrationDatabaseUrls({
         DATABASE_URL:
-          "mysql://astrotools_app:runtime@127.0.0.1:3306/astrotools_test",
+          "postgresql://astrotools_app:runtime@127.0.0.1:5432/astrotools_test",
         MIGRATION_DATABASE_URL:
-          "mysql://astrotools_migrate:migrate@127.0.0.1:3306/astrotools_test",
+          "postgresql://astrotools_migrate:migrate@127.0.0.1:5432/astrotools_test",
       }),
     ).toEqual({
       runtimeDatabaseUrl:
-        "mysql://astrotools_app:runtime@127.0.0.1:3306/astrotools_test",
+        "postgresql://astrotools_app:runtime@127.0.0.1:5432/astrotools_test",
       migrationDatabaseUrl:
-        "mysql://astrotools_migrate:migrate@127.0.0.1:3306/astrotools_test",
+        "postgresql://astrotools_migrate:migrate@127.0.0.1:5432/astrotools_test",
     });
   });
 
@@ -102,9 +104,9 @@ describe("integration database guard", () => {
     expect(() =>
       resolveIntegrationDatabaseUrls({
         DATABASE_URL:
-          "mysql://astrotools_app:runtime@127.0.0.1:3306/astrotools_test",
+          "postgresql://astrotools_app:runtime@127.0.0.1:5432/astrotools_test",
         MIGRATION_DATABASE_URL:
-          "mysql://astrotools_migrate:migrate@127.0.0.1:3306/other_test",
+          "postgresql://astrotools_migrate:migrate@127.0.0.1:5432/other_test",
       }),
     ).toThrow(/same test database/);
   });
@@ -113,16 +115,16 @@ describe("integration database guard", () => {
     expect(() =>
       resolveIntegrationDatabaseUrls({
         DATABASE_URL:
-          "mysql://astrotools_app:runtime@127.0.0.1:3306/astrotools_test",
+          "postgresql://astrotools_app:runtime@127.0.0.1:5432/astrotools_test",
       }),
     ).toThrow(/MIGRATION_DATABASE_URL is required/);
 
     expect(() =>
       resolveIntegrationDatabaseUrls({
         DATABASE_URL:
-          "mysql://astrotools_app:runtime@127.0.0.1:3306/astrotools_test",
+          "postgresql://astrotools_app:runtime@127.0.0.1:5432/astrotools_test",
         MIGRATION_DATABASE_URL:
-          "mysql://astrotools_app:migrate@127.0.0.1:3306/astrotools_test",
+          "postgresql://astrotools_app:migrate@127.0.0.1:5432/astrotools_test",
       }),
     ).toThrow(/distinct identities/);
   });
