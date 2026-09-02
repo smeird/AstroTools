@@ -31,7 +31,7 @@ describe("integration database guard", () => {
     [{}, "DATABASE_URL is required"],
     [{ DATABASE_URL: "not a URL" }, "valid URL"],
     [
-      { DATABASE_URL: "postgresql://app:test@127.0.0.1:5432/astrotools_test" },
+      { DATABASE_URL: "mysql://app:test@127.0.0.1:3306/astrotools_test" },
       "postgresql protocol",
     ],
     [
