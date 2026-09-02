@@ -5,6 +5,7 @@ const databaseEnvironmentSchema = z.object({
 });
 
 const DEFAULT_POSTGRESQL_PORT = 5_432;
+export const DATABASE_OPERATION_TIMEOUT_MS = 2_000;
 
 export class DatabaseConfigurationError extends Error {
   constructor() {
